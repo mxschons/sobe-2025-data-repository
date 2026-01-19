@@ -1,0 +1,6 @@
+Organism,Min Compute FLOPS/s,Max compute FLOPS / s,Min Storage Bytes,Max Storage Bytes,Min Interconnect Bits/s,Max Interconnect
+C.elegans,1.00E+06,1.00E+08,1.00E+06,1.00E+07,1.00E+09,1.00E+10
+Fruitfly,1.00E+08,1.00E+13,1.00E+08,1.00E+10,1.00E+09,1.00E+11
+Zebrafish larvae,1.00E+08,1.00E+13,1.00E+08,1.00E+10,1.00E+09,1.00E+11
+Mouse,1.00E+14,1.00E+19,1.00E+11,1.00E+13,1.00E+10,1.00E+12
+Human,1.00E+17,1.00E+22,1.00E+13,1.00E+16,1.00E+11,1.00E+13

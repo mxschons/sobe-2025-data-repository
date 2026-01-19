@@ -485,22 +485,15 @@ try:
             return f'${x:.2f}'
 
     def create_cost_per_neuron_figure(data, filename, include_illustration=True):
-        """Create cost per neuron figure with manually positioned labels."""
+        """Create cost per neuron figure with automatically positioned labels using adjustText."""
+        from adjustText import adjust_text
+
         fig, ax = plt.subplots(figsize=(14, 8))
 
-        # Manual label positions: (x_offset, y_offset) in points, plus alignment
-        # Carefully positioned to avoid overlap
-        label_positions = {
-            'C. elegans': {'offset': (8, 0), 'ha': 'left', 'va': 'center'},
-            'Fruitfly': {'offset': (8, 20), 'ha': 'left', 'va': 'bottom'},
-            'Zebrafish': {'offset': (8, 25), 'ha': 'left', 'va': 'bottom'},
-            'BRAIN CONNECTS': {'offset': (8, -25), 'ha': 'left', 'va': 'top'},
-            'Wellcome': {'offset': (8, 30), 'ha': 'left', 'va': 'bottom'},
-            '15nm isotropic with current': {'offset': (8, -30), 'ha': 'left', 'va': 'top'},
-            '1000x less proofreading: EM 10nm': {'offset': (8, 20), 'ha': 'left', 'va': 'bottom'},
-            '1000x less proofreading: EM 15nm': {'offset': (8, -15), 'ha': 'left', 'va': 'top'},
-            '1000x less proofreading: ExM': {'offset': (8, -35), 'ha': 'left', 'va': 'top'},
-        }
+        # Collect points and texts for adjustText
+        texts = []
+        x_points = []
+        y_points = []
 
         # Plot each point
         for idx, row in data.iterrows():
@@ -517,51 +510,35 @@ try:
                 zorder=3
             )
 
+            x_points.append(row['Year'])
+            y_points.append(row['CostPerNeuron'])
+
             # Create label text
             organism = row['Organism'].strip().replace('\n', ' ')
             if 'White et al' in organism:
                 label = 'C. elegans (White et al 1986)'
-                pos_key = 'C. elegans'
             elif 'Fruitfly' in organism or 'Murthy' in organism:
                 label = 'Fruitfly Zheng et al, 2018\n(Murthy, Seung, et al., 2024)'
-                pos_key = 'Fruitfly'
             elif 'Zebrafish' in organism:
                 label = 'Zebrafish (Svara et al., 2022)'
-                pos_key = 'Zebrafish'
             elif 'BRAIN CONNECTS' in organism or 'NIH' in organism:
                 label = 'Mouse (NIH, 2024)'
-                pos_key = 'BRAIN CONNECTS'
             elif 'Wellcome' in organism:
                 label = 'Wellcome EM (10nm isotropic)\nwith proof-reading'
-                pos_key = 'Wellcome'
             elif '15nm isotropic with current' in organism:
                 label = '15nm isotropic with current\nproofreading (EM)'
-                pos_key = '15nm isotropic with current'
             elif '1000x less proofreading: EM 10nm' in organism:
                 label = '1000x less proofreading:\nEM 10nm isotropic'
-                pos_key = '1000x less proofreading: EM 10nm'
             elif '1000x less proofreading: EM 15nm' in organism:
                 label = '1000x less proofreading:\nEM 15nm isotropic'
-                pos_key = '1000x less proofreading: EM 15nm'
             elif '1000x less proofreading: ExM' in organism:
                 label = '1000x less proofreading:\nExM 15nm isotropic'
-                pos_key = '1000x less proofreading: ExM'
             else:
                 label = textwrap.fill(organism, 25)
-                pos_key = organism
 
-            pos = label_positions.get(pos_key, {'offset': (8, 0), 'ha': 'left', 'va': 'center'})
-
-            ax.annotate(
-                label,
-                (row['Year'], row['CostPerNeuron']),
-                xytext=pos['offset'],
-                textcoords='offset points',
-                fontsize=9,
-                ha=pos['ha'],
-                va=pos['va'],
-                color=COLORS['text'],
-            )
+            # Add text at the point location (adjustText will move it)
+            texts.append(ax.text(row['Year'], row['CostPerNeuron'], label,
+                                fontsize=9, color=COLORS['text']))
 
         # Reference lines with labels ABOVE the lines
         ax.axhline(10, linestyle='--', color=GOLD, lw=2, alpha=0.8)
@@ -579,6 +556,15 @@ try:
         ax.set_yscale('log')
         ax.set_xlim(1980, 2050)
         ax.set_ylim(0.005, 50000)
+
+        # Use adjustText to automatically position labels without overlap
+        adjust_text(texts, x=x_points, y=y_points, ax=ax,
+                    arrowprops=dict(arrowstyle='-', color='gray', lw=0.5),
+                    expand_points=(1.5, 1.5),
+                    force_text=(0.5, 1.0),
+                    force_points=(0.5, 0.5),
+                    only_move={'points': 'y', 'text': 'xy'})
+
         ax.set_xlabel('Year')
         ax.set_ylabel('Cost per neuron (USD)')
         ax.set_title('Cost per neuron over time')
@@ -856,10 +842,14 @@ try:
         # Get the raw data with NaN preserved
         heatmap_data = neuro_sim_df[data_columns].astype(float)
 
-        # Create figure with appropriate height
+        # Create figure with subplots: organism labels | heatmap
         fig_height = max(10, len(neuro_sim_df) * 0.4)
-        fig, sim_ax = plt.subplots(figsize=(12, fig_height))
-        shrink = 0.7
+        fig = plt.figure(figsize=(16, fig_height))
+
+        # Create grid: organism bar (narrow) | heatmap (wide)
+        gs = fig.add_gridspec(1, 2, width_ratios=[1.2, 10], wspace=0.02)
+        org_ax = fig.add_subplot(gs[0])
+        sim_ax = fig.add_subplot(gs[1])
 
         # Create a custom colormap with gray for NaN/unknown values
         # Use -1 as a placeholder for NaN, then create boundaries
@@ -879,10 +869,10 @@ try:
             norm=norm,
             cbar_kws=dict(
                 orientation="vertical",
-                location="left",
-                shrink=shrink,
-                aspect=20*shrink,
-                pad=0.12,
+                location="right",
+                shrink=0.4,
+                aspect=15,
+                pad=0.15,
             ),
             linewidths=0.5,
             linecolor='white',
@@ -894,7 +884,6 @@ try:
         cbar.set_ticklabels(['Unknown', '0', '1', '2', '3'])
         cbar.ax.tick_params(labelsize=9)
 
-        sim_ax.yaxis.tick_right()
         sim_ax.set_xticks(
             np.arange(len(data_columns)) + 0.5,
             [textwrap.fill(col, width=15) for col in data_columns],
@@ -902,6 +891,8 @@ try:
             ha='right',
             fontsize=9,
         )
+
+        # Add author labels on right side of heatmap
         sim_ax.set_yticks(
             np.arange(len(neuro_sim_df)) + 0.5,
             labels=[
@@ -911,25 +902,43 @@ try:
             rotation=0,
             fontsize=9,
         )
+        sim_ax.yaxis.tick_right()
 
-        # Add organism group labels on the left side
+        # Create organism grouping brackets on the left axis
+        org_ax.set_xlim(0, 1)
+        org_ax.set_ylim(len(neuro_sim_df), 0)  # Inverted to match heatmap
+        org_ax.axis('off')
+
+        # Find organism group boundaries
+        organism_groups = []
         current_organism = None
         group_start = 0
         for i, (_, row) in enumerate(neuro_sim_df.iterrows()):
             org = row['Organism_mapped']
             if org != current_organism:
                 if current_organism is not None:
-                    # Draw bracket/label for previous group
-                    mid_y = (group_start + i - 1) / 2 + 0.5
-                    sim_ax.text(-0.5, mid_y, current_organism, ha='right', va='center',
-                               fontsize=10, fontweight='bold', transform=sim_ax.get_yaxis_transform())
+                    organism_groups.append((current_organism, group_start, i))
                 current_organism = org
                 group_start = i
-        # Draw last group
+        # Add last group
         if current_organism is not None:
-            mid_y = (group_start + len(neuro_sim_df) - 1) / 2 + 0.5
-            sim_ax.text(-0.5, mid_y, current_organism, ha='right', va='center',
-                       fontsize=10, fontweight='bold', transform=sim_ax.get_yaxis_transform())
+            organism_groups.append((current_organism, group_start, len(neuro_sim_df)))
+
+        # Draw organism brackets and labels (simple lines, no colors)
+        for idx, (org_name, start, end) in enumerate(organism_groups):
+            # Draw bracket: top line, vertical line, bottom line
+            bracket_x = 0.85
+            # Top horizontal line
+            org_ax.plot([bracket_x, 1.0], [start, start], color=COLORS['text'], linewidth=1.5)
+            # Bottom horizontal line
+            org_ax.plot([bracket_x, 1.0], [end, end], color=COLORS['text'], linewidth=1.5)
+            # Vertical line connecting them
+            org_ax.plot([bracket_x, bracket_x], [start, end], color=COLORS['text'], linewidth=1.5)
+            # Add organism label centered on the bracket
+            mid_y = (start + end) / 2
+            org_ax.text(0.4, mid_y, org_name, ha='center', va='center',
+                       fontsize=10, fontweight='bold', rotation=90, color=COLORS['text'])
+
         sim_ax.tick_params(axis='both', which='both', length=0)
         for direction in ['bottom', 'right', 'top', 'left']:
             sim_ax.spines[direction].set_visible(True)
@@ -1009,10 +1018,14 @@ try:
         nan_placeholder = vmin - 1
         rec_df_filled = rec_df_log.fillna(nan_placeholder)
 
-        # Create figure with appropriate height
+        # Create figure with subplots: organism labels | heatmap
         fig_height = max(8, len(neuro_rec_df) * 0.35)
-        fig, rec_ax = plt.subplots(figsize=(10, fig_height))
-        shrink = 0.7
+        fig = plt.figure(figsize=(14, fig_height))
+
+        # Create grid: organism bar (narrow) | heatmap (wide)
+        gs = fig.add_gridspec(1, 2, width_ratios=[1.2, 10], wspace=0.02)
+        org_ax = fig.add_subplot(gs[0])
+        rec_ax = fig.add_subplot(gs[1])
 
         # Create custom colormap with gray for unknown
         # OrRd colormap for data, gray at the bottom for unknown
@@ -1031,10 +1044,10 @@ try:
             vmax=vmax,
             cbar_kws=dict(
                 orientation="vertical",
-                location="left",
-                shrink=shrink,
-                aspect=20*shrink,
-                pad=0.12,
+                location="right",
+                shrink=0.4,
+                aspect=15,
+                pad=0.25,
             ),
             linewidths=0.5,
             linecolor='white',
@@ -1042,7 +1055,6 @@ try:
 
         # Configure colorbar
         cbar = heatmap.collections[0].colorbar
-        cbar.ax.yaxis.tick_left()
         # Add "Unknown" label at the bottom
         cbar_ticks = [nan_placeholder, vmin, (vmin+vmax)/2, vmax]
         cbar_labels = ['Unknown', f'{vmin:.1f}', f'{(vmin+vmax)/2:.1f}', f'{vmax:.1f}']
@@ -1051,12 +1063,13 @@ try:
         cbar.ax.tick_params(labelsize=9)
         cbar.set_label('log10 scale', fontsize=10)
 
-        rec_ax.yaxis.tick_right()
         rec_ax.set_xticks(
             np.arange(len(rec_data_columns)) + 0.5,
             [textwrap.fill(col, width=12) for col in rec_data_columns],
             fontsize=10,
         )
+
+        # Add author labels on right side of heatmap
         rec_ax.set_yticks(
             np.arange(len(neuro_rec_df)) + 0.5,
             labels=[
@@ -1066,25 +1079,42 @@ try:
             rotation=0,
             fontsize=9,
         )
+        rec_ax.yaxis.tick_right()
 
-        # Add organism group labels on the left side
+        # Create organism grouping brackets on the left axis
+        org_ax.set_xlim(0, 1)
+        org_ax.set_ylim(len(neuro_rec_df), 0)  # Inverted to match heatmap
+        org_ax.axis('off')
+
+        # Find organism group boundaries
+        organism_groups = []
         current_organism = None
         group_start = 0
         for i, (_, row) in enumerate(neuro_rec_df.iterrows()):
             org = row['Organism']
             if org != current_organism:
                 if current_organism is not None:
-                    # Draw label for previous group
-                    mid_y = (group_start + i - 1) / 2 + 0.5
-                    rec_ax.text(-0.5, mid_y, current_organism, ha='right', va='center',
-                               fontsize=10, fontweight='bold', transform=rec_ax.get_yaxis_transform())
+                    organism_groups.append((current_organism, group_start, i))
                 current_organism = org
                 group_start = i
-        # Draw last group
+        # Add last group
         if current_organism is not None:
-            mid_y = (group_start + len(neuro_rec_df) - 1) / 2 + 0.5
-            rec_ax.text(-0.5, mid_y, current_organism, ha='right', va='center',
-                       fontsize=10, fontweight='bold', transform=rec_ax.get_yaxis_transform())
+            organism_groups.append((current_organism, group_start, len(neuro_rec_df)))
+
+        # Draw organism brackets and labels (simple lines, no colors)
+        for idx, (org_name, start, end) in enumerate(organism_groups):
+            # Draw bracket: top line, vertical line, bottom line
+            bracket_x = 0.85
+            # Top horizontal line
+            org_ax.plot([bracket_x, 1.0], [start, start], color=COLORS['text'], linewidth=1.5)
+            # Bottom horizontal line
+            org_ax.plot([bracket_x, 1.0], [end, end], color=COLORS['text'], linewidth=1.5)
+            # Vertical line connecting them
+            org_ax.plot([bracket_x, bracket_x], [start, end], color=COLORS['text'], linewidth=1.5)
+            # Add organism label centered on the bracket
+            mid_y = (start + end) / 2
+            org_ax.text(0.4, mid_y, org_name, ha='center', va='center',
+                       fontsize=10, fontweight='bold', rotation=90, color=COLORS['text'])
 
         rec_ax.tick_params(axis='both', which='both', length=0)
         for direction in ['bottom', 'right', 'top', 'left']:

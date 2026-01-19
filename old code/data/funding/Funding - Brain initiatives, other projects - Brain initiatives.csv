@@ -1,0 +1,33 @@
+project name,funding ($M),start year,end year,status,type,funding within BRAIN ($M),approved,ref
+Brain Research Through Advancing Innovative Neurotechnologies (BRAIN) Initiative,"4,000.00",2013,n/a,Active,governmental,,yes,https://braininitiative.nih.gov/funding/understanding-brain-initiative-budget
+BRAIN Initiative Cell Atlas Network (BICAN),,,,,governmental,500,yes,
+BRAIN Initiative Cell Census Network (BICCN),,,,,governmental,375,yes,https://www.nature.com/articles/d41586-023-03954-y
+BRAIN Initiative Connectivity Across Scales (BRAIN CONNECTS) ,,,,,governmental,150,yes,https://www.ninds.nih.gov/news-events/news/highlights-announcements/nih-brain-initiative-launches-projects-develop-innovative-technologies-map-brain-incredible-detail
+Machine Intelligence from Cortical Networks (MICrONS),,,,,governmental,100,yes,
+Neuralink,838.00,2016,n/a,Active,industry,,yes,"https://tracxn.com/d/companies/neuralink/__oUVI98zbdmLZga1LgBRb3oGJJBxjbzTc7bMWUfAOLws#funding-and-investors, https://archive.ph/gMXHy (initial investment)"
+Human Brain Project (HBP),607.00,2013,2023,Concluded,governmental,,yes,https://www.humanbrainproject.eu/en/about-hbp/human-brain-project-ebrains/
+China Brain Project (CBP),446.00,2021,n/a,Active,governmental,,yes,"https://www.nature.com/articles/d41586-023-03954-y. https://archive.ph/fTyVn, but https://www.sciencedirect.com/science/article/abs/pii/S2095927323001214?via=ihub has 3.2B RMB = $460M, https://www.scmp.com/news/china/science/article/3164585/rare-public-row-erupts-over-funding-us16-billion-china-brain has $16B (???), https://www.nature.com/articles/d41586-024-03044-7 has 1.66B (???). gotta check the grant directly (2021.12-2026.12)"
+Adolescent Brain Development (ABCD) study,350.00,2016,n/a,Active,governmental,,yes,calculated based on NIH reporter data (sourced from https://reporter.nih.gov/search/BACA3Kafx0Cc0ByVH3VkkA/projects?sort_field=fiscal_year&sort_order=desc#)
+Brain Mapping by Integrated Neurotechnologies for Disease Studies (Brain/MINDS) project,350.00,2014,n/a,Active,governmental,,yes,https://www.riken.jp/en/news_pubs/research_news/rr/20211223_1/index.html
+Allen Institute for Brain Science,300.00,2016,n/a,Active,phlianthropic,,yes,https://www.nbcnews.com/science/cosmic-log/billionaire-paul-allen-kicks-brain-observatory-effort-300-million-flna513473
+BlackRock Neurotech,250.00,2008,n/a,Active,industry,,yes,https://tether.io/news/tether-takes-strategic-stake-in-leading-brain-computer-interface-company-blackrock-neurotech/ (+50M funding before that)
+Blue Brain Project,242.00,2013,2024,Active,governmental,,yes,"https://www.epfl.ch/research/domains/bluebrain/frequently_asked_questions/ (no. 8, not counting HBP-sourced funding)"
+BrainCo,200.00,2015,n/a,Active,industry,,yes,https://pandaily.com/brain-machine-interface-firm-braincos-brainrobotics-hand-obtains-fda-certification/
+Science Corporation,186.00,2021,n/a,Active,industry,,yes,https://pitchbook.com/profiles/company/471975-49#funding
+Kernel,158.00,2016,n/a,Active,industry,,yes,https://tracxn.com/d/companies/kernel/__bEqbH0XvufpPQs77gjahFGC0clRZLVIs7rUyKmA6BFY/funding-and-investors#summary
+Synchron,145.00,2012,n/a,Active,industry,,yes,https://tracxn.com/d/companies/neuralink/__oUVI98zbdmLZga1LgBRb3oGJJBxjbzTc7bMWUfAOLws#funding-and-investors
+International Center for Primate Brain Research (ICPBR),106.00,2020,n/a,Active,governmental,,yes,https://www.nature.com/articles/d41586-019-00292-w
+Precision Neurotechnologies,88.00,2024,n/a,Active,governmental,,yes,https://www.aria.org.uk/precision-neurotechnologies/
+Paradromics,87.00,2015,n/a,Active,industry,,yes,https://www.cnbc.com/2024/06/21/paradromics-gears-up-to-test-its-brain-implant-on-humans.html
+UK Biobank Brain Imaging,39.60,2004,n/a,Active,governmental,,yes,https://www.ukbiobank.ac.uk/media/wgsfd0qg/uk-biobank-funding-details-summary.pdf (counting imaging only)
+Human Connectome Project,38.50,2009,2014,Concluded,governmental,,yes,https://journals.sagepub.com/doi/10.2310/JIM.0b013e3182025955
+Numenta,23.60,2015,n/a,Active,industry,,yes,https://tracxn.com/d/companies/numenta/__RsSigVedmX41LBWmdVLEf1d54Fw_3PLfPE6EBVQBcX8#about-the-company
+International Brain Laboratory (IBL),20.00,2017,n/a,Active,governmental,,yes,https://en.wikipedia.org/wiki/International_Brain_Laboratory
+NeuroXess,15.20,2021,n/a,Active,industry,,yes,https://pitchbook.com/profiles/company/489944-26#investors
+Forest Neurotech,14.00,2024,n/a,Active,industry,,yes,https://www.businesswire.com/news/home/20240311581698/en/Convergent-Research-Announces-Major-New-Funding-Commitment-to-Forest-Neurotech
+E11 Bio,10.00,2022,n/a,Active,phlianthropic,,yes,using convergent's Form 990 data (2M/year for E11 Bio) and assuming a 5 year FRO duration
+Courtois NeuroMod,4.50,2018,n/a,Active,governmental,,yes,https://docs.cneuromod.ca/en/2020-alpha/AUTHORS.html
+Child Mind Institute,55.00,2009,n/a,Active,governmental,,yes,at least 55M: https://childmind.org/blog/child-mind-institute-receives-55-million-stavros-niarchos-foundation-grant-for-global-childrens-mental-health/
+Natural Scenes Dataset,0.40,2018,2023,Concluded,governmental,,yes,https://www.nsf.gov/awardsearch/showAward?AWD_ID=1822929&HistoricalAwards=false
+Neuropixels 1.0,5.50,2013,2017,Concluded,governmental,,yes,https://www.hhmi.org/news/new-silicon-probes-record-activity-hundreds-neurons-simultaneously
+Precision Neuroscience,174.00,2021,n/a,Active,industry,,yes,https://tracxn.com/d/companies/precision-neuroscience/__z4shNX_DBChmW-jgz7QGVN85zzpOfTP5Qj_vMlA1o7M
