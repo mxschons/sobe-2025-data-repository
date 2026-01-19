@@ -1656,8 +1656,8 @@ try:
             fig, ax = plt.subplots(figsize=(8, 8), subplot_kw=dict(polar=True))
             rec_fig(ax, sub_df, organism, individual_studies=None)
 
-            # Add title
-            ax.set_title(f'{organism} - Recording Characteristics', fontsize=14, pad=20, color=COLORS['title'])
+            # Add title with extra padding to avoid overlap with top axis labels
+            ax.set_title(f'{organism} - Recording Characteristics', fontsize=14, pad=80, color=COLORS['title'])
 
             plt.tight_layout()
             add_attribution(fig)
