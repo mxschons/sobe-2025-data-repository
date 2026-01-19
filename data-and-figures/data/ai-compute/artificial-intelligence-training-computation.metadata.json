@@ -1,0 +1,52 @@
+{
+  "chart": {
+    "title": "Computation used to train notable artificial intelligence systems, by domain",
+    "subtitle": "Computation is measured in total petaFLOP, which is 10¹⁵ [floating-point operations](#dod:flop). Estimated from AI literature, albeit with some uncertainty. Estimates are expected to be accurate within a factor of 2, or a factor of 5 for recent undisclosed models like GPT-4.",
+    "note": "The Executive Order on AI refers to a directive issued by President Biden on October 30, 2023, aimed at establishing guidelines and standards for the responsible development and use of artificial intelligence within the United States.",
+    "xAxisLabel": "Publication date",
+    "citation": "Epoch (2024)",
+    "originalChartUrl": "https://ourworldindata.org/grapher/artificial-intelligence-training-computation?v=1&csvType=full&useColumnShortNames=false",
+    "selection": []
+  },
+  "columns": {
+    "Training computation (petaFLOP)": {
+      "titleShort": "Training computation (petaFLOP)",
+      "titleLong": "Training computation (petaFLOP)",
+      "descriptionShort": "Computation is measured in total petaFLOP, which is 10¹⁵ [floating-point operations](#dod:flop) estimated from AI literature, albeit with some uncertainty.",
+      "descriptionKey": [
+        "In the context of artificial intelligence (AI), training computation is predominantly measured using floating-point operations or “FLOP”. One FLOP represents a single arithmetic operation involving floating-point numbers, such as addition, subtraction, multiplication, or division. To adapt to the vast computational demands of AI systems, the measurement unit of petaFLOP is commonly used. One petaFLOP stands as a staggering one quadrillion FLOPs, underscoring the magnitude of computational operations within AI.",
+        "Modern AI systems are rooted in machine learning and deep learning techniques. These methodologies are notorious for their computational intensity, involving complex mathematical processes and algorithms. During the training phase, AI models process large volumes of data, while continuously adapting and refining their parameters to optimize performance, rendering the training process computationally intensive.",
+        "Many factors influence the magnitude of training computation within AI systems. Notably, the size of the dataset employed for training significantly impacts the computational load. Larger datasets necessitate more processing power. The complexity of the model's architecture also plays a pivotal role; more intricate models lead to more computations. Parallel processing, involving the simultaneous use of multiple processors, also has a substantial effect. Beyond these factors, specific design choices and other variables further contribute to the complexity and scale of training computation within AI."
+      ],
+      "shortUnit": "",
+      "unit": "",
+      "timespan": "",
+      "type": "Numeric",
+      "owidVariableId": 997328,
+      "shortName": "training_computation_petaflop",
+      "lastUpdated": "2024-11-03",
+      "nextUpdate": "2024-12-04",
+      "citationShort": "Epoch (2024) – with major processing by Our World in Data",
+      "citationLong": "Epoch (2024) – with major processing by Our World in Data. “Training computation (petaFLOP)” [dataset]. Epoch, “Parameter, Compute and Data Trends in Machine Learning” [original data].",
+      "fullMetadata": "https://api.ourworldindata.org/v1/indicators/997328.metadata.json"
+    },
+    "Domain": {
+      "titleShort": "Domain",
+      "titleLong": "Domain",
+      "descriptionShort": "Refers to the specific area, application, or field in which an AI system is designed to operate.",
+      "descriptionKey": [],
+      "shortUnit": "",
+      "unit": "",
+      "timespan": "",
+      "type": "String",
+      "owidVariableId": 997319,
+      "shortName": "domain",
+      "lastUpdated": "2024-11-03",
+      "nextUpdate": "2024-12-04",
+      "citationShort": "Epoch (2024) – with major processing by Our World in Data",
+      "citationLong": "Epoch (2024) – with major processing by Our World in Data. “Domain” [dataset]. Epoch, “Parameter, Compute and Data Trends in Machine Learning” [original data].",
+      "fullMetadata": "https://api.ourworldindata.org/v1/indicators/997319.metadata.json"
+    }
+  },
+  "dateDownloaded": "2024-11-28"
+}
