@@ -1932,6 +1932,181 @@ try:
 except Exception as e:
     print(f"   Error: {e}")
 
+# =============================================================================
+# Figure 18: Bandwidth Scaling for Multiplexed Imaging
+# =============================================================================
+print("\n[18/18] Generating: bandwidth-scaling.svg/png")
+try:
+    # Data extracted from original figure
+    # Resolution in nm vs bandwidth in bits/s for different numbers of multiplexed colors
+    bandwidth_data = {
+        'resolution_nm': [10, 15, 25, 50, 100],
+        '1-color': [5.5e14, 2.2e14, 3.8e13, 5.0e12, 5.0e11],
+        '5-color': [3.2e15, 9.0e14, 2.0e14, 2.5e13, 3.0e12],
+        '10-color': [5.8e15, 1.9e15, 3.8e14, 5.5e13, 6.0e12],
+        '15-color': [8.5e15, 3.2e15, 5.2e14, 8.5e13, 9.0e12],
+        '20-color': [1.15e16, 4.2e15, 7.2e14, 1.5e14, 1.2e13],
+        '25-color': [1.45e16, 4.8e15, 1.05e15, 1.6e14, 1.5e13],
+        '30-color': [2.0e16, 5.5e15, 1.25e15, 1.9e14, 1.8e13],
+    }
+
+    bandwidth_df = pd.DataFrame(bandwidth_data)
+
+    fig, ax = plt.subplots(figsize=(12, 9))
+
+    # Use extended categorical colors
+    bw_colors = {
+        '1-color': CATEGORICAL_COLORS[0],
+        '5-color': CATEGORICAL_COLORS[1],
+        '10-color': CATEGORICAL_COLORS[2],
+        '15-color': CATEGORICAL_COLORS[3],
+        '20-color': CATEGORICAL_COLORS[4],
+        '25-color': '#8c564b',
+        '30-color': '#e377c2',
+    }
+
+    for col in bandwidth_df.columns[1:]:
+        ax.plot(bandwidth_df['resolution_nm'], bandwidth_df[col], 'o-', label=col,
+                color=bw_colors[col], linewidth=2, markersize=10)
+
+    ax.set_yscale('log')
+    ax.set_xscale('log')
+
+    ax.set_xticks([10, 15, 25, 50, 100])
+    ax.set_xticklabels(['10 nm', '15 nm', '25 nm', '50 nm', '100 nm'])
+    ax.set_xlabel('Resolution (nm)')
+    ax.set_xlim(8, 130)
+
+    ax.set_ylabel('Bandwidth (bits/s)')
+
+    yticks = [1e12, 1e13, 1e14, 1e15, 1e16]
+    yticklabels = ['1.00 terabits/s', '10.00 terabits/s', '100.00 terabits/s',
+                   '1.00 petabits/s', '10.00 petabits/s']
+    ax.set_yticks(yticks)
+    ax.set_yticklabels(yticklabels)
+    ax.set_ylim(3e11, 3e16)
+
+    ax.set_title('Scaling of Bandwidth Requirements for Multiplexed Imaging of Whole Human Brain')
+
+    ax.legend(title='Multiplexed Colors', loc='upper right', framealpha=0.95)
+
+    ax.grid(True, which='major', linestyle='--', alpha=0.6, color=COLORS['grid'])
+    ax.grid(True, which='minor', linestyle='--', alpha=0.3, color=COLORS['grid'])
+    ax.set_axisbelow(True)
+
+    plt.tight_layout()
+    save_figure(fig, 'bandwidth-scaling')
+    plt.close()
+    print("   Done!")
+except Exception as e:
+    print(f"   Error: {e}")
+
+# =============================================================================
+# Figure 19: Hardware Scaling (FLOPS, DRAM BW, Interconnect BW)
+# =============================================================================
+print("\n[19/19] Generating: hardware-scaling.svg/png")
+try:
+    from scipy import stats
+
+    # Data for hardware scaling
+    hw_flops = {
+        'name': ['Pentium 4', 'GTX 580', 'K40', 'KNL', 'TPUv3', 'A100', 'H100', 'Gaudi 2', 'B200'],
+        'year': [2005, 2010, 2014, 2016, 2018, 2020, 2022, 2022, 2024],
+        'value': [90, 6000, 15000, 22000, 420000, 1250000, 2000000, 1100000, 4500000]
+    }
+    dram_bw = {
+        'name': ['GDDR4', 'GDDR5', 'HBM', 'HBM 2', 'HBM 3', 'HBM3E'],
+        'year': [2007, 2010, 2015, 2018, 2021, 2024],
+        'value': [1.8, 10, 30, 70, 120, 250]
+    }
+    interconnect_bw = {
+        'name': ['PCIe 2.0', 'PCIe 3.0', 'NVLink 1.0', 'PCIe 5.0', 'NVLink 4.0'],
+        'year': [2007, 2011, 2016, 2019, 2024],
+        'value': [1.2, 2, 3, 8, 50]
+    }
+
+    color_flops = '#4A4A4A'
+    color_dram = '#2E8B57'
+    color_interconnect = '#9370DB'
+
+    fig, ax = plt.subplots(figsize=(12, 9))
+
+    # Plot data points with labels
+    ax.scatter(hw_flops['year'], hw_flops['value'], color=color_flops, s=80, zorder=5)
+    for i, name in enumerate(hw_flops['name']):
+        y_offset = 1.3 if name not in ['Gaudi 2'] else 0.7
+        ha = 'left' if name == 'Gaudi 2' else 'center'
+        ax.annotate(name, (hw_flops['year'][i], hw_flops['value'][i] * y_offset),
+                    ha=ha, va='bottom', fontsize=9, color=color_flops)
+
+    ax.scatter(dram_bw['year'], dram_bw['value'], color=color_dram, s=80, zorder=5)
+    for i, name in enumerate(dram_bw['name']):
+        ax.annotate(name, (dram_bw['year'][i], dram_bw['value'][i] * 1.3),
+                    ha='center', va='bottom', fontsize=9, color=color_dram)
+
+    ax.scatter(interconnect_bw['year'], interconnect_bw['value'], color=color_interconnect, s=80, zorder=5)
+    for i, name in enumerate(interconnect_bw['name']):
+        ax.annotate(name, (interconnect_bw['year'][i], interconnect_bw['value'][i] * 1.3),
+                    ha='center', va='bottom', fontsize=9, color=color_interconnect)
+
+    # Fit and plot trend lines
+    def fit_trend(years, values):
+        log_values = np.log10(values)
+        slope, intercept, r, p, se = stats.linregress(years, log_values)
+        return slope, intercept
+
+    x_trend = np.linspace(2005, 2026, 100)
+
+    slope_flops, intercept_flops = fit_trend(hw_flops['year'], hw_flops['value'])
+    y_trend_flops = 10 ** (intercept_flops + slope_flops * x_trend)
+    ax.plot(x_trend, y_trend_flops, color=color_flops, linewidth=3, alpha=0.7, zorder=1)
+
+    slope_dram, intercept_dram = fit_trend(dram_bw['year'], dram_bw['value'])
+    y_trend_dram = 10 ** (intercept_dram + slope_dram * x_trend)
+    ax.plot(x_trend, y_trend_dram, color=color_dram, linewidth=3, alpha=0.5, zorder=1)
+    ax.fill_between(x_trend, y_trend_dram * 0.5, y_trend_dram * 2, color=color_dram, alpha=0.15, zorder=0)
+
+    slope_inter, intercept_inter = fit_trend(interconnect_bw['year'], interconnect_bw['value'])
+    y_trend_inter = 10 ** (intercept_inter + slope_inter * x_trend)
+    ax.plot(x_trend, y_trend_inter, color=color_interconnect, linewidth=3, alpha=0.5, zorder=1)
+    ax.fill_between(x_trend, y_trend_inter * 0.5, y_trend_inter * 2, color=color_interconnect, alpha=0.15, zorder=0)
+
+    # Calculate scaling factors
+    flops_20yr = 10 ** (slope_flops * 20)
+    dram_20yr = 10 ** (slope_dram * 20)
+    inter_20yr = 10 ** (slope_inter * 20)
+    flops_2yr = 10 ** (slope_flops * 2)
+    dram_2yr = 10 ** (slope_dram * 2)
+    inter_2yr = 10 ** (slope_inter * 2)
+
+    # Add legend text
+    ax.text(0.02, 0.98, 'HW FLOPS:', transform=ax.transAxes, fontsize=12, fontweight='bold',
+            va='top', ha='left', color=color_flops)
+    ax.text(0.18, 0.98, f'{flops_20yr:.0f}x / 20 yrs ({flops_2yr:.1f}x/2yrs)', transform=ax.transAxes,
+            fontsize=12, va='top', ha='left', color=color_flops)
+    ax.text(0.02, 0.93, 'DRAM BW:', transform=ax.transAxes, fontsize=12, fontweight='bold',
+            va='top', ha='left', color=color_dram)
+    ax.text(0.18, 0.93, f'{dram_20yr:.0f}x / 20 yrs ({dram_2yr:.1f}x/2yrs)', transform=ax.transAxes,
+            fontsize=12, va='top', ha='left', color=color_dram)
+    ax.text(0.02, 0.88, 'Interconnect BW:', transform=ax.transAxes, fontsize=12, fontweight='bold',
+            va='top', ha='left', color=color_interconnect)
+    ax.text(0.18, 0.88, f'{inter_20yr:.0f}x / 20 yrs ({inter_2yr:.1f}x/2yrs)', transform=ax.transAxes,
+            fontsize=12, va='top', ha='left', color=color_interconnect)
+
+    ax.set_yscale('log')
+    ax.set_xlim(2004, 2026)
+    ax.set_ylim(0.01, 10000000)
+    ax.grid(True, which='major', axis='both', linestyle='-', alpha=0.3, color=COLORS['grid'])
+
+    plt.tight_layout()
+    save_figure(fig, 'hardware-scaling')
+    plt.close()
+    print("   Done!")
+except Exception as e:
+    import traceback
+    print(f"   Error: {e}")
+    traceback.print_exc()
+
 print("\n" + "=" * 60)
 print("Figure generation complete!")
 print("=" * 60)
