@@ -521,17 +521,26 @@ def generate_cost_per_neuron():
             return f'${x:.2f}'
 
     def create_cost_per_neuron_figure(data, filename, include_illustration=True):
-        """Create cost per neuron figure with automatically positioned labels using adjustText."""
-        from adjustText import adjust_text
+        """Create cost per neuron figure with carefully positioned labels."""
+        fig, ax = plt.subplots(figsize=(14, 10))
 
-        fig, ax = plt.subplots(figsize=(14, 8))
+        # Define ABSOLUTE label positions: (text_x, text_y, ha, va)
+        # Positions are carefully chosen to avoid all overlaps
+        # Using absolute coordinates on log scale for y
+        label_positions = {
+            'C. elegans (White et al 1986)': (1992, 5000, 'left', 'center'),
+            'Fruitfly Zheng et al, 2018\n(Murthy, Seung, et al., 2024)': (2005, 600, 'left', 'center'),
+            'Zebrafish (Svara et al., 2022)': (2010, 200, 'left', 'center'),
+            'Mouse (NIH, 2024)': (2032, 20, 'left', 'center'),
+            'Wellcome EM (10nm isotropic)\nwith proof-reading': (2032, 500, 'left', 'center'),
+            '15nm isotropic with current\nproofreading (EM)': (2032, 130, 'left', 'center'),
+            '1000x less proofreading:\nEM 10nm isotropic': (2020, 15, 'left', 'center'),
+            '1000x less proofreading:\nEM 15nm isotropic': (2038, 1.5, 'left', 'center'),
+            '1000x less proofreading:\nExM 15nm isotropic': (2038, 6, 'left', 'center'),
+        }
 
-        # Collect points and texts for adjustText
-        texts = []
-        x_points = []
-        y_points = []
-
-        # Plot each point
+        # First pass: plot all points
+        point_data = []
         for idx, row in data.iterrows():
             type_cat = row['Type'] if pd.notna(row.get('Type')) else 'Budget'
             style = type_styles.get(type_cat, type_styles['Budget'])
@@ -545,9 +554,6 @@ def generate_cost_per_neuron():
                 linewidth=1.5,
                 zorder=3
             )
-
-            x_points.append(row['Year'])
-            y_points.append(row['CostPerNeuron'])
 
             # Create label text
             organism = row['Organism'].strip().replace('\n', ' ')
@@ -572,9 +578,32 @@ def generate_cost_per_neuron():
             else:
                 label = textwrap.fill(organism, 25)
 
-            # Add text at the point location (adjustText will move it)
-            texts.append(ax.text(row['Year'], row['CostPerNeuron'], label,
-                                fontsize=9, color=COLORS['text']))
+            point_data.append((row['Year'], row['CostPerNeuron'], label))
+
+        # Second pass: add labels with leader lines
+        for year, cost, label in point_data:
+            if label in label_positions:
+                text_x, text_y, ha, va = label_positions[label]
+            else:
+                # Default: place to the right
+                text_x, text_y, ha, va = (year + 3, cost, 'left', 'center')
+
+            # Add annotation with connecting line
+            ax.annotate(
+                label,
+                xy=(year, cost),
+                xytext=(text_x, text_y),
+                fontsize=9,
+                color=COLORS['text'],
+                ha=ha, va=va,
+                arrowprops=dict(
+                    arrowstyle='-',
+                    color=COLORS['caption'],
+                    lw=0.5,
+                    connectionstyle='arc3,rad=0.1'
+                ),
+                zorder=4
+            )
 
         # Reference lines with labels ABOVE the lines
         ax.axhline(10, linestyle='--', color=GOLD, lw=2, alpha=0.8)
@@ -592,14 +621,6 @@ def generate_cost_per_neuron():
         ax.set_yscale('log')
         ax.set_xlim(1980, 2050)
         ax.set_ylim(0.005, 50000)
-
-        # Use adjustText to automatically position labels without overlap
-        adjust_text(texts, x=x_points, y=y_points, ax=ax,
-                    arrowprops=dict(arrowstyle='-', color=COLORS['caption'], lw=0.5),
-                    expand_points=(1.5, 1.5),
-                    force_text=(0.5, 1.0),
-                    force_points=(0.5, 0.5),
-                    only_move={'points': 'y', 'text': 'xy'})
 
         ax.set_xlabel('Year')
         ax.set_ylabel('Cost per neuron (USD)')
@@ -724,51 +745,7 @@ def generate_initiatives():
     save_figure(fig, 'initiatives2')
     plt.close()
 
-    # initiatives3 - KDE plot
-    fig, ax = plt.subplots(figsize=(8, 5))
-    sns.kdeplot(all_proj_df, x='Budget_M', label='All projects', fill=True, log_scale=True,
-                color=COLORS['grid'], alpha=0.5, ax=ax)
-    sns.kdeplot(all_proj_df.query('Category == "Brain"'), x='Budget_M', label='Brain projects',
-                fill=True, log_scale=True, color=GOLD, alpha=0.7, ax=ax)
-    ax.set_title('Brain Project Budgets vs All Megaprojects')
-    ax.set_xlabel('Budget (Million $)')
-    ax.legend(frameon=True)
-    plt.tight_layout()
-    save_figure(fig, 'initiatives3')
-    plt.close()
-
-    # initiatives4 - Budgets with KDE overlay
-    fig, ax = plt.subplots(figsize=(10, 5))
-    for i in range(len(all_proj_df)):
-        ax.errorbar(
-            [proj_midpoints[i]],
-            [all_proj_df.loc[i, 'Budget_M']],
-            ls='none',
-            xerr=[proj_durations[i] / 2],
-            capsize=4,
-            ecolor=proj_colors[i],
-            alpha=0.8,
-        )
-    ax.set_yscale('log')
-    ax.set_xlim(dt.datetime(year=1940, month=1, day=1), dt.datetime(year=2035, month=1, day=1))
-    ax.set_ylabel('Budget (Million $)')
-    for i, proj in all_proj_df.head(6).iterrows():
-        ax.text(proj_midpoints[i], proj['Budget_M'], proj['Name'],
-                ha='center', va='bottom', fontsize=9, color=COLORS['text'])
-    place_legend(ax, fig, position='outside_right', handles=legend_handles, title="Category")
-    ax.set_title('Megaproject Budgets')
-    ax2 = ax.twiny()
-    ax2.set_xticks([])
-    ax2.set_xlim(0, 1.5)
-    sns.kdeplot(all_proj_df.query('Category == "Brain"'), y='Budget_M', label='Brain', color=GOLD, fill=True, log_scale=True, ax=ax2, alpha=0.5)
-    sns.kdeplot(all_proj_df.query('Category != "Brain"'), y='Budget_M', label='Other', color=COLORS['caption'], fill=True, log_scale=True, ax=ax2, alpha=0.3)
-    ax2.legend(loc=(0.3, 0.3), title='Distributions', frameon=True)
-    ax.set_ylim(1e0, 5e6)
-    plt.tight_layout()
-    save_figure(fig, 'initiatives4')
-    plt.close()
-
-    # initiatives5 - Budget Distributions by Category Over Time
+    # initiatives3 - Budget Distributions by Category Over Time
     fig, ax = plt.subplots(figsize=(10, 5))
     sns.kdeplot(
         all_proj_df,
@@ -789,10 +766,10 @@ def generate_initiatives():
     ax.set_xlabel(None)
     ax.set_title('Budget Distributions by Category Over Time')
     plt.tight_layout()
-    save_figure(fig, 'initiatives5')
+    save_figure(fig, 'initiatives3')
     plt.close()
 
-    # initiatives6 - Budget Distributions by Category
+    # initiatives4 - Budget Distributions by Category
     fig, ax = plt.subplots(figsize=(10, 5))
     sns.kdeplot(all_proj_df, x='Budget_M', label='All projects', log_scale=True, fill=True, color=COLORS['grid'], alpha=0.5, ax=ax)
     for i, category in enumerate(proj_categories):
@@ -802,7 +779,7 @@ def generate_initiatives():
     ax.set_xlabel('Budget (Million $)')
     ax.legend(frameon=True, loc='upper right')
     plt.tight_layout()
-    save_figure(fig, 'initiatives6')
+    save_figure(fig, 'initiatives4')
     plt.close()
 
 # =============================================================================
@@ -1280,30 +1257,13 @@ def generate_neuro_sim_radar():
                 x_pos = r_pos * np.cos(np.pi/2 - angle)
                 y_pos = r_pos * np.sin(np.pi/2 - angle)
 
-                # Format the value
-                if max_val >= 1:
-                    val_str = f"{max_val:.1f}"
-                else:
-                    val_str = f"{max_val:.2f}"
-
-                # Add info box
-                ax.annotate(
-                    f"Max: {val_str}",
-                    xy=(angle, 3.2),
-                    xytext=(angle, 4.0),
-                    fontsize=8,
-                    ha='center',
-                    va='center',
-                    color=COLORS['text'],
-                    bbox=dict(boxstyle='round,pad=0.3', facecolor=COLORS['grid'], edgecolor=COLORS['border'], alpha=0.9),
-                )
 
         ax.set_yticks([])
         ax.grid(False)
         ax.spines['polar'].set_visible(False)
 
         # Add title
-        ax.set_title(f'{organism} - Simulation Characteristics', fontsize=14, pad=60, color=COLORS['title'])
+        ax.set_title(f'{organism} - Simulation Characteristics', fontsize=14, pad=80, color=COLORS['title'])
 
         plt.tight_layout()
         add_attribution(fig)
@@ -1672,8 +1632,8 @@ def generate_neuro_rec_radar():
             fig, ax = plt.subplots(figsize=(8, 8), subplot_kw=dict(polar=True))
             rec_fig(ax, sub_df, organism, individual_studies=None)
 
-            # Add title
-            ax.set_title(f'{organism} - Recording Characteristics', fontsize=14, pad=20, color=COLORS['title'])
+            # Add title with extra padding to avoid overlap with polar chart
+            ax.set_title(f'{organism} - Recording Characteristics', fontsize=14, pad=80, color=COLORS['title'])
 
             plt.tight_layout()
             add_attribution(fig)
