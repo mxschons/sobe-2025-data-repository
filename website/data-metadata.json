@@ -273,9 +273,9 @@
     }
   ],
   "github": {
-    "repo": "https://github.com/your-org/sobe25-scripts",
+    "repo": "https://github.com/mxschons/sobe-2025-data-repository",
     "dataPath": "data",
-    "issuesUrl": "https://github.com/your-org/sobe25-scripts/issues"
+    "issuesUrl": "https://github.com/mxschons/sobe-2025-data-repository/issues"
   },
   "license": {
     "name": "CC BY 4.0",

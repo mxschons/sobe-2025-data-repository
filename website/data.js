@@ -6,6 +6,10 @@
 (function() {
     'use strict';
 
+    // State
+    let currentView = 'table';
+    let metadata = null;
+
     // DOM Elements
     const categoriesContainer = document.getElementById('data-categories');
     const totalDatasetsEl = document.getElementById('total-datasets');
@@ -31,15 +35,18 @@
     async function init() {
         try {
             const response = await fetch('data-metadata.json');
-            const data = await response.json();
+            metadata = await response.json();
 
             // Update stats
-            const totalDatasets = data.categories.reduce((sum, cat) => sum + cat.datasets.length, 0);
+            const totalDatasets = metadata.categories.reduce((sum, cat) => sum + cat.datasets.length, 0);
             totalDatasetsEl.textContent = totalDatasets;
-            totalCategoriesEl.textContent = data.categories.length;
+            totalCategoriesEl.textContent = metadata.categories.length;
 
-            // Render categories
-            renderCategories(data.categories);
+            // Set up view toggle
+            setupViewToggle();
+
+            // Initial render
+            render();
 
         } catch (error) {
             console.error('Failed to load data metadata:', error);
@@ -51,8 +58,84 @@
         }
     }
 
-    // Render all categories
-    function renderCategories(categories) {
+    // Set up view toggle buttons
+    function setupViewToggle() {
+        const buttons = document.querySelectorAll('.view-btn');
+        buttons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                buttons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentView = btn.dataset.view;
+                render();
+            });
+        });
+    }
+
+    // Render based on current view
+    function render() {
+        if (currentView === 'table') {
+            renderTableView(metadata.categories);
+        } else {
+            renderCardView(metadata.categories);
+        }
+    }
+
+    // Render compact table view
+    function renderTableView(categories) {
+        categoriesContainer.innerHTML = categories.map(category => `
+            <div class="data-category" id="category-${category.id}">
+                <div class="category-header category-header-compact">
+                    <div class="category-icon">
+                        ${icons[category.icon] || icons['database']}
+                    </div>
+                    <div class="category-info">
+                        <h2>${category.title}</h2>
+                    </div>
+                    <span class="category-count">${category.datasets.length}</span>
+                </div>
+                <table class="datasets-table">
+                    <thead>
+                        <tr>
+                            <th>Dataset</th>
+                            <th>Description</th>
+                            <th>Rows</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${category.datasets.map(dataset => renderTableRow(dataset)).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `).join('');
+    }
+
+    // Render a single table row
+    function renderTableRow(dataset) {
+        const downloadPath = `../${dataset.path}/${encodeURIComponent(dataset.filename)}`;
+        const githubPath = `https://github.com/mxschons/sobe-2025-data-repository/blob/main/${dataset.path}/${encodeURIComponent(dataset.filename)}`;
+
+        return `
+            <tr class="dataset-row">
+                <td class="dataset-name">
+                    <span class="dataset-title-text">${dataset.title}</span>
+                </td>
+                <td class="dataset-desc">${dataset.description}</td>
+                <td class="dataset-rows">${dataset.rows}</td>
+                <td class="dataset-actions-cell">
+                    <a href="${downloadPath}" class="btn-icon" title="Download CSV" download>
+                        ${icons['download']}
+                    </a>
+                    <a href="${githubPath}" class="btn-icon" title="View on GitHub" target="_blank" rel="noopener">
+                        ${icons['external']}
+                    </a>
+                </td>
+            </tr>
+        `;
+    }
+
+    // Render card view (original)
+    function renderCardView(categories) {
         categoriesContainer.innerHTML = categories.map(category => `
             <div class="data-category" id="category-${category.id}">
                 <div class="category-header">
@@ -75,7 +158,7 @@
     // Render a single dataset card
     function renderDatasetCard(dataset) {
         const downloadPath = `../${dataset.path}/${encodeURIComponent(dataset.filename)}`;
-        const githubPath = `https://github.com/your-org/sobe25-scripts/blob/main/${dataset.path}/${encodeURIComponent(dataset.filename)}`;
+        const githubPath = `https://github.com/mxschons/sobe-2025-data-repository/blob/main/${dataset.path}/${encodeURIComponent(dataset.filename)}`;
         const columnsPreview = dataset.columns.slice(0, 5).join(', ') + (dataset.columns.length > 5 ? '...' : '');
 
         return `
