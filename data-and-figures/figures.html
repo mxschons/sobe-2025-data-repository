@@ -7,7 +7,703 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/figures.css">
+    <style>
+
+/* ============================================================================
+   CSS VARIABLES - Base theme for standalone pages
+   ============================================================================ */
+:root {
+    /* Colors */
+    --bg: #FAF9F6;
+    --bg-card: #FFFFFF;
+    --bg-darker: #F5F3EF;
+    --text: #2D2D2D;
+    --text-heading: #1A1A1A;
+    --text-muted: #6B6B6B;
+    --text-light: #8B8B8B;
+    --border: #D4D4D4;
+    --border-light: #E8E6E1;
+
+    /* Accent colors */
+    --accent-purple: #6B5B95;
+    --accent-purple-dark: #574B7A;
+    --accent-translucent: rgba(107, 91, 149, 0.1);
+    --accent-gold: #D4A84B;
+    --accent-teal: #4A90A4;
+    --data-teal: #4A90A4;
+
+    /* Spacing */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 32px;
+    --space-2xl: 48px;
+    --space-3xl: 64px;
+
+    /* Typography */
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-serif: 'Playfair Display', Georgia, serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+    /* Layout */
+    --container-width: 1200px;
+
+    /* Transitions */
+    --transition-fast: 0.15s ease;
+    --transition-normal: 0.25s ease;
+}
+
+/* Base reset and typography */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--text);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--text-heading);
+}
+
+p {
+    margin: 0 0 1em;
+}
+
+a {
+    color: var(--accent-purple);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+a:hover {
+    color: var(--accent-purple-dark);
+    text-decoration: underline;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+button {
+    font-family: inherit;
+}
+
+
+/* ============================================================================
+   FIGURES PAGE STYLES
+   Figure library with filtering and download functionality
+   ============================================================================ */
+
+/* ============================================================================
+   PAGE LAYOUT
+   ============================================================================ */
+.figures-page {
+    padding: var(--space-3xl) 0;
+    min-height: 100vh;
+}
+
+.figures-page .container {
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 0 var(--space-lg);
+}
+
+/* ============================================================================
+   PAGE HEADER
+   ============================================================================ */
+.figures-header {
+    text-align: center;
+    margin-bottom: var(--space-3xl);
+}
+
+.figures-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--text-heading);
+    margin-bottom: var(--space-md);
+}
+
+.figures-subtitle {
+    font-size: 18px;
+    color: var(--text-muted);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* ============================================================================
+   DOWNLOAD ALL SECTION
+   ============================================================================ */
+.download-all-section {
+    margin-bottom: var(--space-2xl);
+}
+
+.download-all-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    padding: var(--space-lg) var(--space-xl);
+    gap: var(--space-lg);
+}
+
+.download-all-info h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-heading);
+    margin-bottom: var(--space-xs);
+}
+
+.download-all-info p {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+.download-all-buttons {
+    display: flex;
+    gap: var(--space-md);
+    flex-shrink: 0;
+}
+
+/* ============================================================================
+   BUTTONS
+   ============================================================================ */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.btn svg {
+    flex-shrink: 0;
+}
+
+.btn-primary {
+    background: var(--accent-purple);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--accent-purple-dark);
+    color: white;
+    border-bottom: none;
+}
+
+.btn-secondary {
+    background: var(--bg-darker);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+    background: var(--border-light);
+    color: var(--text);
+    border-bottom: 1px solid var(--border);
+}
+
+.btn-small {
+    padding: var(--space-xs) var(--space-sm);
+    font-size: 12px;
+}
+
+/* ============================================================================
+   FILTERS SECTION
+   ============================================================================ */
+.filters-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    padding: var(--space-lg);
+    margin-bottom: var(--space-xl);
+}
+
+.filter-group {
+    margin-bottom: var(--space-md);
+}
+
+.filter-group:last-of-type {
+    margin-bottom: var(--space-sm);
+}
+
+.filter-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin-bottom: var(--space-sm);
+}
+
+.filter-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+}
+
+.filter-chip {
+    padding: var(--space-xs) var(--space-md);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.filter-chip:hover {
+    background: var(--bg-darker);
+    border-color: var(--accent-purple);
+}
+
+.filter-chip.active {
+    background: var(--accent-purple);
+    color: white;
+    border-color: var(--accent-purple);
+}
+
+.filter-results {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--border-light);
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+#results-count {
+    font-weight: 600;
+    color: var(--accent-purple);
+}
+
+/* ============================================================================
+   FIGURES GRID
+   ============================================================================ */
+.figures-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-lg);
+    margin-bottom: var(--space-3xl);
+}
+
+/* ============================================================================
+   FIGURE CARD
+   ============================================================================ */
+.figure-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+    cursor: pointer;
+}
+
+.figure-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.figure-card.hand-drawn {
+    border-color: var(--accent-gold);
+    border-width: 2px;
+}
+
+.figure-card-image {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    background: var(--bg-darker);
+    overflow: hidden;
+}
+
+.figure-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: var(--space-sm);
+    transition: transform var(--transition-normal);
+}
+
+.figure-card:hover .figure-card-image img {
+    transform: scale(1.02);
+}
+
+.figure-card-badge {
+    position: absolute;
+    top: var(--space-sm);
+    left: var(--space-sm);
+    padding: var(--space-xs) var(--space-sm);
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: var(--accent-gold);
+    color: white;
+    border-radius: 4px;
+}
+
+.figure-card-content {
+    padding: var(--space-md);
+}
+
+.figure-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-heading);
+    margin-bottom: var(--space-xs);
+    line-height: 1.3;
+}
+
+.figure-card-description {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-bottom: var(--space-sm);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.figure-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-md);
+}
+
+.figure-tag {
+    padding: 2px var(--space-sm);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--accent-purple);
+    background: var(--accent-translucent);
+    border-radius: 4px;
+}
+
+.figure-tag.organism {
+    color: var(--data-teal);
+    background: rgba(74, 144, 164, 0.15);
+}
+
+.figure-card-actions {
+    display: flex;
+    gap: var(--space-sm);
+}
+
+.figure-card-actions .btn {
+    flex: 1;
+    justify-content: center;
+}
+
+/* ============================================================================
+   LICENSE SECTION
+   ============================================================================ */
+.license-section {
+    margin-top: var(--space-3xl);
+}
+
+.license-card {
+    display: flex;
+    gap: var(--space-lg);
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    padding: var(--space-xl);
+}
+
+.license-icon {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-translucent);
+    color: var(--accent-purple);
+    border-radius: 50%;
+}
+
+.license-content h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-heading);
+    margin-bottom: var(--space-sm);
+}
+
+.license-content p {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: var(--space-sm);
+}
+
+.license-content p:last-child {
+    margin-bottom: 0;
+}
+
+.license-attribution {
+    font-size: 13px;
+}
+
+.license-attribution strong {
+    color: var(--text);
+}
+
+/* ============================================================================
+   MODAL
+   ============================================================================ */
+.figure-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-xl);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-normal), visibility var(--transition-normal);
+}
+
+.figure-modal[aria-hidden="false"] {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    max-width: 900px;
+    max-height: 90vh;
+    background: var(--bg-card);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.2);
+    transform: translateY(20px);
+    transition: transform var(--transition-normal);
+}
+
+.figure-modal[aria-hidden="false"] .modal-content {
+    transform: translateY(0);
+}
+
+.modal-close {
+    position: absolute;
+    top: var(--space-md);
+    right: var(--space-md);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    color: var(--text-muted);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    z-index: 10;
+}
+
+.modal-close:hover {
+    color: var(--text);
+    background: var(--bg-darker);
+}
+
+.modal-image-container {
+    flex-shrink: 0;
+    background: var(--bg-darker);
+    padding: var(--space-xl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-height: 60vh;
+    overflow: hidden;
+}
+
+.modal-image-container img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.modal-info {
+    padding: var(--space-xl);
+}
+
+.modal-info h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text-heading);
+    margin-bottom: var(--space-sm);
+}
+
+.modal-info p {
+    font-size: 15px;
+    color: var(--text-muted);
+    margin-bottom: var(--space-md);
+}
+
+.modal-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-lg);
+}
+
+.modal-downloads {
+    display: flex;
+    gap: var(--space-md);
+}
+
+/* ============================================================================
+   EMPTY STATE
+   ============================================================================ */
+.figures-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: var(--space-3xl);
+    color: var(--text-muted);
+}
+
+.figures-empty-icon {
+    font-size: 48px;
+    margin-bottom: var(--space-md);
+    opacity: 0.5;
+}
+
+.figures-empty h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--text);
+    margin-bottom: var(--space-sm);
+}
+
+/* ============================================================================
+   RESPONSIVE
+   ============================================================================ */
+@media (max-width: 1024px) {
+    .figures-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .figures-page {
+        padding: var(--space-2xl) 0;
+    }
+
+    .figures-header h1 {
+        font-size: 36px;
+    }
+
+    .download-all-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .download-all-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .download-all-buttons .btn {
+        justify-content: center;
+    }
+
+    .figures-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-content {
+        max-height: 95vh;
+    }
+
+    .modal-image-container {
+        max-height: 40vh;
+        padding: var(--space-md);
+    }
+
+    .modal-info {
+        padding: var(--space-lg);
+    }
+
+    .modal-downloads {
+        flex-direction: column;
+    }
+
+    .license-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .license-icon {
+        margin: 0 auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .figures-header h1 {
+        font-size: 28px;
+    }
+
+    .filter-chips {
+        gap: var(--space-xs);
+    }
+
+    .filter-chip {
+        font-size: 12px;
+        padding: var(--space-xs) var(--space-sm);
+    }
+}
+
+</style>
 </head>
 <body>
     <!-- Header placeholder - will come from main site -->
@@ -133,6 +829,298 @@
 
     <!-- Footer placeholder - will come from main site -->
 
-    <script src="js/figures.js"></script>
+    <script>
+/**
+ * Figure Library - State of Brain Emulation Report 2025
+ * Interactive filtering and display of report figures
+ */
+
+(function() {
+    'use strict';
+
+    // State
+    let allFigures = [];
+    let metadata = null;
+    let activeFilters = {
+        organism: 'all',
+        type: 'all',
+        source: 'all'
+    };
+
+    // DOM Elements
+    const figuresGrid = document.getElementById('figures-grid');
+    const organismFilters = document.getElementById('organism-filters');
+    const typeFilters = document.getElementById('type-filters');
+    const sourceFilters = document.getElementById('source-filters');
+    const resultsCount = document.getElementById('results-count');
+    const modal = document.getElementById('figure-modal');
+
+    // Initialize
+    async function init() {
+        try {
+            // Load both metadata files
+            const [generatedMeta, handDrawnMeta] = await Promise.all([
+                fetch('metadata/figures-metadata.json').then(r => r.json()),
+                fetch('metadata/hand-drawn-metadata.json').then(r => r.json()).catch(() => ({ figures: [] }))
+            ]);
+
+            metadata = generatedMeta;
+
+            // Process generated figures
+            const generatedFigures = generatedMeta.figures.map(fig => ({
+                ...fig,
+                source: 'generated',
+                pngPath: `${fig.path.split('/').map(encodeURIComponent).join('/')}.png`,
+                svgPath: `${fig.path.split('/').map(encodeURIComponent).join('/')}.svg`
+            }));
+
+            // Process hand-drawn figures (filter out example/template entries)
+            const handDrawnFigures = handDrawnMeta.figures
+                .filter(fig => fig.id !== 'example-hand-drawn')
+                .map(fig => ({
+                    ...fig,
+                    source: 'hand-drawn',
+                    pngPath: `figures/hand-drawn/${encodeURIComponent(fig.filename)}.png`,
+                    svgPath: `figures/hand-drawn/${encodeURIComponent(fig.filename)}.svg`,
+                    type: [...(fig.type || []), 'hand-drawn']
+                }));
+
+            allFigures = [...generatedFigures, ...handDrawnFigures];
+
+            // Build filter UI
+            buildFilters();
+
+            // Initial render
+            renderFigures();
+
+            // Set up event listeners
+            setupEventListeners();
+
+        } catch (error) {
+            console.error('Failed to load figure metadata:', error);
+            figuresGrid.innerHTML = `
+                <div class="figures-empty">
+                    <div class="figures-empty-icon">⚠️</div>
+                    <h3>Failed to load figures</h3>
+                    <p>Please try refreshing the page.</p>
+                </div>
+            `;
+        }
+    }
+
+    // Build filter chips from metadata
+    function buildFilters() {
+        // Organism filters
+        metadata.organisms.forEach(org => {
+            if (org.id === 'all') return; // Already have "All" button
+            const chip = createFilterChip(org.id, org.label, 'organism');
+            organismFilters.appendChild(chip);
+        });
+
+        // Type filters - collect unique types from actual figures
+        const usedTypes = new Set();
+        allFigures.forEach(fig => {
+            fig.type.forEach(t => usedTypes.add(t));
+        });
+
+        metadata.types
+            .filter(t => usedTypes.has(t.id))
+            .forEach(type => {
+                const chip = createFilterChip(type.id, type.label, 'type');
+                typeFilters.appendChild(chip);
+            });
+    }
+
+    // Create a filter chip button
+    function createFilterChip(id, label, filterType) {
+        const chip = document.createElement('button');
+        chip.className = 'filter-chip';
+        chip.dataset.filter = id;
+        chip.textContent = label;
+        chip.addEventListener('click', () => handleFilterClick(chip, filterType));
+        return chip;
+    }
+
+    // Handle filter chip clicks
+    function handleFilterClick(chip, filterType) {
+        const container = chip.parentElement;
+        const filterId = chip.dataset.filter;
+
+        // Update active state
+        container.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+
+        // Update filter state
+        activeFilters[filterType] = filterId;
+
+        // Re-render
+        renderFigures();
+    }
+
+    // Filter figures based on active filters
+    function getFilteredFigures() {
+        return allFigures.filter(fig => {
+            // Source filter
+            if (activeFilters.source !== 'all' && fig.source !== activeFilters.source) {
+                return false;
+            }
+
+            // Organism filter
+            if (activeFilters.organism !== 'all') {
+                const hasOrganism = fig.organism.includes(activeFilters.organism) ||
+                                   fig.organism.includes('all');
+                if (!hasOrganism) return false;
+            }
+
+            // Type filter
+            if (activeFilters.type !== 'all') {
+                if (!fig.type.includes(activeFilters.type)) return false;
+            }
+
+            return true;
+        });
+    }
+
+    // Render figures grid
+    function renderFigures() {
+        const filtered = getFilteredFigures();
+        resultsCount.textContent = filtered.length;
+
+        if (filtered.length === 0) {
+            figuresGrid.innerHTML = `
+                <div class="figures-empty">
+                    <div class="figures-empty-icon">🔍</div>
+                    <h3>No figures found</h3>
+                    <p>Try adjusting your filters to see more results.</p>
+                </div>
+            `;
+            return;
+        }
+
+        figuresGrid.innerHTML = filtered.map(fig => createFigureCard(fig)).join('');
+
+        // Add click handlers
+        figuresGrid.querySelectorAll('.figure-card').forEach(card => {
+            card.addEventListener('click', (e) => {
+                // Don't open modal if clicking download buttons
+                if (e.target.closest('.figure-card-actions')) return;
+                const figureId = card.dataset.id;
+                const figure = allFigures.find(f => f.id === figureId);
+                if (figure) openModal(figure);
+            });
+        });
+    }
+
+    // Create figure card HTML
+    function createFigureCard(fig) {
+        const isHandDrawn = fig.source === 'hand-drawn';
+        const organismTags = fig.organism
+            .filter(o => o !== 'all')
+            .map(o => {
+                const org = metadata.organisms.find(m => m.id === o);
+                return `<span class="figure-tag organism">${org ? org.label : o}</span>`;
+            })
+            .join('');
+
+        const typeTags = fig.type
+            .filter(t => t !== 'hand-drawn' && t !== 'organism-specific')
+            .slice(0, 2)
+            .map(t => {
+                const type = metadata.types.find(m => m.id === t);
+                return `<span class="figure-tag">${type ? type.label : t}</span>`;
+            })
+            .join('');
+
+        return `
+            <article class="figure-card ${isHandDrawn ? 'hand-drawn' : ''}" data-id="${fig.id}">
+                <div class="figure-card-image">
+                    ${isHandDrawn ? '<span class="figure-card-badge">Hand-Drawn</span>' : ''}
+                    <img src="${fig.pngPath}" alt="${fig.title}" loading="lazy">
+                </div>
+                <div class="figure-card-content">
+                    <h3 class="figure-card-title">${fig.title}</h3>
+                    <p class="figure-card-description">${fig.description}</p>
+                    <div class="figure-card-tags">
+                        ${organismTags}
+                        ${typeTags}
+                    </div>
+                    <div class="figure-card-actions">
+                        <a href="${fig.pngPath}" class="btn btn-small btn-secondary" download onclick="event.stopPropagation()">PNG</a>
+                        <a href="${fig.svgPath}" class="btn btn-small btn-secondary" download onclick="event.stopPropagation()">SVG</a>
+                    </div>
+                </div>
+            </article>
+        `;
+    }
+
+    // Modal functions
+    function openModal(figure) {
+        const modalImage = document.getElementById('modal-image');
+        const modalTitle = document.getElementById('modal-title');
+        const modalDescription = document.getElementById('modal-description');
+        const modalTags = document.getElementById('modal-tags');
+        const modalDownloadPng = document.getElementById('modal-download-png');
+        const modalDownloadSvg = document.getElementById('modal-download-svg');
+
+        modalImage.src = figure.pngPath;
+        modalImage.alt = figure.title;
+        modalTitle.textContent = figure.title;
+        modalDescription.textContent = figure.description;
+
+        // Build tags
+        const allTags = [
+            ...figure.organism.filter(o => o !== 'all').map(o => {
+                const org = metadata.organisms.find(m => m.id === o);
+                return `<span class="figure-tag organism">${org ? org.label : o}</span>`;
+            }),
+            ...figure.type.map(t => {
+                const type = metadata.types.find(m => m.id === t);
+                return `<span class="figure-tag">${type ? type.label : t}</span>`;
+            })
+        ];
+        modalTags.innerHTML = allTags.join('');
+
+        // Set download links
+        modalDownloadPng.href = figure.pngPath;
+        modalDownloadSvg.href = figure.svgPath;
+
+        // Show modal
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+    }
+
+    // Event listeners
+    function setupEventListeners() {
+        // Source filter clicks
+        sourceFilters.querySelectorAll('.filter-chip').forEach(chip => {
+            chip.addEventListener('click', () => handleFilterClick(chip, 'source'));
+        });
+
+        // Modal close
+        modal.querySelector('.modal-close').addEventListener('click', closeModal);
+        modal.querySelector('.modal-backdrop').addEventListener('click', closeModal);
+
+        // Escape key closes modal
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.getAttribute('aria-hidden') === 'false') {
+                closeModal();
+            }
+        });
+    }
+
+    // Start
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})();
+
+</script>
 </body>
 </html>

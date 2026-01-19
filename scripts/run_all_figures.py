@@ -2125,3 +2125,17 @@ try:
 except Exception as e:
     print(f"Error building downloads: {e}")
     print("You can run 'python build_downloads.py' separately to generate ZIPs.")
+
+# =============================================================================
+# Build Standalone HTML Files
+# =============================================================================
+print("\n" + "=" * 60)
+print("Building standalone HTML files for iframe embedding...")
+print("=" * 60)
+
+try:
+    from build_standalone_html import main as build_standalone_html
+    build_standalone_html()
+except Exception as e:
+    print(f"Error building standalone HTML: {e}")
+    print("You can run 'python build_standalone_html.py' separately.")
