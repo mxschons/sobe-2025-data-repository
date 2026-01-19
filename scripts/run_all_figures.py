@@ -2,10 +2,19 @@
 """
 Run all figure generation scripts for the Brain Emulation Report 2025.
 This script executes the key visualizations from each notebook.
+
+Usage:
+    python run_all_figures.py          # Generate all figures
+    python run_all_figures.py --list   # List available figures
+    python run_all_figures.py fig1 fig2  # Generate specific figures
 """
 
 import matplotlib
 matplotlib.use('Agg')  # Non-interactive backend for script execution
+
+import logging
+import sys
+from functools import wraps
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -25,6 +34,51 @@ from paths import (
     ensure_output_dirs
 )
 
+# =============================================================================
+# Logging Configuration
+# =============================================================================
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(levelname)s: %(message)s',
+    handlers=[logging.StreamHandler(sys.stdout)]
+)
+logger = logging.getLogger(__name__)
+
+
+# =============================================================================
+# Figure Registry
+# =============================================================================
+FIGURE_REGISTRY = {}
+
+
+def figure(name, description=""):
+    """Decorator to register a figure generation function."""
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            logger.info(f"Generating: {name}")
+            try:
+                result = func(*args, **kwargs)
+                logger.info(f"  Done: {name}")
+                return result
+            except FileNotFoundError as e:
+                logger.error(f"  Data file not found for {name}: {e}")
+            except pd.errors.ParserError as e:
+                logger.error(f"  CSV parsing error for {name}: {e}")
+            except Exception as e:
+                logger.error(f"  Error generating {name}: {e}", exc_info=True)
+            return None
+        FIGURE_REGISTRY[name] = {
+            'func': wrapper,
+            'description': description
+        }
+        return wrapper
+    return decorator
+
+
+# =============================================================================
+# Style Setup
+# =============================================================================
 apply_style()
 
 # Seaborn configuration
@@ -41,15 +95,11 @@ mpl.rcParams.update({
     'ytick.color': COLORS['text'],
 })
 
-print("=" * 60)
-print("Brain Emulation Report 2025 - Figure Generation")
-print("=" * 60)
-
 # =============================================================================
 # Figure 1: Number of Neurons in Simulations
 # =============================================================================
-print("\n[1/10] Generating: num-neurons.svg/png")
-try:
+@figure("num-neurons", "Neuron simulation counts over time")
+def generate_num_neurons():
     neurons_df = pd.read_csv(DATA_FILES["neuron_simulations"])
     neurons_df['Year'] = neurons_df['Simulation/Initiative'].str.extract(r'(\d{4})').apply(pd.to_datetime)
 
@@ -79,15 +129,12 @@ try:
     plt.tight_layout()
     save_figure(fig, 'num-neurons')
     plt.close()
-    print("   Done!")
-except Exception as e:
-    print(f"   Error: {e}")
 
 # =============================================================================
 # Figure 2: Imaging Speed
 # =============================================================================
-print("\n[2/10] Generating: imaging-speed.svg/png")
-try:
+@figure("imaging-speed", "Neuroimaging technology progress")
+def generate_imaging_speed():
     imaging_speed_df = pd.read_excel(
         DATA_FILES["imaging_speed"],
         skiprows=[1],
@@ -140,15 +187,12 @@ try:
     plt.tight_layout()
     save_figure(fig, 'imaging-speed')
     plt.close()
-    print("   Done!")
-except Exception as e:
-    print(f"   Error: {e}")
 
 # =============================================================================
 # Figure 3: Compute
 # =============================================================================
-print("\n[3/10] Generating: compute.svg/png")
-try:
+@figure("compute", "AI training compute vs species requirements")
+def generate_compute():
     compute_df = pd.read_csv(
         DATA_FILES["ai_compute"],
         parse_dates=['Day']
@@ -179,15 +223,12 @@ try:
     plt.tight_layout()
     save_figure(fig, 'compute')
     plt.close()
-    print("   Done!")
-except Exception as e:
-    print(f"   Error: {e}")
 
 # =============================================================================
 # Figure 4: Storage Costs
 # =============================================================================
-print("\n[4/10] Generating: storage-costs.svg/png")
-try:
+@figure("storage-costs", "Storage costs over time with species thresholds")
+def generate_storage_costs():
     storage_df = pd.read_csv(
         DATA_FILES["storage_costs"],
         parse_dates=['Year']
@@ -231,15 +272,12 @@ try:
     plt.tight_layout()
     save_figure(fig, 'storage-costs')
     plt.close()
-    print("   Done!")
-except Exception as e:
-    print(f"   Error: {e}")
 
 # =============================================================================
 # Figure 5: Neural Recordings
 # =============================================================================
-print("\n[5/10] Generating: neuro-recordings.svg/png")
-try:
+@figure("neuro-recordings", "Neural recording capacity over time")
+def generate_neuro_recordings():
     import statsmodels.formula.api as smf
 
     neuro_df = pd.read_csv(DATA_FILES["neural_recordings"])
@@ -280,15 +318,12 @@ try:
     plt.tight_layout()
     save_figure(fig, 'neuro-recordings')
     plt.close()
-    print("   Done!")
-except Exception as e:
-    print(f"   Error: {e}")
 
 # =============================================================================
 # Figure 6: Brain Scans
 # =============================================================================
-print("\n[6/10] Generating: scanned-brain-tissue.svg/png")
-try:
+@figure("scanned-brain-tissue", "Brain scan resolution, volume, and dataset size")
+def generate_scanned_brain_tissue():
     scans_df = pd.read_csv(
         DATA_FILES["brain_scans"],
         parse_dates=['Year'],
@@ -322,15 +357,12 @@ try:
     plt.tight_layout()
     save_figure(fig, 'scanned-brain-tissue')
     plt.close()
-    print("   Done!")
-except Exception as e:
-    print(f"   Error: {e}")
 
 # =============================================================================
 # Figure 7: Recording Modalities Comparison
 # =============================================================================
-print("\n[7/10] Generating: recording-modalities.svg/png")
-try:
+@figure("recording-modalities", "Brain tissue recording modalities comparison")
+def generate_recording_modalities():
     categories = ["Resolution", "Speed", "Duration", "Volume"]
     x = np.arange(len(categories))
 
@@ -381,15 +413,12 @@ try:
     plt.tight_layout()
     save_figure(fig, 'recording-modalities')
     plt.close()
-    print("   Done!")
-except Exception as e:
-    print(f"   Error: {e}")
 
 # =============================================================================
 # Figure 8: Emulation Requirements
 # =============================================================================
-print("\n[8/10] Generating: emulation-*.svg/png")
-try:
+@figure("emulation-requirements", "Emulation compute and storage requirements")
+def generate_emulation_requirements():
     categories_organisms = ['C. elegans', 'Fly', 'Mouse', 'Human']
     categories_full = categories_organisms + ['H100', 'xAI Colossus']
     x_pos_full = np.arange(len(categories_full))
@@ -456,15 +485,12 @@ try:
     plt.tight_layout()
     save_figure(fig, 'emulation-compute-event-driven')
     plt.close()
-    print("   Done!")
-except Exception as e:
-    print(f"   Error: {e}")
 
 # =============================================================================
 # Figure 9: Cost per Neuron (two versions: with and without illustrations)
 # =============================================================================
-print("\n[9/10] Generating: cost-per-neuron.svg/png and cost-per-neuron-no-illust.svg/png")
-try:
+@figure("cost-per-neuron", "Cost per neuron over time")
+def generate_cost_per_neuron():
     from matplotlib.lines import Line2D
     from matplotlib.ticker import FuncFormatter
     import textwrap
@@ -612,17 +638,11 @@ try:
     df_no_illust = df[df['Type'] != 'Illustration'].copy()
     create_cost_per_neuron_figure(df_no_illust, 'cost-per-neuron-no-illust', include_illustration=False)
 
-    print("   Done!")
-except Exception as e:
-    import traceback
-    print(f"   Error: {e}")
-    traceback.print_exc()
-
 # =============================================================================
 # Figure 10: Initiatives
 # =============================================================================
-print("\n[10/10] Generating: initiatives*.svg/png")
-try:
+@figure("initiatives", "Megaproject budgets and distributions")
+def generate_initiatives():
     from matplotlib.patches import Patch
 
     brain_proj_df = pd.read_csv(
@@ -780,10 +800,6 @@ try:
     plt.tight_layout()
     save_figure(fig, 'initiatives6')
     plt.close()
-
-    print("   Done!")
-except Exception as e:
-    print(f"   Error: {e}")
 
 # =============================================================================
 # Figure 11: Simulation Heatmap

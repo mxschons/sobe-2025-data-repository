@@ -10,7 +10,7 @@ import numpy as np
 
 from style import (
     apply_style, save_figure, add_attribution,
-    COLORS, CATEGORICAL_COLORS, FONT_SIZES
+    COLORS, EXTENDED_CATEGORICAL, FONT_SIZES
 )
 
 apply_style()
@@ -33,15 +33,15 @@ df = pd.DataFrame(data)
 # Set up the figure
 fig, ax = plt.subplots(figsize=(12, 9))
 
-# Use categorical colors from style
+# Use extended categorical colors from style
 colors = {
-    '1-color': CATEGORICAL_COLORS[0],   # gold
-    '5-color': CATEGORICAL_COLORS[1],   # teal
-    '10-color': CATEGORICAL_COLORS[2],  # purple
-    '15-color': CATEGORICAL_COLORS[3],  # brown
-    '20-color': CATEGORICAL_COLORS[4],  # green
-    '25-color': '#8c564b',              # brown (extended)
-    '30-color': '#e377c2',              # pink (extended)
+    '1-color': EXTENDED_CATEGORICAL[0],   # gold
+    '5-color': EXTENDED_CATEGORICAL[1],   # teal
+    '10-color': EXTENDED_CATEGORICAL[2],  # purple
+    '15-color': EXTENDED_CATEGORICAL[3],  # brown
+    '20-color': EXTENDED_CATEGORICAL[4],  # green
+    '25-color': EXTENDED_CATEGORICAL[5],  # rust brown
+    '30-color': EXTENDED_CATEGORICAL[6],  # pink
 }
 
 # Plot each color channel series

@@ -47,6 +47,27 @@ GOLD = '#D4A84B'
 PURPLE = '#6B6080'
 TEAL = '#4A90A4'
 
+# Extended palette for charts with many categories
+EXTENDED_CATEGORICAL = [
+    '#D4A84B',  # gold
+    '#4A90A4',  # teal
+    '#6B6080',  # purple
+    '#8B7355',  # brown
+    '#5C8B6B',  # green
+    '#8c564b',  # rust brown
+    '#e377c2',  # pink
+    '#7f7f7f',  # gray
+    '#bcbd22',  # olive
+    '#17becf',  # cyan
+]
+
+# Hardware/technical chart colors
+HARDWARE_COLORS = {
+    'flops': '#4A4A4A',       # dark gray - compute performance
+    'dram': '#2E8B57',        # sea green - memory bandwidth
+    'interconnect': '#9370DB', # medium purple - interconnect bandwidth
+}
+
 # =============================================================================
 # TYPOGRAPHY
 # =============================================================================

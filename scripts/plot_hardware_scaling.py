@@ -11,7 +11,7 @@ from scipy import stats
 
 from style import (
     apply_style, save_figure, add_attribution,
-    COLORS, FONT_SIZES
+    COLORS, FONT_SIZES, HARDWARE_COLORS
 )
 
 apply_style()
@@ -35,10 +35,10 @@ interconnect_bw = {
     'value': [1.2, 2, 3, 8, 50]
 }
 
-# Colors matching the original figure style
-color_flops = '#4A4A4A'      # dark gray
-color_dram = '#2E8B57'       # green
-color_interconnect = '#9370DB'  # purple
+# Colors from centralized style
+color_flops = HARDWARE_COLORS['flops']
+color_dram = HARDWARE_COLORS['dram']
+color_interconnect = HARDWARE_COLORS['interconnect']
 
 # Set up the figure
 fig, ax = plt.subplots(figsize=(12, 9))
