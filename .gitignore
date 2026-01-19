@@ -27,4 +27,4 @@ Thumbs.db
 .claude/
 
 # Generated downloads (can be rebuilt with scripts/build_downloads.py)
-downloads/*.zip
+data-and-figures/downloads/*.zip
