@@ -34,6 +34,11 @@ from paths import (
     OUTPUT_FIGURES_NEURO_SIM, OUTPUT_FIGURES_NEURO_REC,
     ensure_output_dirs
 )
+from paths import (
+    DATA_DIR, DATA_FILES, OUTPUT_FIGURES,
+    OUTPUT_FIGURES_NEURO_SIM, OUTPUT_FIGURES_NEURO_REC,
+    ensure_output_dirs
+)
 
 # =============================================================================
 # Logging Configuration
