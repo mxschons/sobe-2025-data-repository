@@ -25,3 +25,6 @@ Thumbs.db
 
 # Claude
 .claude/
+
+# Generated downloads (can be rebuilt with scripts/build_downloads.py)
+downloads/*.zip

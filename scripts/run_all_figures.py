@@ -1534,3 +1534,17 @@ print("\n" + "=" * 60)
 print("Figure generation complete!")
 print("=" * 60)
 print("\nOutput files saved to: ../output/")
+
+# =============================================================================
+# Build Download ZIPs
+# =============================================================================
+print("\n" + "=" * 60)
+print("Building downloadable ZIP files...")
+print("=" * 60)
+
+try:
+    from build_downloads import main as build_downloads
+    build_downloads()
+except Exception as e:
+    print(f"Error building downloads: {e}")
+    print("You can run 'python build_downloads.py' separately to generate ZIPs.")

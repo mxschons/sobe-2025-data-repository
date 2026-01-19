@@ -1,0 +1,31 @@
+{
+  "figures": [
+    {
+      "id": "example-hand-drawn",
+      "title": "Example Hand-Drawn Figure",
+      "description": "Replace this with your hand-drawn figure description.",
+      "filename": "example",
+      "organism": ["all"],
+      "type": ["hand-drawn"]
+    }
+  ],
+  "_instructions": {
+    "note": "Add your hand-drawn figures to this folder as PNG and SVG pairs (e.g., figure-name.png and figure-name.svg)",
+    "fields": {
+      "id": "Unique identifier for the figure (use lowercase with hyphens)",
+      "title": "Display title for the figure",
+      "description": "Brief description of what the figure shows",
+      "filename": "Base filename without extension (e.g., 'neuron-diagram' for neuron-diagram.png/svg)",
+      "organism": "Array of organism tags: all, c-elegans, drosophila, zebrafish, mouse, rat, human, mammalian, silicon",
+      "type": "Array of type tags: hand-drawn, plus any relevant: overview, simulation, recording, anatomy, etc."
+    },
+    "example": {
+      "id": "synapse-diagram",
+      "title": "Synapse Structure Diagram",
+      "description": "Hand-drawn illustration of synaptic structure and neurotransmitter release.",
+      "filename": "synapse-diagram",
+      "organism": ["all"],
+      "type": ["hand-drawn", "anatomy"]
+    }
+  }
+}
