@@ -330,12 +330,12 @@ try:
     x = np.arange(len(categories))
 
     methods = {
-        "fUS": {"values": [3, 3, 4, 3], "color": CATEGORICAL_COLORS[0], "ls": "-", "marker": "o"},
-        "Calcium Imaging": {"values": [4, 2, 2, 2], "color": CATEGORICAL_COLORS[1], "ls": "-", "marker": "o"},
-        "Voltage Imaging": {"values": [4, 3.25, 1.5, 1.75], "color": CATEGORICAL_COLORS[2], "ls": "-", "marker": "o"},
-        "MEA": {"values": [4, 4, 4, 1.5], "color": GOLD, "ls": "-", "marker": "o"},
-        "EEG": {"values": [1, 4, 3, 3.5], "color": CATEGORICAL_COLORS[3], "ls": "--", "marker": "o"},
-        "fMRI": {"values": [2, 1, 3, 4], "color": CATEGORICAL_COLORS[4], "ls": "--", "marker": "s"},
+        "fUS": {"values": [3, 3, 4, 3], "color": GOLD, "ls": "-", "marker": "o"},
+        "Calcium Imaging": {"values": [4, 2, 2, 2], "color": TEAL, "ls": "-", "marker": "o"},
+        "Voltage Imaging": {"values": [4, 3.25, 1.5, 1.75], "color": PURPLE, "ls": "-", "marker": "o"},
+        "MEA": {"values": [4, 4, 4, 1.5], "color": CATEGORICAL_COLORS[3], "ls": "-", "marker": "o"},
+        "EEG": {"values": [1, 4, 3, 3.5], "color": CATEGORICAL_COLORS[4], "ls": "--", "marker": "o"},
+        "fMRI": {"values": [2, 1, 3, 4], "color": PRIMARY_COLORS[0], "ls": "--", "marker": "s"},
     }
 
     fig, ax = plt.subplots(figsize=(11, 6))
@@ -456,43 +456,176 @@ except Exception as e:
     print(f"   Error: {e}")
 
 # =============================================================================
-# Figure 9: Cost per Neuron
+# Figure 9: Cost per Neuron (two versions: with and without illustrations)
 # =============================================================================
-print("\n[9/10] Generating: cost-per-neuron.svg/png")
+print("\n[9/10] Generating: cost-per-neuron.svg/png and cost-per-neuron-no-illust.svg/png")
 try:
+    from matplotlib.lines import Line2D
+    from matplotlib.ticker import FuncFormatter
+    import textwrap
+
     df = pd.read_csv('../data/State of Brain Emulation Report 2025 Data Repository - Cost estimates Neuron Reconstruction.csv')
     df['CostPerNeuron'] = df['Cost / Neuron'].replace('[\\$,]', '', regex=True).astype(float)
 
-    def make_label(row):
-        if row['Organism'].strip().lower().startswith('mouse'):
-            return "Brain Connects Mouse Prototype (2024)"
-        return f"{row['Organism'].strip()} ({int(row['Year'])})"
-    df['PlotLabel'] = df.apply(make_label, axis=1)
+    # Define style by Type (Budget, Estimate, Illustration)
+    type_styles = {
+        'Budget': {'color': GOLD, 'marker': 'o', 'edgecolor': COLORS['text']},
+        'Estimate': {'color': TEAL, 'marker': 's', 'edgecolor': COLORS['text']},
+        'Illustration': {'color': '#2ECC71', 'marker': 'D', 'edgecolor': COLORS['text']},
+    }
 
-    fig, ax = plt.subplots(figsize=(10, 6))
-    colors = CATEGORICAL_COLORS + [GOLD]
-    for idx, (year, cost, label) in enumerate(zip(df['Year'], df['CostPerNeuron'], df['PlotLabel'])):
-        ax.scatter(year, cost, s=80, color=colors[idx % len(colors)], label=label,
-                   edgecolor='white', linewidth=1.5, alpha=0.9, zorder=3)
+    def dollar_formatter(x, pos):
+        if x >= 1000:
+            return f'${x:,.0f}'
+        elif x >= 1:
+            return f'${x:.0f}'
+        elif x >= 0.1:
+            return f'${x:.1f}'
+        else:
+            return f'${x:.2f}'
 
-    ax.axhline(10, linestyle='--', color=COLORS['caption'], lw=1.5)
-    ax.text(2050, 14, 'Mouse connectome for $1B', ha='right', fontsize=10, color=COLORS['caption'])
-    ax.axhline(0.01, linestyle='--', color=COLORS['caption'], lw=1.5)
-    ax.text(2050, 0.02, 'Human connectome for $1B', ha='right', fontsize=10, color=COLORS['caption'])
+    def create_cost_per_neuron_figure(data, filename, include_illustration=True):
+        """Create cost per neuron figure with manually positioned labels."""
+        fig, ax = plt.subplots(figsize=(14, 8))
 
-    ax.set_yscale('log')
-    ax.set_xlim(1980, 2050)
-    ax.set_xlabel('Year')
-    ax.set_ylabel('Cost per Neuron (USD)')
-    ax.set_title('Cost per Neuron Over Time')
-    ax.legend(loc='upper right', frameon=True)
-    ax.grid(True, which='both', linestyle=':', alpha=0.5)
-    plt.tight_layout()
-    save_figure(fig, 'cost-per-neuron')
-    plt.close()
+        # Manual label positions: (x_offset, y_offset) in points, plus alignment
+        # Carefully positioned to avoid overlap
+        label_positions = {
+            'C. elegans': {'offset': (8, 0), 'ha': 'left', 'va': 'center'},
+            'Fruitfly': {'offset': (8, 20), 'ha': 'left', 'va': 'bottom'},
+            'Zebrafish': {'offset': (8, 25), 'ha': 'left', 'va': 'bottom'},
+            'BRAIN CONNECTS': {'offset': (8, -25), 'ha': 'left', 'va': 'top'},
+            'Wellcome': {'offset': (8, 30), 'ha': 'left', 'va': 'bottom'},
+            '15nm isotropic with current': {'offset': (8, -30), 'ha': 'left', 'va': 'top'},
+            '1000x less proofreading: EM 10nm': {'offset': (8, 20), 'ha': 'left', 'va': 'bottom'},
+            '1000x less proofreading: EM 15nm': {'offset': (8, -15), 'ha': 'left', 'va': 'top'},
+            '1000x less proofreading: ExM': {'offset': (8, -35), 'ha': 'left', 'va': 'top'},
+        }
+
+        # Plot each point
+        for idx, row in data.iterrows():
+            type_cat = row['Type'] if pd.notna(row.get('Type')) else 'Budget'
+            style = type_styles.get(type_cat, type_styles['Budget'])
+
+            ax.scatter(
+                row['Year'], row['CostPerNeuron'],
+                s=120,
+                c=style['color'],
+                marker=style['marker'],
+                edgecolor=style['edgecolor'],
+                linewidth=1.5,
+                zorder=3
+            )
+
+            # Create label text
+            organism = row['Organism'].strip().replace('\n', ' ')
+            if 'White et al' in organism:
+                label = 'C. elegans (White et al 1986)'
+                pos_key = 'C. elegans'
+            elif 'Fruitfly' in organism or 'Murthy' in organism:
+                label = 'Fruitfly Zheng et al, 2018\n(Murthy, Seung, et al., 2024)'
+                pos_key = 'Fruitfly'
+            elif 'Zebrafish' in organism:
+                label = 'Zebrafish (Svara et al., 2022)'
+                pos_key = 'Zebrafish'
+            elif 'BRAIN CONNECTS' in organism or 'NIH' in organism:
+                label = 'Mouse (NIH, 2024)'
+                pos_key = 'BRAIN CONNECTS'
+            elif 'Wellcome' in organism:
+                label = 'Wellcome EM (10nm isotropic)\nwith proof-reading'
+                pos_key = 'Wellcome'
+            elif '15nm isotropic with current' in organism:
+                label = '15nm isotropic with current\nproofreading (EM)'
+                pos_key = '15nm isotropic with current'
+            elif '1000x less proofreading: EM 10nm' in organism:
+                label = '1000x less proofreading:\nEM 10nm isotropic'
+                pos_key = '1000x less proofreading: EM 10nm'
+            elif '1000x less proofreading: EM 15nm' in organism:
+                label = '1000x less proofreading:\nEM 15nm isotropic'
+                pos_key = '1000x less proofreading: EM 15nm'
+            elif '1000x less proofreading: ExM' in organism:
+                label = '1000x less proofreading:\nExM 15nm isotropic'
+                pos_key = '1000x less proofreading: ExM'
+            else:
+                label = textwrap.fill(organism, 25)
+                pos_key = organism
+
+            pos = label_positions.get(pos_key, {'offset': (8, 0), 'ha': 'left', 'va': 'center'})
+
+            ax.annotate(
+                label,
+                (row['Year'], row['CostPerNeuron']),
+                xytext=pos['offset'],
+                textcoords='offset points',
+                fontsize=9,
+                ha=pos['ha'],
+                va=pos['va'],
+                color=COLORS['text'],
+            )
+
+        # Reference lines with labels ABOVE the lines
+        ax.axhline(10, linestyle='--', color=GOLD, lw=2, alpha=0.8)
+        ax.text(1982, 13, 'Mouse connectome for $1B', ha='left', va='bottom',
+                fontsize=10, fontweight='bold', color=COLORS['text'])
+
+        ax.axhline(0.1, linestyle='--', color=GOLD, lw=2, alpha=0.8)
+        ax.text(1982, 0.13, 'Human connectome for $10B', ha='left', va='bottom',
+                fontsize=10, fontweight='bold', color=COLORS['text'])
+
+        ax.axhline(0.01, linestyle='--', color=GOLD, lw=2, alpha=0.8)
+        ax.text(1982, 0.013, 'Human connectome for $1B', ha='left', va='bottom',
+                fontsize=10, fontweight='bold', color=COLORS['text'])
+
+        ax.set_yscale('log')
+        ax.set_xlim(1980, 2050)
+        ax.set_ylim(0.005, 50000)
+        ax.set_xlabel('Year')
+        ax.set_ylabel('Cost per neuron (USD)')
+        ax.set_title('Cost per neuron over time')
+
+        ax.yaxis.set_major_formatter(FuncFormatter(dollar_formatter))
+
+        # Create legend - position in upper right to avoid overlap with data
+        if include_illustration:
+            legend_elements = [
+                Line2D([0], [0], marker='o', color='w', markerfacecolor=GOLD,
+                       markeredgecolor=COLORS['text'], markersize=10, label='Budget'),
+                Line2D([0], [0], marker='s', color='w', markerfacecolor=TEAL,
+                       markeredgecolor=COLORS['text'], markersize=10, label='Estimate'),
+                Line2D([0], [0], marker='D', color='w', markerfacecolor='#2ECC71',
+                       markeredgecolor=COLORS['text'], markersize=10, label='Illustration'),
+            ]
+        else:
+            legend_elements = [
+                Line2D([0], [0], marker='o', color='w', markerfacecolor=GOLD,
+                       markeredgecolor=COLORS['text'], markersize=10, label='Budget'),
+                Line2D([0], [0], marker='s', color='w', markerfacecolor=TEAL,
+                       markeredgecolor=COLORS['text'], markersize=10, label='Estimate'),
+            ]
+
+        ax.legend(handles=legend_elements, title='Type', loc='upper right',
+                  frameon=True, fancybox=True, shadow=False)
+
+        ax.grid(False)
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+
+        plt.tight_layout()
+        save_figure(fig, filename)
+        plt.close()
+
+    # Version 1: All data (Budget, Estimate, Illustration)
+    create_cost_per_neuron_figure(df, 'cost-per-neuron', include_illustration=True)
+
+    # Version 2: Only Budget and Estimate (no Illustration)
+    df_no_illust = df[df['Type'] != 'Illustration'].copy()
+    create_cost_per_neuron_figure(df_no_illust, 'cost-per-neuron-no-illust', include_illustration=False)
+
     print("   Done!")
 except Exception as e:
+    import traceback
     print(f"   Error: {e}")
+    traceback.print_exc()
 
 # =============================================================================
 # Figure 10: Initiatives
@@ -668,6 +801,7 @@ print("\n[11/13] Generating: sim-heatmap.svg/png")
 try:
     import textwrap
     import os
+    from matplotlib.colors import ListedColormap, BoundaryNorm
 
     # Load simulation data
     neuro_sim_df = pd.read_csv('../data/State of Brain Emulation Report 2025 Data Repository - Computational Models of the Brain.csv')
@@ -679,8 +813,9 @@ try:
         'Mammalian': 'Mouse',
         'Silicon': None,  # Skip
     }
+    neuro_sim_df = neuro_sim_df.copy()
     neuro_sim_df['Organism_mapped'] = neuro_sim_df['Organism'].replace(organism_map)
-    neuro_sim_df = neuro_sim_df[neuro_sim_df['Organism_mapped'].isin(organisms)]
+    neuro_sim_df = neuro_sim_df[neuro_sim_df['Organism_mapped'].isin(organisms)].copy()
 
     data_columns = [
         'Connectivity accuracy',
@@ -695,44 +830,77 @@ try:
         'Learning',
     ]
 
-    # Drop rows with missing data
-    neuro_sim_df = neuro_sim_df.dropna(subset=data_columns, how='all')
-
     # Convert to numeric
     for col in data_columns:
-        neuro_sim_df[col] = pd.to_numeric(neuro_sim_df[col], errors='coerce')
+        neuro_sim_df.loc[:, col] = pd.to_numeric(neuro_sim_df[col], errors='coerce')
 
-    neuro_sim_df = neuro_sim_df.dropna(subset=data_columns)
+    # Filter to rows that have at least half of the data columns filled
+    min_valid_columns = len(data_columns) // 2
+    valid_mask = neuro_sim_df[data_columns].notna().sum(axis=1) >= min_valid_columns
+    neuro_sim_df = neuro_sim_df[valid_mask].copy()
+
+    # Also require First Author and Year to be present
+    neuro_sim_df = neuro_sim_df.dropna(subset=['First Author', 'Year']).copy()
+
+    # Sort by organism to cluster entries
+    organism_order = ['C. elegans', 'Drosophila', 'Zebrafish', 'Mouse', 'Human']
+    neuro_sim_df['Organism_order'] = neuro_sim_df['Organism_mapped'].apply(
+        lambda x: organism_order.index(x) if x in organism_order else 999
+    )
+    neuro_sim_df = neuro_sim_df.sort_values(['Organism_order', 'Year']).copy()
+    neuro_sim_df = neuro_sim_df.reset_index(drop=True)
+
+    print(f"   Found {len(neuro_sim_df)} valid entries for heatmap")
 
     if len(neuro_sim_df) > 0:
-        fig, sim_ax = plt.subplots(figsize=(8, 8))
-        shrink = 0.9
+        # Get the raw data with NaN preserved
+        heatmap_data = neuro_sim_df[data_columns].astype(float)
+
+        # Create figure with appropriate height
+        fig_height = max(10, len(neuro_sim_df) * 0.4)
+        fig, sim_ax = plt.subplots(figsize=(12, fig_height))
+        shrink = 0.7
+
+        # Create a custom colormap with gray for NaN/unknown values
+        # Use -1 as a placeholder for NaN, then create boundaries
+        heatmap_filled = heatmap_data.fillna(-1)
+
+        # Custom colormap: gray for -1, then Blues gradient for 0-3
+        colors_list = ['#E0E0E0'] + list(plt.cm.Blues(np.linspace(0.2, 1.0, 4)))
+        cmap = ListedColormap(colors_list)
+        bounds = [-1.5, -0.5, 0.5, 1.5, 2.5, 3.5]
+        norm = BoundaryNorm(bounds, cmap.N)
 
         heatmap = sns.heatmap(
-            neuro_sim_df[data_columns].astype(float),
+            heatmap_filled,
             ax=sim_ax,
             cbar=True,
-            cmap='Blues',
+            cmap=cmap,
+            norm=norm,
             cbar_kws=dict(
                 orientation="vertical",
                 location="left",
                 shrink=shrink,
                 aspect=20*shrink,
-                pad=0.07,
+                pad=0.12,
             ),
+            linewidths=0.5,
+            linecolor='white',
         )
 
+        # Configure colorbar
         cbar = heatmap.collections[0].colorbar
-        cbar.set_ticks([])
-        cbar.ax.text(0, -0.02, "Worse", transform=cbar.ax.transAxes, ha='left', va='top')
-        cbar.ax.text(0, 1.02, "Better", transform=cbar.ax.transAxes, ha='left', va='bottom')
+        cbar.set_ticks([-1, 0, 1, 2, 3])
+        cbar.set_ticklabels(['Unknown', '0', '1', '2', '3'])
+        cbar.ax.tick_params(labelsize=9)
 
         sim_ax.yaxis.tick_right()
         sim_ax.set_xticks(
-            np.arange(len(data_columns)) + 0.3,
-            [textwrap.fill(col, width=25) for col in data_columns],
-            rotation=-45,
-            ha='left',
+            np.arange(len(data_columns)) + 0.5,
+            [textwrap.fill(col, width=15) for col in data_columns],
+            rotation=45,
+            ha='right',
+            fontsize=9,
         )
         sim_ax.set_yticks(
             np.arange(len(neuro_sim_df)) + 0.5,
@@ -741,12 +909,34 @@ try:
                 for _, row in neuro_sim_df.iterrows()
             ],
             rotation=0,
+            fontsize=9,
         )
+
+        # Add organism group labels on the left side
+        current_organism = None
+        group_start = 0
+        for i, (_, row) in enumerate(neuro_sim_df.iterrows()):
+            org = row['Organism_mapped']
+            if org != current_organism:
+                if current_organism is not None:
+                    # Draw bracket/label for previous group
+                    mid_y = (group_start + i - 1) / 2 + 0.5
+                    sim_ax.text(-0.5, mid_y, current_organism, ha='right', va='center',
+                               fontsize=10, fontweight='bold', transform=sim_ax.get_yaxis_transform())
+                current_organism = org
+                group_start = i
+        # Draw last group
+        if current_organism is not None:
+            mid_y = (group_start + len(neuro_sim_df) - 1) / 2 + 0.5
+            sim_ax.text(-0.5, mid_y, current_organism, ha='right', va='center',
+                       fontsize=10, fontweight='bold', transform=sim_ax.get_yaxis_transform())
         sim_ax.tick_params(axis='both', which='both', length=0)
-        for direction in ['bottom', 'right']:
+        for direction in ['bottom', 'right', 'top', 'left']:
             sim_ax.spines[direction].set_visible(True)
             sim_ax.spines[direction].set_color(COLORS['border'])
-        plt.grid()
+
+        sim_ax.set_title('Computational Models of the Brain - Characteristics', fontsize=12, pad=10)
+
         plt.tight_layout()
         save_figure(fig, 'sim-heatmap')
         plt.close()
@@ -762,11 +952,13 @@ except Exception as e:
 print("\n[12/13] Generating: rec-heatmap.svg/png")
 try:
     import textwrap
+    from matplotlib.colors import LinearSegmentedColormap, BoundaryNorm
 
     # Load recording data
     neuro_rec_df = pd.read_csv('../data/State of Brain Emulation Report 2025 Data Repository - Neural Dynamics References.csv')
 
     # Rename columns to match expected format
+    neuro_rec_df = neuro_rec_df.copy()
     neuro_rec_df = neuro_rec_df.rename(columns={
         'First author': 'First Author',
         'Temporal resolution: Hz': 'Temporal resolution',
@@ -785,39 +977,85 @@ try:
     # Convert to numeric
     for col in rec_data_columns:
         if col in neuro_rec_df.columns:
-            neuro_rec_df[col] = pd.to_numeric(neuro_rec_df[col], errors='coerce')
+            neuro_rec_df.loc[:, col] = pd.to_numeric(neuro_rec_df[col], errors='coerce')
 
-    neuro_rec_df = neuro_rec_df.dropna(subset=rec_data_columns)
+    # Filter to rows that have at least 1 data column filled (relaxed from requiring all)
+    valid_mask = neuro_rec_df[rec_data_columns].notna().sum(axis=1) >= 1
+    neuro_rec_df = neuro_rec_df[valid_mask].copy()
+
+    # Also require First Author and Year
+    neuro_rec_df = neuro_rec_df.dropna(subset=['First Author', 'Year']).copy()
+
+    # Sort by organism to cluster entries
+    organism_order = ['C. elegans', 'Drosophila', 'Zebrafish', 'Mouse', 'Human']
+    neuro_rec_df['Organism_order'] = neuro_rec_df['Organism'].apply(
+        lambda x: organism_order.index(x) if x in organism_order else 999
+    )
+    neuro_rec_df = neuro_rec_df.sort_values(['Organism_order', 'Year']).copy()
+    neuro_rec_df = neuro_rec_df.reset_index(drop=True)
+
+    print(f"   Found {len(neuro_rec_df)} valid entries for recording heatmap")
 
     if len(neuro_rec_df) > 0:
-        # Log-scale the data for visualization
-        rec_df_scaled = neuro_rec_df[rec_data_columns].apply(lambda x: np.log10(x.replace(0, np.nan)))
+        # Log-scale the data for visualization, keeping NaN as NaN
+        rec_df_log = neuro_rec_df[rec_data_columns].apply(lambda x: np.log10(x.replace(0, np.nan)))
 
-        fig, rec_ax = plt.subplots(figsize=(8, 8))
-        shrink = 0.9
+        # Get min/max for color scaling (excluding NaN)
+        all_values = rec_df_log.values.flatten()
+        valid_values = all_values[~np.isnan(all_values)]
+        vmin, vmax = valid_values.min(), valid_values.max()
 
+        # Use a special value for NaN that's below vmin
+        nan_placeholder = vmin - 1
+        rec_df_filled = rec_df_log.fillna(nan_placeholder)
+
+        # Create figure with appropriate height
+        fig_height = max(8, len(neuro_rec_df) * 0.35)
+        fig, rec_ax = plt.subplots(figsize=(10, fig_height))
+        shrink = 0.7
+
+        # Create custom colormap with gray for unknown
+        # OrRd colormap for data, gray at the bottom for unknown
+        orrd_colors = plt.cm.OrRd(np.linspace(0.2, 1.0, 256))
+        gray_color = np.array([[0.88, 0.88, 0.88, 1.0]])  # Light gray
+        combined_colors = np.vstack([gray_color, orrd_colors])
+        cmap = LinearSegmentedColormap.from_list('OrRd_with_gray', combined_colors, N=257)
+
+        # Set vmin to include the nan_placeholder
         heatmap = sns.heatmap(
-            rec_df_scaled,
+            rec_df_filled,
             ax=rec_ax,
             cbar=True,
-            cmap='OrRd',
+            cmap=cmap,
+            vmin=nan_placeholder,
+            vmax=vmax,
             cbar_kws=dict(
                 orientation="vertical",
                 location="left",
                 shrink=shrink,
                 aspect=20*shrink,
                 pad=0.12,
-                label='log10 scale',
             ),
+            linewidths=0.5,
+            linecolor='white',
         )
 
+        # Configure colorbar
         cbar = heatmap.collections[0].colorbar
-        cbar.ax.yaxis.tick_right()
+        cbar.ax.yaxis.tick_left()
+        # Add "Unknown" label at the bottom
+        cbar_ticks = [nan_placeholder, vmin, (vmin+vmax)/2, vmax]
+        cbar_labels = ['Unknown', f'{vmin:.1f}', f'{(vmin+vmax)/2:.1f}', f'{vmax:.1f}']
+        cbar.set_ticks(cbar_ticks)
+        cbar.set_ticklabels(cbar_labels)
+        cbar.ax.tick_params(labelsize=9)
+        cbar.set_label('log10 scale', fontsize=10)
 
         rec_ax.yaxis.tick_right()
         rec_ax.set_xticks(
             np.arange(len(rec_data_columns)) + 0.5,
             [textwrap.fill(col, width=12) for col in rec_data_columns],
+            fontsize=10,
         )
         rec_ax.set_yticks(
             np.arange(len(neuro_rec_df)) + 0.5,
@@ -826,12 +1064,35 @@ try:
                 for _, row in neuro_rec_df.iterrows()
             ],
             rotation=0,
+            fontsize=9,
         )
+
+        # Add organism group labels on the left side
+        current_organism = None
+        group_start = 0
+        for i, (_, row) in enumerate(neuro_rec_df.iterrows()):
+            org = row['Organism']
+            if org != current_organism:
+                if current_organism is not None:
+                    # Draw label for previous group
+                    mid_y = (group_start + i - 1) / 2 + 0.5
+                    rec_ax.text(-0.5, mid_y, current_organism, ha='right', va='center',
+                               fontsize=10, fontweight='bold', transform=rec_ax.get_yaxis_transform())
+                current_organism = org
+                group_start = i
+        # Draw last group
+        if current_organism is not None:
+            mid_y = (group_start + len(neuro_rec_df) - 1) / 2 + 0.5
+            rec_ax.text(-0.5, mid_y, current_organism, ha='right', va='center',
+                       fontsize=10, fontweight='bold', transform=rec_ax.get_yaxis_transform())
+
         rec_ax.tick_params(axis='both', which='both', length=0)
-        for direction in ['bottom', 'right']:
+        for direction in ['bottom', 'right', 'top', 'left']:
             rec_ax.spines[direction].set_visible(True)
             rec_ax.spines[direction].set_color(COLORS['border'])
-        plt.grid()
+
+        rec_ax.set_title('Neural Dynamics Recording - Data Coverage', fontsize=12, pad=10)
+
         plt.tight_layout()
         save_figure(fig, 'rec-heatmap')
         plt.close()
@@ -839,7 +1100,9 @@ try:
     else:
         print("   Skipped - no valid data")
 except Exception as e:
+    import traceback
     print(f"   Error: {e}")
+    traceback.print_exc()
 
 # =============================================================================
 # Figure 13: Neuro-sim radar charts (individual organisms) - WITH TICKS AND INFO BOXES
@@ -1012,262 +1275,371 @@ try:
     # Create output directory if it doesn't exist
     os.makedirs('../output/neuro-rec', exist_ok=True)
 
-    # Load recording data
-    neuro_rec_df = pd.read_csv('../data/State of Brain Emulation Report 2025 Data Repository - Neural Dynamics References.csv')
+    # Load recording data from the original data files
+    neuro_rec_df = pd.read_csv('../data/Neurodynamics recording papers - Papers.csv')
+    organism_neuro_df = pd.read_csv('../data/Neurodynamics recording papers - Organisms.csv')
 
-    # Rename columns for convenience
-    neuro_rec_df = neuro_rec_df.rename(columns={
-        'First author': 'First Author',
-        'Temporal resolution: Hz': 'Temporal_resolution',
-        'Duration single session min per Individual': 'Duration',
-        'Resolution in µm isotropic': 'Resolution',
-        'Number of neurons': 'Neurons',
-        'Fixated / moving': 'FixMov',
-    })
+    # Standardize organism names in organism_neuro_df
+    organism_neuro_df.replace('Zebrafish Larvae', 'Zebrafish', inplace=True)
+    organism_neuro_df.replace('C. Elegans', 'C. elegans', inplace=True)
+    organism_neuro_df.index = organism_neuro_df.loc[:, 'Organism']
+    organism_neuro_df.drop(columns=['Organism'], inplace=True)
 
-    organisms = ['C. elegans', 'Drosophila', 'Zebrafish', 'Mouse', 'Human']
-    # Standardize organism names
+    # Standardize organism names in recording data
     neuro_rec_df['Organism'] = neuro_rec_df['Organism'].replace({
         'C. Elegans': 'C. elegans',
         'Zebrafish Larvae': 'Zebrafish',
     })
 
-    rec_data_columns = ['Temporal_resolution', 'Duration', 'Resolution', 'Neurons']
-    rec_column_labels = ['Temporal\nResolution (Hz)', 'Duration\n(min)', 'Resolution\n(µm)', 'Number of\nNeurons']
-    rec_units = ['Hz', 'min', 'µm', 'neurons']
+    organisms = ['C. elegans', 'Drosophila', 'Zebrafish', 'Mouse', 'Human']
 
-    # Convert to numeric
-    for col in rec_data_columns:
+    # Define the 5 data columns (matching the old code)
+    neuro_rec_data_columns = [
+        'Number of neurons',
+        'Temporal resolution: Hz',
+        'Duration single session min',
+        'Duration total repeated sessions min',
+        'Resolution in µm isotropic',
+    ]
+
+    neuro_rec_column_labels = [
+        'Temporal\nresolution: Hz',
+        'Number of\nneurons',
+        'Resolution in\nµm isotropic',
+        'Duration total\nrepeated\nsessions min',
+        'Duration single\nsession min',
+    ]
+
+    # Properties for max value info boxes
+    neuro_rec_max_props = {
+        'Number of neurons': {
+            'col': 'Total Neuron Count',
+            'short': 'Total Neurons',
+        },
+        'Temporal resolution: Hz': {
+            'col': 'Maximum Neuron Firing Rate (Hz)',
+            'short': 'Max. Neuron\nFiring Rate',
+            'units': 'Hz',
+        },
+        'Duration single session min': {
+            'col': 'Average Liftime in Minutes',
+            'short': 'Avg. Lifetime',
+            'units': 'min',
+        },
+        'Duration total repeated sessions min': {
+            'col': 'Average Liftime in Minutes',
+            'short': 'Avg. Lifetime',
+            'units': 'min',
+        },
+        'Resolution in µm isotropic': {
+            'col': 'Isotropic resolution Single Neuron recording in µm',
+            'short': 'Single Neuron\nResolution',
+            'units': 'µm³',
+        },
+    }
+
+    # Reverse these axes because lower is better
+    neuro_rec_rev_axes = ['Resolution in µm isotropic']
+
+    # Convert columns to numeric
+    for col in neuro_rec_data_columns:
         if col in neuro_rec_df.columns:
             neuro_rec_df[col] = pd.to_numeric(neuro_rec_df[col], errors='coerce')
 
-    # Define log scale parameters for normalization
-    # These define the range mapping: log10(value) maps to radial position
-    log_ranges = {
-        'Temporal_resolution': (-1, 3),  # 0.1 Hz to 1000 Hz
-        'Duration': (-1, 4),              # 0.1 min to 10000 min
-        'Resolution': (-1, 4),            # 0.1 µm to 10000 µm
-        'Neurons': (0, 11),               # 1 to 100 billion
-    }
+    # Filter out rows with missing data
+    neuro_rec_df = neuro_rec_df.dropna(subset=neuro_rec_data_columns + ['Organism'], how='all')
 
-    def format_value(val, col):
-        """Format value with scientific notation if needed."""
-        if pd.isna(val) or val == 0:
-            return "N/A"
-        if val >= 1e6:
-            exp = int(np.floor(np.log10(val)))
-            mantissa = val / 10**exp
-            return f"{mantissa:.1f} × 10^{exp}"
-        elif val >= 1000:
-            return f"{val:.0f}"
-        elif val >= 1:
-            return f"{val:.1f}"
+    # Define order-of-magnitude transformation function
+    def oom_transform(x, oom_range):
+        min_oom, max_oom = oom_range
+        if abs(max_oom - min_oom) != 5:
+            raise ValueError("Must span 5 orders of magnitude")
+        # Reverse axis direction if range is given backwards
+        if min_oom < max_oom:
+            return max(np.log10(x) - min_oom, 0)
         else:
-            return f"{val:.2f}"
+            max_oom, min_oom = oom_range
+            return max(max_oom - np.log10(x), 0)
 
-    def normalize_log_value(val, col):
-        """Normalize value to 0-5 scale using log transformation."""
-        if pd.isna(val) or val <= 0:
-            return 0
-        log_val = np.log10(val)
-        log_min, log_max = log_ranges[col]
-        # Normalize to 0-5 range
-        normalized = 5 * (log_val - log_min) / (log_max - log_min)
-        return max(0, min(5, normalized))
+    def get_ooms(oom_range):
+        return np.linspace(*oom_range, num=6, endpoint=True).astype(int)[1:]
+
+    def format_exp_float(x, bold=False):
+        expnt = int(np.floor(np.log10(x)))
+        base = x / 10**expnt
+        inner = rf"{base:.1f} \times 10^{{{expnt}}}"
+        if bold:
+            return rf"$\mathbf{{{inner}}}$"
+        else:
+            return f"${inner}$"
+
+    # Calculate organism-specific axis ranges
+    neuro_rec_ax_max_oom = {}
+    for organism in organisms:
+        if organism not in organism_neuro_df.index:
+            continue
+        neuro_rec_ax_max_oom[organism] = {}
+        for col in neuro_rec_data_columns:
+            if col not in neuro_rec_max_props:
+                continue
+            try:
+                max_val = organism_neuro_df.loc[organism, neuro_rec_max_props[col]['col']]
+                if col in neuro_rec_rev_axes:
+                    neuro_rec_ax_max_oom[organism][col] = np.ceil(np.log10(max_val))
+                else:
+                    neuro_rec_ax_max_oom[organism][col] = np.floor(np.log10(max_val))
+            except:
+                pass
+
+    neuro_rec_ax_oom_ranges = {}
+    for organism in organisms:
+        if organism not in neuro_rec_ax_max_oom:
+            continue
+        neuro_rec_ax_oom_ranges[organism] = {}
+        for col in neuro_rec_data_columns:
+            if col not in neuro_rec_ax_max_oom[organism]:
+                continue
+            if col in neuro_rec_rev_axes:
+                neuro_rec_ax_oom_ranges[organism][col] = [
+                    neuro_rec_ax_max_oom[organism][col] + 5,
+                    neuro_rec_ax_max_oom[organism][col],
+                ]
+            else:
+                neuro_rec_ax_oom_ranges[organism][col] = [
+                    neuro_rec_ax_max_oom[organism][col] - 5,
+                    neuro_rec_ax_max_oom[organism][col],
+                ]
+
+    # Updated rec_fig function with new color scheme
+    def rec_fig(ax, sub_df, organism, individual_studies=None):
+        N = 5
+
+        # Angles: equally spaced around the circle
+        angles = np.linspace(0, 2 * np.pi, N+1)
+        unique_angles = angles[:-1]
+
+        # Each wedge gets the same width
+        width = 2 * np.pi / N
+
+        # Plot circle indicating maximum value
+        theta = np.linspace(0, 2*np.pi, 100)
+        ax.plot(
+            theta,
+            [5]*100,
+            color=COLORS['border'],
+            lw=2,
+        )
+
+        tick_offsets = [
+            [3, 3],
+            [-22, 8],
+            [-25,-10],
+            [-10,-20],
+            [5,-10],
+        ]
+
+        # Add tick labels for each section
+        for i, col_name in enumerate(neuro_rec_data_columns):
+            theta_pos = 2*np.pi * i / N
+            if organism not in neuro_rec_ax_oom_ranges or col_name not in neuro_rec_ax_oom_ranges[organism]:
+                continue
+            oom_range = neuro_rec_ax_oom_ranges[organism][col_name]
+            ooms = get_ooms(oom_range)
+            for j, expnt in enumerate(ooms):
+                label = f'$10^{{{expnt}}}$'
+                r = j + 1
+                ax.annotate(
+                    label,
+                    (theta_pos, r),
+                    xytext=tick_offsets[i],
+                    textcoords='offset points',
+                    color=COLORS['text']
+                )
+
+        # Draw radial axes
+        for i, theta_ax in enumerate(unique_angles):
+            col_name = neuro_rec_data_columns[i]
+            if organism not in organism_neuro_df.index or col_name not in neuro_rec_max_props:
+                continue
+            try:
+                max_val = organism_neuro_df.loc[
+                    organism,
+                    neuro_rec_max_props[col_name]['col']
+                ]
+            except:
+                continue
+            if organism not in neuro_rec_ax_oom_ranges or col_name not in neuro_rec_ax_oom_ranges[organism]:
+                continue
+            oom_range = neuro_rec_ax_oom_ranges[organism][col_name]
+            oom_val = oom_transform(max_val, oom_range)
+            ax.plot(
+                [theta_ax, theta_ax],
+                [0, oom_val],
+                color=COLORS['text'],
+                lw=1,
+                clip_on=None,
+                transform=ax.transData,
+            )
+
+            axis_label_offsets = [
+                [30, 0],
+                [-20,20],
+                [-50,5],
+                [-20,-35],
+                [35,-15],
+            ]
+
+            # axis labels
+            ax.annotate(
+                neuro_rec_column_labels[i],
+                (theta_ax+0.2, 5),
+                xytext=axis_label_offsets[i],
+                fontsize=12,
+                textcoords='offset points',
+                color=COLORS['text'],
+                ha='center',
+                va='center',
+            )
+
+            # Label max val (dot)
+            ax.plot(
+                [theta_ax],
+                [oom_val],
+                'o',
+                color=TEAL,
+                clip_on=None,
+                mec=COLORS['text'],
+                transform=ax.transData,
+            )
+
+            max_val_str = format_exp_float(max_val, bold=True)
+
+            max_val_offsets = [
+                [50,-5],
+                [35,35],
+                [-45,20],
+                [-55,-15],
+                [-20,-35],
+            ]
+
+            max_desc = textwrap.fill(
+                neuro_rec_max_props[col_name]['short'],
+                15,
+                break_long_words = False,
+            )
+            max_units = (
+                rf" $\mathbf{{{neuro_rec_max_props[col_name]['units']}}}$"
+                if 'units' in neuro_rec_max_props[col_name]
+                else ''
+            )
+            max_label = f"{max_desc}:\n{max_val_str}{max_units}"
+            ax.annotate(
+                max_label,
+                (theta_ax-0.15, 5),
+                xytext=max_val_offsets[i],
+                textcoords='offset points',
+                clip_on=False,
+                bbox=dict(
+                    facecolor=TEAL,
+                    alpha=0.8,
+                    edgecolor=COLORS['text'],
+                    boxstyle='round,pad=0.5'
+                ),
+                ha='center',
+                va='center',
+                color=COLORS['text'],
+            )
+
+        # Draw section dividers
+        for i in range(N):
+            theta_div = 2*np.pi * (i-1/2) / N
+            ax.plot(
+                [theta_div, theta_div],
+                [0, 5],
+                color=COLORS['border'],
+                lw=1,
+            )
+
+        base_alpha = 0.7
+        num_recs = len(sub_df)
+        if num_recs > 0:
+            normalized_alpha = 1 - (1 - base_alpha)**(1/num_recs)
+        else:
+            normalized_alpha = base_alpha
+
+        for k, (j, row) in enumerate(sub_df.iterrows()):
+            values = []
+            valid_row = True
+            for col_name in neuro_rec_data_columns:
+                if organism not in neuro_rec_ax_oom_ranges or col_name not in neuro_rec_ax_oom_ranges[organism]:
+                    valid_row = False
+                    break
+                col_val = row.get(col_name, np.nan)
+                if pd.isna(col_val) or col_val <= 0:
+                    values.append(0)
+                else:
+                    oom_range = neuro_rec_ax_oom_ranges[organism][col_name]
+                    oom_val = oom_transform(col_val, oom_range)
+                    values.append(oom_val)
+
+            if not valid_row:
+                continue
+
+            # Plot bars on polar axis
+            ax.bar(
+                x=unique_angles,
+                height=values,
+                width=width,
+                bottom=0.0,
+                alpha=normalized_alpha,
+                color=GOLD,
+                edgecolor='none',
+                clip_on = None,
+            )
+
+        ax.set_xticks([])
+        ax.tick_params(axis='x', pad=35)
+        ax.set_yticks(range(5), labels=[])
+        ax.grid(axis='x', visible=False)
+        ax.grid(
+            axis='y',
+            color=COLORS['grid'],
+            alpha=0.3,
+        )
+        ax.spines['polar'].set_visible(False)
+        ax.set_ylim(0, 5)
 
     # Generate per-organism radar charts
     for organism in organisms:
         organism_df = neuro_rec_df[neuro_rec_df['Organism'] == organism]
-        organism_df = organism_df.dropna(subset=rec_data_columns, how='all')
 
-        # Filter to rows that have at least some data
-        organism_df = organism_df[organism_df[rec_data_columns].notna().any(axis=1)]
+        for fixmov in ['fixated', 'moving']:
+            sub_df = organism_df[organism_df['Fixated / moving'] == fixmov]
 
-        if organism_df.empty:
-            print(f"   No recording data for {organism}, skipping.")
-            continue
+            if sub_df.empty:
+                print(f"   No data for {organism}/{fixmov}, skipping.")
+                continue
 
-        N = len(rec_data_columns)
-        angles = np.linspace(0, 2 * np.pi, N, endpoint=False)
-        width = 2 * np.pi / N
+            print(f"   {organism}/{fixmov}")
 
-        fig, ax = plt.subplots(figsize=(10, 10), subplot_kw=dict(polar=True))
+            # Set up polar bar chart
+            fig, ax = plt.subplots(figsize=(8, 8), subplot_kw=dict(polar=True))
+            rec_fig(ax, sub_df, organism, individual_studies=None)
 
-        # Set radial limits
-        ax.set_ylim(0, 6)
+            # Add title
+            ax.set_title(f'{organism} - Recording Characteristics', fontsize=14, pad=20, color=COLORS['title'])
 
-        # Draw concentric circles for tick marks (log scale: 10^0, 10^1, 10^2, etc.)
-        tick_positions = [1, 2, 3, 4, 5]
-        for tick_pos in tick_positions:
-            theta = np.linspace(0, 2*np.pi, 100)
-            ax.plot(theta, [tick_pos]*100, color=COLORS['grid'], lw=0.5, alpha=0.7)
-
-        # Draw radial dividers
-        for i in range(N):
-            theta_div = 2*np.pi * (i-1/2) / N
-            ax.plot([theta_div, theta_div], [0, 6], color=COLORS['grid'], lw=0.5, alpha=0.7)
-
-        # Add tick labels in the middle (at angle 0) - showing log scale
-        tick_labels_log = ['10^0', '10^1', '10^2', '10^3', '10^4']
-        for tick_pos, tick_label in zip(tick_positions, tick_labels_log):
-            ax.text(0, tick_pos, tick_label, ha='center', va='center',
-                    fontsize=9, color=COLORS['caption'],
-                    bbox=dict(boxstyle='round,pad=0.2', facecolor='white', edgecolor='none', alpha=0.8))
-
-        num_recs = len(organism_df)
-        base_alpha = 0.7
-        normalized_alpha = 1 - (1 - base_alpha)**(1/max(num_recs, 1))
-
-        # Compute max values per column for info boxes
-        max_values = {}
-        for col in rec_data_columns:
-            col_data = organism_df[col].dropna()
-            if len(col_data) > 0:
-                max_values[col] = col_data.max()
-            else:
-                max_values[col] = np.nan
-
-        # Plot data
-        for _, row in organism_df.iterrows():
-            values = []
-            for col in rec_data_columns:
-                val = row[col]
-                normalized = normalize_log_value(val, col)
-                values.append(normalized)
-
-            if any(v > 0 for v in values):
-                ax.bar(
-                    x=angles,
-                    height=values,
-                    width=width,
-                    bottom=0.0,
-                    alpha=normalized_alpha,
-                    color=GOLD,
-                    edgecolor='none'
-                )
-
-        # Add axis labels
-        ax.set_xticks(angles)
-        ax.set_xticklabels(rec_column_labels, fontsize=10, color=COLORS['text'])
-        ax.tick_params(axis='x', pad=15)
-
-        # Add info boxes at outside showing max values
-        for i, (col, label, unit) in enumerate(zip(rec_data_columns, rec_column_labels, rec_units)):
-            angle = angles[i]
-            max_val = max_values.get(col, np.nan)
-            if pd.notna(max_val):
-                val_str = format_value(max_val, col)
-                # Add info box
-                ax.annotate(
-                    f"Max: {val_str} {unit}",
-                    xy=(angle, 5.2),
-                    xytext=(angle, 5.8),
-                    fontsize=8,
-                    ha='center',
-                    va='center',
-                    color=COLORS['text'],
-                    bbox=dict(boxstyle='round,pad=0.3', facecolor=COLORS['grid'], edgecolor=COLORS['border'], alpha=0.9),
-                )
-
-        ax.set_yticks([])
-        ax.grid(False)
-        ax.spines['polar'].set_visible(False)
-
-        # Add title
-        ax.set_title(f'{organism} - Recording Characteristics', fontsize=14, pad=60, color=COLORS['title'])
-
-        plt.tight_layout()
-        add_attribution(fig)
-        fig.savefig(f'../output/neuro-rec/{organism}.svg', format='svg', bbox_inches='tight', pad_inches=0.2)
-        fig.savefig(f'../output/neuro-rec/{organism}.png', format='png', dpi=150, bbox_inches='tight', pad_inches=0.2)
-        plt.close()
-
-    # Also generate fixated/moving aggregated charts
-    for fixmov in ['fixated', 'moving']:
-        sub_df = neuro_rec_df[neuro_rec_df['FixMov'] == fixmov]
-        sub_df = sub_df.dropna(subset=rec_data_columns, how='all')
-        sub_df = sub_df[sub_df[rec_data_columns].notna().any(axis=1)]
-
-        if sub_df.empty:
-            print(f"   No data for {fixmov}, skipping.")
-            continue
-
-        N = len(rec_data_columns)
-        angles = np.linspace(0, 2 * np.pi, N, endpoint=False)
-        width = 2 * np.pi / N
-
-        fig, ax = plt.subplots(figsize=(10, 10), subplot_kw=dict(polar=True))
-        ax.set_ylim(0, 6)
-
-        # Draw concentric circles
-        for tick_pos in tick_positions:
-            theta = np.linspace(0, 2*np.pi, 100)
-            ax.plot(theta, [tick_pos]*100, color=COLORS['grid'], lw=0.5, alpha=0.7)
-
-        # Draw radial dividers
-        for i in range(N):
-            theta_div = 2*np.pi * (i-1/2) / N
-            ax.plot([theta_div, theta_div], [0, 6], color=COLORS['grid'], lw=0.5, alpha=0.7)
-
-        # Add tick labels
-        for tick_pos, tick_label in zip(tick_positions, tick_labels_log):
-            ax.text(0, tick_pos, tick_label, ha='center', va='center',
-                    fontsize=9, color=COLORS['caption'],
-                    bbox=dict(boxstyle='round,pad=0.2', facecolor='white', edgecolor='none', alpha=0.8))
-
-        num_recs = len(sub_df)
-        normalized_alpha = 1 - (1 - 0.7)**(1/max(num_recs, 1))
-
-        # Compute max values
-        max_values = {}
-        for col in rec_data_columns:
-            col_data = sub_df[col].dropna()
-            if len(col_data) > 0:
-                max_values[col] = col_data.max()
-            else:
-                max_values[col] = np.nan
-
-        for _, row in sub_df.iterrows():
-            values = [normalize_log_value(row[col], col) for col in rec_data_columns]
-            if any(v > 0 for v in values):
-                ax.bar(x=angles, height=values, width=width, bottom=0.0,
-                       alpha=normalized_alpha, color=GOLD, edgecolor='none')
-
-        ax.set_xticks(angles)
-        ax.set_xticklabels(rec_column_labels, fontsize=10, color=COLORS['text'])
-        ax.tick_params(axis='x', pad=15)
-
-        # Add info boxes
-        for i, (col, label, unit) in enumerate(zip(rec_data_columns, rec_column_labels, rec_units)):
-            angle = angles[i]
-            max_val = max_values.get(col, np.nan)
-            if pd.notna(max_val):
-                val_str = format_value(max_val, col)
-                ax.annotate(
-                    f"Max: {val_str} {unit}",
-                    xy=(angle, 5.2),
-                    xytext=(angle, 5.8),
-                    fontsize=8,
-                    ha='center',
-                    va='center',
-                    color=COLORS['text'],
-                    bbox=dict(boxstyle='round,pad=0.3', facecolor=COLORS['grid'], edgecolor=COLORS['border'], alpha=0.9),
-                )
-
-        ax.set_yticks([])
-        ax.grid(False)
-        ax.spines['polar'].set_visible(False)
-        ax.set_title(f'Neural Recordings ({fixmov.capitalize()})', fontsize=14, pad=60, color=COLORS['title'])
-
-        plt.tight_layout()
-        add_attribution(fig)
-        fig.savefig(f'../output/neuro-rec/{fixmov}.svg', format='svg', bbox_inches='tight', pad_inches=0.2)
-        fig.savefig(f'../output/neuro-rec/{fixmov}.png', format='png', dpi=150, bbox_inches='tight', pad_inches=0.2)
-        plt.close()
+            plt.tight_layout()
+            add_attribution(fig)
+            fig.savefig(f'../output/neuro-rec/{organism}-{fixmov}.svg', format='svg', bbox_inches='tight', pad_inches=0.2)
+            fig.savefig(f'../output/neuro-rec/{organism}-{fixmov}.png', format='png', dpi=150, bbox_inches='tight', pad_inches=0.2)
+            plt.close()
 
     print("   Done!")
 except Exception as e:
+    import traceback
     print(f"   Error: {e}")
+    traceback.print_exc()
 
 # =============================================================================
 # Figure 15: All sim-rec combined grid

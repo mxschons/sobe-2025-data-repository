@@ -103,9 +103,18 @@
     {
       "id": "cost-per-neuron",
       "title": "Cost Per Neuron",
-      "description": "Historical trends in the cost of reconstructing individual neurons.",
+      "description": "Historical trends in the cost of reconstructing individual neurons, including budget data, estimates, and future illustrations.",
       "filename": "cost-per-neuron",
       "path": "output/cost-per-neuron",
+      "organism": ["all"],
+      "type": ["cost", "connectomics"]
+    },
+    {
+      "id": "cost-per-neuron-no-illust",
+      "title": "Cost Per Neuron (Budget & Estimates Only)",
+      "description": "Historical trends in the cost of reconstructing individual neurons, showing only completed budgets and current estimates without future illustrations.",
+      "filename": "cost-per-neuron-no-illust",
+      "path": "output/cost-per-neuron-no-illust",
       "organism": ["all"],
       "type": ["cost", "connectomics"]
     },
@@ -248,8 +257,8 @@
       "id": "neuro-rec-c-elegans",
       "title": "C. elegans Neural Recordings",
       "description": "Neural recording landscape for C. elegans.",
-      "filename": "C. elegans",
-      "path": "output/neuro-rec/C. elegans",
+      "filename": "C. elegans-fixated",
+      "path": "output/neuro-rec/C. elegans-fixated",
       "organism": ["c-elegans"],
       "type": ["recording", "organism-specific"]
     },
@@ -257,8 +266,8 @@
       "id": "neuro-rec-drosophila",
       "title": "Drosophila Neural Recordings",
       "description": "Neural recording landscape for Drosophila.",
-      "filename": "Drosophila",
-      "path": "output/neuro-rec/Drosophila",
+      "filename": "Drosophila-fixated",
+      "path": "output/neuro-rec/Drosophila-fixated",
       "organism": ["drosophila"],
       "type": ["recording", "organism-specific"]
     },
@@ -266,8 +275,8 @@
       "id": "neuro-rec-zebrafish",
       "title": "Zebrafish Neural Recordings",
       "description": "Neural recording landscape for Zebrafish.",
-      "filename": "Zebrafish",
-      "path": "output/neuro-rec/Zebrafish",
+      "filename": "Zebrafish-fixated",
+      "path": "output/neuro-rec/Zebrafish-fixated",
       "organism": ["zebrafish"],
       "type": ["recording", "organism-specific"]
     },
@@ -275,8 +284,8 @@
       "id": "neuro-rec-mouse",
       "title": "Mouse Neural Recordings",
       "description": "Neural recording landscape for Mouse.",
-      "filename": "Mouse",
-      "path": "output/neuro-rec/Mouse",
+      "filename": "Mouse-fixated",
+      "path": "output/neuro-rec/Mouse-fixated",
       "organism": ["mouse"],
       "type": ["recording", "organism-specific"]
     },
@@ -284,28 +293,10 @@
       "id": "neuro-rec-human",
       "title": "Human Neural Recordings",
       "description": "Neural recording landscape for Human.",
-      "filename": "Human",
-      "path": "output/neuro-rec/Human",
+      "filename": "Human-fixated",
+      "path": "output/neuro-rec/Human-fixated",
       "organism": ["human"],
       "type": ["recording", "organism-specific"]
-    },
-    {
-      "id": "neuro-rec-fixated",
-      "title": "Neural Recordings (Fixated)",
-      "description": "Neural recordings from fixated preparations.",
-      "filename": "fixated",
-      "path": "output/neuro-rec/fixated",
-      "organism": ["all"],
-      "type": ["recording"]
-    },
-    {
-      "id": "neuro-rec-moving",
-      "title": "Neural Recordings (Moving)",
-      "description": "Neural recordings from freely moving animals.",
-      "filename": "moving",
-      "path": "output/neuro-rec/moving",
-      "organism": ["all"],
-      "type": ["recording"]
     },
     {
       "id": "radar-mouse",

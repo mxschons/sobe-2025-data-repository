@@ -38,8 +38,8 @@
             const generatedFigures = generatedMeta.figures.map(fig => ({
                 ...fig,
                 source: 'generated',
-                pngPath: `../${fig.path}.png`,
-                svgPath: `../${fig.path}.svg`
+                pngPath: `../${fig.path.split('/').map(encodeURIComponent).join('/')}.png`,
+                svgPath: `../${fig.path.split('/').map(encodeURIComponent).join('/')}.svg`
             }));
 
             // Process hand-drawn figures (filter out example/template entries)
@@ -48,8 +48,8 @@
                 .map(fig => ({
                     ...fig,
                     source: 'hand-drawn',
-                    pngPath: `../images/hand-drawn/${fig.filename}.png`,
-                    svgPath: `../images/hand-drawn/${fig.filename}.svg`,
+                    pngPath: `../images/hand-drawn/${encodeURIComponent(fig.filename)}.png`,
+                    svgPath: `../images/hand-drawn/${encodeURIComponent(fig.filename)}.svg`,
                     type: [...(fig.type || []), 'hand-drawn']
                 }));
 
