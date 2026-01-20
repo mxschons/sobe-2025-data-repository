@@ -78,8 +78,28 @@ Path configuration for all data and output directories. Always use these paths i
 1. **Figure Registration**: Use the `@figure()` decorator to register new figures
 2. **Styling**: Always use `style.py` for colors, fonts, and chart settings
 3. **Paths**: Use `paths.py` for all file paths
-4. **Output Formats**: Generate both SVG and PNG (150 DPI) for each figure
+4. **Output Formats**: Generate SVG, PNG, WebP, and AVIF for each figure (see below)
 5. **Attribution**: All figures include "Zanichelli, Schons et al, State of Brain Emulation Report 2025"
+
+### Output Formats
+
+The `save_figure()` function generates multiple formats optimized for different use cases:
+
+| Format | Purpose | Size | Notes |
+|--------|---------|------|-------|
+| **SVG** | Vector graphics | Varies | Resolution-independent, ideal for scaling |
+| **PNG** | Raster fallback | Baseline | 150 DPI, universal browser support |
+| **WebP** | Web optimization | ~50% smaller | Modern browsers, good quality at 90% |
+| **AVIF** | Best compression | ~70% smaller | Newest browsers, excellent quality at 85% |
+
+Use `<picture>` element in HTML to serve the best format:
+```html
+<picture>
+  <source srcset="figure.avif" type="image/avif">
+  <source srcset="figure.webp" type="image/webp">
+  <img src="figure.png" alt="Description">
+</picture>
+```
 
 ## File Naming Conventions
 

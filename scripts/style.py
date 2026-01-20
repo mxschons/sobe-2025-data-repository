@@ -495,9 +495,11 @@ def annotate_point(ax, text, xy, xytext, **kwargs):
     return ax.annotate(text, xy=xy, xytext=xytext, **default_kwargs)
 
 
-def save_figure(fig, name, output_dir=None, print_quality=False):
+def save_figure(fig, name, output_dir=None, print_quality=False, web_formats=True):
     """
-    Save figure in both SVG and PNG formats with attribution.
+    Save figure in multiple formats with attribution.
+
+    Generates SVG (vector), PNG (raster), and optionally WebP/AVIF for web optimization.
 
     Parameters
     ----------
@@ -509,8 +511,13 @@ def save_figure(fig, name, output_dir=None, print_quality=False):
         Output directory (defaults to OUTPUT_FIGURES)
     print_quality : bool
         If True, also save a high-DPI (300) PNG for print
+    web_formats : bool
+        If True, also save WebP and AVIF versions for modern browsers
     """
     from pathlib import Path
+    from PIL import Image
+    import io
+
     if output_dir is None:
         output_dir = OUTPUT_FIGURES
     output_dir = Path(output_dir)
@@ -526,7 +533,41 @@ def save_figure(fig, name, output_dir=None, print_quality=False):
     fig.savefig(output_dir / f'{name}.svg', format='svg', **save_kwargs)
 
     # Save standard PNG for web/screen
-    fig.savefig(output_dir / f'{name}.png', format='png', dpi=EXPORT['dpi'], **save_kwargs)
+    png_path = output_dir / f'{name}.png'
+    fig.savefig(png_path, format='png', dpi=EXPORT['dpi'], **save_kwargs)
+
+    # Generate WebP and AVIF from the PNG for better web performance
+    if web_formats:
+        try:
+            with Image.open(png_path) as img:
+                # Convert to RGB if necessary (AVIF/WebP don't always handle RGBA well)
+                if img.mode == 'RGBA':
+                    # Create white background for transparency
+                    background = Image.new('RGB', img.size, (255, 255, 255))
+                    background.paste(img, mask=img.split()[3])  # 3 is the alpha channel
+                    img_rgb = background
+                else:
+                    img_rgb = img.convert('RGB') if img.mode != 'RGB' else img
+
+                # Save WebP (lossy, good quality, ~30-50% smaller than PNG)
+                img_rgb.save(
+                    output_dir / f'{name}.webp',
+                    'WEBP',
+                    quality=90,
+                    method=6  # Slower but better compression
+                )
+
+                # Save AVIF (lossy, excellent quality, ~50-70% smaller than PNG)
+                img_rgb.save(
+                    output_dir / f'{name}.avif',
+                    'AVIF',
+                    quality=85,
+                    speed=4  # Balance between speed and compression
+                )
+        except Exception as e:
+            # Don't fail figure generation if web formats fail
+            import logging
+            logging.getLogger(__name__).warning(f"Could not generate web formats for {name}: {e}")
 
     # Optionally save high-DPI PNG for print
     if print_quality:

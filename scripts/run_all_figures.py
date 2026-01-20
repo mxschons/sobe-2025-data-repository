@@ -201,7 +201,7 @@ def generate_compute():
         parse_dates=['Day']
     )
 
-    species_pf = {'neural-simulation-human': 2000.0, 'neural-simulation-mouse': 10.0, 'Fly': 0.195}
+    species_pf = {'Human': 2000.0, 'Mouse': 10.0, 'Fly': 0.195}
 
     fig, ax = plt.subplots(figsize=(10, 5))
     sns.scatterplot(
@@ -249,7 +249,7 @@ def generate_storage_costs():
         value_name='Cost ($ / TB)', var_name='Storage type',
     )
 
-    species_storage_tb = {'neural-simulation-human': 6e3, 'neural-simulation-mouse': 2, 'Fruitfly': 2.5e-4, 'neural-simulation-celegans': 1e-3}
+    species_storage_tb = {'Human': 6e3, 'Mouse': 2, 'Fruitfly': 2.5e-4, 'C. elegans': 1e-3}
     species_cost = {k: 1e6 / v for k, v in species_storage_tb.items()}
 
     min_year = storage_dfl['Year'].min()
@@ -424,7 +424,7 @@ def generate_recording_modalities():
 # =============================================================================
 @figure("emulation-requirements", "Emulation compute and storage requirements")
 def generate_emulation_requirements():
-    categories_organisms = ['neural-simulation-celegans', 'Fly', 'neural-simulation-mouse', 'neural-simulation-human']
+    categories_organisms = ['C. elegans', 'Fly', 'Mouse', 'Human']
     categories_full = categories_organisms + ['H100', 'xAI Colossus']
     x_pos_full = np.arange(len(categories_full))
     x_pos_org = np.arange(len(categories_organisms))
@@ -561,7 +561,7 @@ def generate_cost_per_neuron():
                 label = 'C. elegans (White et al 1986)'
             elif 'Fruitfly' in organism or 'Murthy' in organism:
                 label = 'Fruitfly Zheng et al, 2018\n(Murthy, Seung, et al., 2024)'
-            elif 'neural-simulation-zebrafish' in organism:
+            elif 'Zebrafish' in organism:
                 label = 'Zebrafish (Svara et al., 2022)'
             elif 'BRAIN CONNECTS' in organism or 'NIH' in organism:
                 label = 'Mouse (NIH, 2024)'
@@ -794,10 +794,10 @@ def generate_sim_heatmap():
     neuro_sim_df = pd.read_csv(DATA_FILES["computational_models"])
 
     # Define organisms and data columns
-    organisms = ['neural-simulation-celegans', 'neural-simulation-drosophila', 'neural-simulation-zebrafish', 'neural-simulation-mouse', 'neural-simulation-human']
+    organisms = ['C. elegans', 'Drosophila', 'Zebrafish', 'Mouse', 'Human']
     # Map organism names
     organism_map = {
-        'Mammalian': 'neural-simulation-mouse',
+        'Mammalian': 'Mouse',
         'Silicon': None,  # Skip
     }
     neuro_sim_df = neuro_sim_df.copy()
@@ -830,7 +830,7 @@ def generate_sim_heatmap():
     neuro_sim_df = neuro_sim_df.dropna(subset=['First Author', 'Year']).copy()
 
     # Sort by organism to cluster entries
-    organism_order = ['neural-simulation-celegans', 'neural-simulation-drosophila', 'neural-simulation-zebrafish', 'neural-simulation-mouse', 'neural-simulation-human']
+    organism_order = ['C. elegans', 'Drosophila', 'Zebrafish', 'Mouse', 'Human']
     neuro_sim_df['Organism_order'] = neuro_sim_df['Organism_mapped'].apply(
         lambda x: organism_order.index(x) if x in organism_order else 999
     )
@@ -997,7 +997,7 @@ def generate_rec_heatmap():
     neuro_rec_df = neuro_rec_df.dropna(subset=['First Author', 'Year']).copy()
 
     # Sort by organism to cluster entries
-    organism_order = ['neural-simulation-celegans', 'neural-simulation-drosophila', 'neural-simulation-zebrafish', 'neural-simulation-mouse', 'neural-simulation-human']
+    organism_order = ['C. elegans', 'Drosophila', 'Zebrafish', 'Mouse', 'Human']
     neuro_rec_df['Organism_order'] = neuro_rec_df['Organism'].apply(
         lambda x: organism_order.index(x) if x in organism_order else 999
     )
@@ -1146,10 +1146,18 @@ def generate_neuro_sim_radar():
     # Load simulation data
     neuro_sim_df = pd.read_csv(DATA_FILES["computational_models"])
 
-    organisms = ['neural-simulation-celegans', 'neural-simulation-drosophila', 'neural-simulation-zebrafish', 'neural-simulation-mouse', 'neural-simulation-human']
+    organisms = ['C. elegans', 'Drosophila', 'Zebrafish', 'Mouse', 'Human']
     organism_map = {
-        'Mammalian': 'neural-simulation-mouse',
+        'Mammalian': 'Mouse',
         'Silicon': None,
+    }
+    # Mapping from display names to SEO-friendly filenames
+    organism_filename_map = {
+        'C. elegans': 'neural-simulation-celegans',
+        'Drosophila': 'neural-simulation-drosophila',
+        'Zebrafish': 'neural-simulation-zebrafish',
+        'Mouse': 'neural-simulation-mouse',
+        'Human': 'neural-simulation-human',
     }
     neuro_sim_df['Organism_mapped'] = neuro_sim_df['Organism'].replace(organism_map)
 
@@ -1266,9 +1274,9 @@ def generate_neuro_sim_radar():
         ax.set_title(f'{organism} - Simulation Characteristics', fontsize=14, pad=80, color=COLORS['title'])
 
         plt.tight_layout()
-        add_attribution(fig)
-        fig.savefig(OUTPUT_FIGURES_NEURO_SIM / f'{organism}.svg', format='svg', bbox_inches='tight', pad_inches=0.2)
-        fig.savefig(OUTPUT_FIGURES_NEURO_SIM / f'{organism}.png', format='png', dpi=150, bbox_inches='tight', pad_inches=0.2)
+        # Use save_figure helper with SEO-friendly filename
+        filename = organism_filename_map.get(organism, organism.lower().replace(' ', '-').replace('.', ''))
+        save_figure(fig, filename, output_dir=OUTPUT_FIGURES_NEURO_SIM)
         plt.close()
 
 # =============================================================================
@@ -1286,18 +1294,27 @@ def generate_neuro_rec_radar():
     organism_neuro_df = pd.read_csv(DATA_FILES["neurodynamics_organisms"])
 
     # Standardize organism names in organism_neuro_df
-    organism_neuro_df.replace('Zebrafish Larvae', 'neural-simulation-zebrafish', inplace=True)
-    organism_neuro_df.replace('C. Elegans', 'neural-simulation-celegans', inplace=True)
+    organism_neuro_df.replace('Zebrafish Larvae', 'Zebrafish', inplace=True)
+    organism_neuro_df.replace('C. Elegans', 'C. elegans', inplace=True)
     organism_neuro_df.index = organism_neuro_df.loc[:, 'Organism']
     organism_neuro_df.drop(columns=['Organism'], inplace=True)
 
     # Standardize organism names in recording data
     neuro_rec_df['Organism'] = neuro_rec_df['Organism'].replace({
-        'C. Elegans': 'neural-simulation-celegans',
-        'Zebrafish Larvae': 'neural-simulation-zebrafish',
+        'C. Elegans': 'C. elegans',
+        'Zebrafish Larvae': 'Zebrafish',
     })
 
-    organisms = ['neural-simulation-celegans', 'neural-simulation-drosophila', 'neural-simulation-zebrafish', 'neural-simulation-mouse', 'neural-simulation-human']
+    organisms = ['C. elegans', 'Drosophila', 'Zebrafish', 'Mouse', 'Human']
+
+    # Mapping from display names to SEO-friendly filenames
+    organism_filename_map = {
+        'C. elegans': 'neural-recording-celegans',
+        'Drosophila': 'neural-recording-drosophila',
+        'Zebrafish': 'neural-recording-zebrafish',
+        'Mouse': 'neural-recording-mouse',
+        'Human': 'neural-recording-human',
+    }
 
     # Define the 5 data columns (matching the old code)
     neuro_rec_data_columns = [
@@ -1636,9 +1653,10 @@ def generate_neuro_rec_radar():
             ax.set_title(f'{organism} - Recording Characteristics', fontsize=14, pad=80, color=COLORS['title'])
 
             plt.tight_layout()
-            add_attribution(fig)
-            fig.savefig(OUTPUT_FIGURES_NEURO_REC / f'{organism}-{fixmov}.svg', format='svg', bbox_inches='tight', pad_inches=0.2)
-            fig.savefig(OUTPUT_FIGURES_NEURO_REC / f'{organism}-{fixmov}.png', format='png', dpi=150, bbox_inches='tight', pad_inches=0.2)
+            # Use save_figure helper with SEO-friendly filename
+            base_filename = organism_filename_map.get(organism, organism.lower().replace(' ', '-').replace('.', ''))
+            filename = f'{base_filename}-{fixmov}'
+            save_figure(fig, filename, output_dir=OUTPUT_FIGURES_NEURO_REC)
             plt.close()
 
 # =============================================================================
@@ -1652,16 +1670,16 @@ def generate_all_sim_rec():
     neuro_sim_df = pd.read_csv(DATA_FILES["computational_models"])
     neuro_rec_df = pd.read_csv(DATA_FILES["neural_dynamics"])
 
-    organisms = ['neural-simulation-celegans', 'neural-simulation-drosophila', 'neural-simulation-zebrafish', 'neural-simulation-mouse', 'neural-simulation-human']
+    organisms = ['C. elegans', 'Drosophila', 'Zebrafish', 'Mouse', 'Human']
 
     # Standardize organism names in sim data
-    organism_map = {'Mammalian': 'neural-simulation-mouse', 'Silicon': None}
+    organism_map = {'Mammalian': 'Mouse', 'Silicon': None}
     neuro_sim_df['Organism_mapped'] = neuro_sim_df['Organism'].replace(organism_map)
 
     # Standardize organism names in rec data
     neuro_rec_df['Organism'] = neuro_rec_df['Organism'].replace({
-        'C. Elegans': 'neural-simulation-celegans',
-        'Zebrafish Larvae': 'neural-simulation-zebrafish',
+        'C. Elegans': 'C. elegans',
+        'Zebrafish Larvae': 'Zebrafish',
     })
     neuro_rec_df = neuro_rec_df.rename(columns={'Fixated / moving': 'FixMov'})
 
@@ -1855,7 +1873,7 @@ def generate_organism_compute():
     synapses_row = compute_df.iloc[1]   # synapses row
 
     # Extract organism data (skip the first column which is label)
-    organism_names = ['neural-simulation-celegans', 'Fly', 'Mouse (cortex)', 'Mouse (brain)', 'Human (cortex)', 'Human (brain)']
+    organism_names = ['C. elegans', 'Fly', 'Mouse (cortex)', 'Mouse (brain)', 'Human (cortex)', 'Human (brain)']
     organism_cols = ['C. elegans (body)', 'fly (brain)', 'mouse (cortex)', 'mouse (brain)', 'human (cortex)', 'human (brain)']
 
     neurons = []
@@ -2124,7 +2142,7 @@ def generate_compute_storage_parallel():
     # Map organisms for plotting with colors derived from our palette
     # Using lighter/pastel versions of our categorical colors for the bands
     organism_plot_config = {
-        "neural-simulation-celegans": {
+        "C. elegans": {
             "source": "C. elegans (body)",
             "color": "#C7BDDC",  # light purple (from PRIMARY_COLORS)
         },
@@ -2132,11 +2150,11 @@ def generate_compute_storage_parallel():
             "source": "fly (brain)",
             "color": "#E8D4A8",  # light gold (tinted from GOLD)
         },
-        "neural-simulation-mouse": {
+        "Mouse": {
             "source": "mouse (brain)",
             "color": "#A8C9D4",  # light teal (tinted from TEAL)
         },
-        "neural-simulation-human": {
+        "Human": {
             "source": "human (brain)",
             "color": "#D4B8A8",  # light brown (tinted from brown)
         },
@@ -2237,13 +2255,13 @@ def generate_compute_storage_parallel():
             label_y = np.sqrt(ymin_plot * ymax_plot)
 
         # Adjust positions for readability
-        if name == "neural-simulation-celegans":
+        if name == "C. elegans":
             label_y = max(data['compute_min'] * 3.5, 1e6)
         elif name == "Drosophila & Zebrafish":
             label_y = data['compute_min'] * 20
-        elif name == "neural-simulation-mouse":
+        elif name == "Mouse":
             label_y = data['compute_max'] * 0.08
-        elif name == "neural-simulation-human":
+        elif name == "Human":
             label_y = data['compute_max'] * 0.2
 
         label_y = max(ymin_plot * 1.5, min(ymax_plot * 0.85, label_y))
