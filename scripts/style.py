@@ -180,20 +180,46 @@ EXPORT = {
 # ATTRIBUTION
 # =============================================================================
 
-ATTRIBUTION = "Zanichelli, Schons et al, State of Brain Emulation Report 2025"
+ATTRIBUTION = "Zanichelli & Schons et al., State of Brain Emulation Report 2025"
 
 
-def add_attribution(fig=None):
-    """Add attribution text to bottom right of figure."""
+def add_attribution(fig=None, position='figure'):
+    """
+    Add attribution text to bottom right of figure.
+
+    Parameters
+    ----------
+    fig : matplotlib.figure.Figure, optional
+        The figure to add attribution to (defaults to current figure)
+    position : str
+        'figure' - position relative to full figure (default)
+        'axes' - position relative to the last axes (better for multi-panel figures)
+    """
     if fig is None:
         fig = plt.gcf()
-    fig.text(
-        0.99, 0.01, ATTRIBUTION,
-        ha='right', va='bottom',
-        fontsize=7, color=COLORS['caption'],
-        style='italic',
-        transform=fig.transFigure
-    )
+
+    if position == 'axes' and fig.axes:
+        # Position relative to the rightmost axis to avoid extending figure bounds
+        # Find the rightmost axis
+        rightmost_ax = max(fig.axes, key=lambda ax: ax.get_position().x1)
+        ax_pos = rightmost_ax.get_position()
+        # Place below the rightmost axes with padding
+        fig.text(
+            ax_pos.x1, -0.02, ATTRIBUTION,
+            ha='right', va='top',
+            fontsize=7, color=COLORS['caption'],
+            style='italic',
+            transform=fig.transFigure
+        )
+    else:
+        # Default: position relative to figure, below the content
+        fig.text(
+            0.99, -0.02, ATTRIBUTION,
+            ha='right', va='top',
+            fontsize=7, color=COLORS['caption'],
+            style='italic',
+            transform=fig.transFigure
+        )
 
 
 # =============================================================================
@@ -495,7 +521,7 @@ def annotate_point(ax, text, xy, xytext, **kwargs):
     return ax.annotate(text, xy=xy, xytext=xytext, **default_kwargs)
 
 
-def save_figure(fig, name, output_dir=None, print_quality=False, web_formats=True):
+def save_figure(fig, name, output_dir=None, print_quality=False, web_formats=True, attribution_position='figure'):
     """
     Save figure in multiple formats with attribution.
 
@@ -513,6 +539,10 @@ def save_figure(fig, name, output_dir=None, print_quality=False, web_formats=Tru
         If True, also save a high-DPI (300) PNG for print
     web_formats : bool
         If True, also save WebP and AVIF versions for modern browsers
+    attribution_position : str
+        'figure' - position attribution relative to full figure (default)
+        'axes' - position attribution relative to the rightmost axes
+                 (better for figures where bbox_inches='tight' would extend bounds)
     """
     from pathlib import Path
     from PIL import Image
@@ -521,7 +551,7 @@ def save_figure(fig, name, output_dir=None, print_quality=False, web_formats=Tru
         output_dir = OUTPUT_FIGURES
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
-    add_attribution(fig)
+    add_attribution(fig, position=attribution_position)
 
     save_kwargs = {
         'bbox_inches': EXPORT['bbox_inches'],

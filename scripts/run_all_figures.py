@@ -396,7 +396,7 @@ def generate_recording_modalities():
         ax.hlines(y, x[0], x[-1], colors=COLORS['grid'], linewidth=1, linestyles="--", zorder=0)
 
     axis_labels = {
-        "Resolution": ["Millions", "10s of thousands", "Thousands", "Single Cell"],
+        "Resolution": ["Millions of cells", "Tens of thousands of cells", "Thousands of cells", "Single cell"],
         "Speed": ["1 Hz", "10 Hz", "100 Hz", "1000 Hz"],
         "Duration": ["Seconds", "Minutes", "Hours", "Days"],
         "Volume": ["1 µm³", "1 mm³", "1 cm³", "1 dm³"],
@@ -530,13 +530,13 @@ def generate_cost_per_neuron():
         label_positions = {
             'C. elegans (White et al 1986)': (1992, 5000, 'left', 'center'),
             'Fruitfly Zheng et al, 2018\n(Murthy, Seung, et al., 2024)': (2005, 600, 'left', 'center'),
-            'Zebrafish (Svara et al., 2022)': (2010, 200, 'left', 'center'),
+            'Zebrafish (Svara et al., 2022)': (2008, 60, 'right', 'center'),
             'Mouse (NIH, 2024)': (2032, 20, 'left', 'center'),
             'Wellcome EM (10nm isotropic)\nwith proof-reading': (2032, 500, 'left', 'center'),
             '15nm isotropic with current\nproofreading (EM)': (2032, 130, 'left', 'center'),
             '1000x less proofreading:\nEM 10nm isotropic': (2020, 15, 'left', 'center'),
             '1000x less proofreading:\nEM 15nm isotropic': (2038, 1.5, 'left', 'center'),
-            '1000x less proofreading:\nExM 15nm isotropic': (2038, 6, 'left', 'center'),
+            '1000x less proofreading:\nExM 15nm isotropic': (2022, 4, 'right', 'center'),
         }
 
         # First pass: plot all points
@@ -951,7 +951,7 @@ def generate_sim_heatmap():
         sim_ax.set_title('Computational Models of the Brain - Characteristics', fontsize=12, pad=10)
 
         plt.tight_layout()
-        save_figure(fig, 'neural-simulation-capabilities-heatmap')
+        save_figure(fig, 'neural-simulation-capabilities-heatmap', attribution_position='axes')
         plt.close()
     else:
         logger.info("  Skipped - no valid data")
@@ -1128,7 +1128,7 @@ def generate_rec_heatmap():
         rec_ax.set_title('Neural Dynamics Recording - Data Coverage', fontsize=12, pad=10)
 
         plt.tight_layout()
-        save_figure(fig, 'neural-recording-capabilities-heatmap')
+        save_figure(fig, 'neural-recording-capabilities-heatmap', attribution_position='axes')
         plt.close()
     else:
         logger.info("  Skipped - no valid data")
