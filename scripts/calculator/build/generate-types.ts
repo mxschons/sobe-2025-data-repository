@@ -3,11 +3,20 @@
  */
 
 import { readTSV, writeFile, camelCase, listTSVFiles } from './utils.js';
-import { join } from 'path';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 
-const PARAMS_DIR = 'data/parameters';
-const FORMULAS_DIR = 'data/formulas';
-const OUTPUT_FILE = 'src/generated/types.ts';
+// Get the directory of this script
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+// Data directories (relative to repo root, which is 3 levels up from build/)
+const DATA_ROOT = join(__dirname, '..', '..', '..', 'data');
+const FORMULAS_DIR = join(DATA_ROOT, 'formulas');
+const ORGANISMS_DIR = join(DATA_ROOT, 'organisms');
+const IMAGING_DIR = join(DATA_ROOT, 'imaging');
+const RECORDINGS_DIR = join(DATA_ROOT, 'recordings');
+const COSTS_DIR = join(DATA_ROOT, 'costs');
+const OUTPUT_FILE = join(__dirname, '..', 'src', 'generated', 'types.ts');
 
 interface ParameterRow {
   id: string;
@@ -37,7 +46,7 @@ async function generateTypes(): Promise<void> {
 `;
 
   // Load shared parameters
-  const shared = readTSV<ParameterRow>(join(PARAMS_DIR, 'shared.tsv'));
+  const shared = readTSV<ParameterRow>(join(FORMULAS_DIR, 'shared.tsv'));
   output += `/**
  * Shared project-level parameters
  */
@@ -51,7 +60,7 @@ export interface SharedParameters {\n`;
   output += `}\n\n`;
 
   // Load imaging modalities
-  const modalities = readTSV<ParameterRow>(join(PARAMS_DIR, 'imaging-modalities.tsv'));
+  const modalities = readTSV<ParameterRow>(join(IMAGING_DIR, 'imaging-modalities.tsv'));
   const modalityIds = Object.keys(modalities[0] || {}).filter(
     k => !['id', 'name', 'definition', 'unit', 'source'].includes(k)
   );
@@ -77,7 +86,7 @@ export type ModalityId = ${modalityIds.map(m => `'${m}'`).join(' | ')};\n\n`;
 export type ImagingModalities = Record<ModalityId, ImagingModalityParams>;\n\n`;
 
   // Load organisms
-  const organisms = readTSV<ParameterRow>(join(PARAMS_DIR, 'organisms.tsv'));
+  const organisms = readTSV<ParameterRow>(join(ORGANISMS_DIR, 'organisms.tsv'));
   output += `/**
  * Organism specifications
  */
@@ -97,7 +106,7 @@ export interface Organism {\n`;
 export type OrganismId = ${organismIds.map(o => `'${o}'`).join(' | ')};\n\n`;
 
   // Load proofreading parameters
-  const proofreading = readTSV<ParameterRow>(join(PARAMS_DIR, 'proofreading.tsv'));
+  const proofreading = readTSV<ParameterRow>(join(COSTS_DIR, 'proofreading.tsv'));
   output += `/**
  * Proofreading parameters
  */

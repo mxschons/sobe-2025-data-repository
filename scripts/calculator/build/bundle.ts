@@ -3,11 +3,20 @@
  */
 
 import { readTSV, writeFile, listTSVFiles, camelCase } from './utils.js';
-import { join } from 'path';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 
-const PARAMS_DIR = 'data/parameters';
-const FORMULAS_DIR = 'data/formulas';
-const OUTPUT_FILE = 'src/generated/data.json';
+// Get the directory of this script
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+// Data directories (relative to repo root, which is 3 levels up from build/)
+const DATA_ROOT = join(__dirname, '..', '..', '..', 'data');
+const FORMULAS_DIR = join(DATA_ROOT, 'formulas');
+const ORGANISMS_DIR = join(DATA_ROOT, 'organisms');
+const IMAGING_DIR = join(DATA_ROOT, 'imaging');
+const RECORDINGS_DIR = join(DATA_ROOT, 'recordings');
+const COSTS_DIR = join(DATA_ROOT, 'costs');
+const OUTPUT_FILE = join(__dirname, '..', 'src', 'generated', 'data.json');
 
 interface ParameterRow {
   id: string;
@@ -28,7 +37,7 @@ async function bundle(): Promise<void> {
   console.log('Bundling data into JSON...\n');
 
   // Load shared parameters
-  const sharedRows = readTSV<ParameterRow>(join(PARAMS_DIR, 'shared.tsv'));
+  const sharedRows = readTSV<ParameterRow>(join(FORMULAS_DIR, 'shared.tsv'));
   const shared: Record<string, number | string> = {};
   for (const row of sharedRows) {
     const value = row.value;
@@ -36,7 +45,7 @@ async function bundle(): Promise<void> {
   }
 
   // Load imaging modalities and pivot to modality -> params structure
-  const modalityRows = readTSV<ParameterRow>(join(PARAMS_DIR, 'imaging-modalities.tsv'));
+  const modalityRows = readTSV<ParameterRow>(join(IMAGING_DIR, 'imaging-modalities.tsv'));
   const modalityIds = Object.keys(modalityRows[0] || {}).filter(
     k => !['id', 'name', 'definition', 'unit', 'source'].includes(k)
   );
@@ -50,7 +59,7 @@ async function bundle(): Promise<void> {
   }
 
   // Load organisms
-  const organismRows = readTSV<ParameterRow>(join(PARAMS_DIR, 'organisms.tsv'));
+  const organismRows = readTSV<ParameterRow>(join(ORGANISMS_DIR, 'organisms.tsv'));
   const organisms: Record<string, {
     id: string;
     name: string;
@@ -71,7 +80,7 @@ async function bundle(): Promise<void> {
   }
 
   // Load proofreading parameters
-  const proofreadingRows = readTSV<ParameterRow>(join(PARAMS_DIR, 'proofreading.tsv'));
+  const proofreadingRows = readTSV<ParameterRow>(join(COSTS_DIR, 'proofreading.tsv'));
   const proofreading: Record<string, Record<string, number>> = {
     current: {},
     improved_1000x: {},
@@ -82,15 +91,15 @@ async function bundle(): Promise<void> {
   }
 
   // Load neural recording parameters
-  const neuralRecordingRows = readTSV<ParameterRow>(join(PARAMS_DIR, 'neural-recording.tsv'));
+  const neuralRecordingRows = readTSV<ParameterRow>(join(RECORDINGS_DIR, 'neural-recording.tsv'));
   const neuralRecording: Record<string, number | string> = {};
   for (const row of neuralRecordingRows) {
     const value = row.mouse_example;
     neuralRecording[row.id] = value && !isNaN(Number(value)) ? Number(value) : value;
   }
 
-  // Load all formulas
-  const formulaFiles = listTSVFiles(FORMULAS_DIR);
+  // Load all formulas (exclude shared.tsv which is a parameter file)
+  const formulaFiles = listTSVFiles(FORMULAS_DIR).filter(f => !f.endsWith('shared.tsv'));
   const formulas: Array<{
     id: string;
     formula: string;

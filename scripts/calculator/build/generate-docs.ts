@@ -3,10 +3,19 @@
  */
 
 import { readTSV, writeFile, listTSVFiles, formatNumber } from './utils.js';
-import { join } from 'path';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 
-const PARAMS_DIR = 'data/parameters';
-const FORMULAS_DIR = 'data/formulas';
+// Get the directory of this script
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+// Data directories (relative to repo root, which is 3 levels up from build/)
+const DATA_ROOT = join(__dirname, '..', '..', '..', 'data');
+const FORMULAS_DIR = join(DATA_ROOT, 'formulas');
+const ORGANISMS_DIR = join(DATA_ROOT, 'organisms');
+const IMAGING_DIR = join(DATA_ROOT, 'imaging');
+const COSTS_DIR = join(DATA_ROOT, 'costs');
+const DOCS_DIR = join(__dirname, '..', 'docs');
 
 interface ParameterRow {
   id: string;
@@ -34,14 +43,14 @@ async function generateDocs(): Promise<void> {
   let paramsMd = `# Parameter Reference
 
 This document describes all input parameters used in the brain emulation calculator.
-These values can be edited in the TSV files under \`data/parameters/\`.
+These values can be edited in the TSV files under the \`data/\` directory.
 
 ---
 
 `;
 
   // Shared parameters
-  const shared = readTSV<ParameterRow>(join(PARAMS_DIR, 'shared.tsv'));
+  const shared = readTSV<ParameterRow>(join(FORMULAS_DIR, 'shared.tsv'));
   paramsMd += `## Shared Parameters
 
 Project-level parameters that apply across all calculations.
@@ -56,7 +65,7 @@ Project-level parameters that apply across all calculations.
   paramsMd += '\n';
 
   // Imaging modalities
-  const modalities = readTSV<ParameterRow>(join(PARAMS_DIR, 'imaging-modalities.tsv'));
+  const modalities = readTSV<ParameterRow>(join(IMAGING_DIR, 'imaging-modalities.tsv'));
   const modalityIds = Object.keys(modalities[0] || {}).filter(
     k => !['id', 'name', 'definition', 'unit', 'source'].includes(k)
   );
@@ -78,7 +87,7 @@ Parameters specific to each imaging technology.
   paramsMd += '\n';
 
   // Organisms
-  const organisms = readTSV<ParameterRow>(join(PARAMS_DIR, 'organisms.tsv'));
+  const organisms = readTSV<ParameterRow>(join(ORGANISMS_DIR, 'organisms.tsv'));
   paramsMd += `## Organisms
 
 Reference data for different model organisms.
@@ -92,7 +101,7 @@ Reference data for different model organisms.
   paramsMd += '\n';
 
   // Proofreading
-  const proofreading = readTSV<ParameterRow>(join(PARAMS_DIR, 'proofreading.tsv'));
+  const proofreading = readTSV<ParameterRow>(join(COSTS_DIR, 'proofreading.tsv'));
   paramsMd += `## Proofreading Parameters
 
 Human proofreading assumptions for different technology scenarios.
@@ -105,7 +114,7 @@ Human proofreading assumptions for different technology scenarios.
   }
   paramsMd += '\n';
 
-  writeFile('docs/parameters.md', paramsMd);
+  writeFile(join(DOCS_DIR, 'parameters.md'), paramsMd);
   console.log('  ✅ Generated docs/parameters.md');
 
   // Generate formulas documentation
@@ -118,7 +127,8 @@ Formulas are defined in TSV files under \`data/formulas/\` and evaluated using [
 
 `;
 
-  const formulaFiles = listTSVFiles(FORMULAS_DIR);
+  // Exclude shared.tsv which is a parameter file, not formulas
+  const formulaFiles = listTSVFiles(FORMULAS_DIR).filter(f => !f.endsWith('shared.tsv'));
 
   for (const file of formulaFiles) {
     const filename = file.split('/').pop()?.replace('.tsv', '') || '';
@@ -170,7 +180,7 @@ automatically resolves these dependencies in the correct order.
     }
   }
 
-  writeFile('docs/formulas.md', formulasMd);
+  writeFile(join(DOCS_DIR, 'formulas.md'), formulasMd);
   console.log('  ✅ Generated docs/formulas.md');
 
   console.log('\n✅ Documentation generation complete');

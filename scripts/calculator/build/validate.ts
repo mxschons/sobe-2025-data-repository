@@ -9,11 +9,24 @@
 
 import { parse } from 'mathjs';
 import { readTSV, listTSVFiles } from './utils.js';
-import { join } from 'path';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 
-const DATA_DIR = 'data';
-const PARAMS_DIR = join(DATA_DIR, 'parameters');
-const FORMULAS_DIR = join(DATA_DIR, 'formulas');
+// Get the directory of this script
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+// Data directories (relative to repo root, which is 3 levels up from build/)
+const DATA_ROOT = join(__dirname, '..', '..', '..', 'data');
+const FORMULAS_DIR = join(DATA_ROOT, 'formulas');
+
+// Parameter files are now spread across multiple directories
+const PARAM_FILES = [
+  join(DATA_ROOT, 'formulas', 'shared.tsv'),
+  join(DATA_ROOT, 'organisms', 'organisms.tsv'),
+  join(DATA_ROOT, 'imaging', 'imaging-modalities.tsv'),
+  join(DATA_ROOT, 'recordings', 'neural-recording.tsv'),
+  join(DATA_ROOT, 'costs', 'proofreading.tsv'),
+];
 
 interface ParameterRow {
   id: string;
@@ -40,9 +53,8 @@ async function validate(): Promise<void> {
 
   // Collect all parameter IDs
   const allParamIds = new Set<string>();
-  const paramFiles = listTSVFiles(PARAMS_DIR);
 
-  for (const file of paramFiles) {
+  for (const file of PARAM_FILES) {
     console.log(`  Checking ${file}...`);
     const rows = readTSV<ParameterRow>(file);
 
@@ -65,10 +77,10 @@ async function validate(): Promise<void> {
 
   console.log(`  Found ${allParamIds.size} parameters\n`);
 
-  // Collect and validate all formulas
+  // Collect and validate all formulas (exclude shared.tsv which is a parameter file)
   const allFormulaIds = new Set<string>();
   const formulaDeps = new Map<string, string[]>();
-  const formulaFiles = listTSVFiles(FORMULAS_DIR);
+  const formulaFiles = listTSVFiles(FORMULAS_DIR).filter(f => !f.endsWith('shared.tsv'));
 
   for (const file of formulaFiles) {
     console.log(`  Checking ${file}...`);
