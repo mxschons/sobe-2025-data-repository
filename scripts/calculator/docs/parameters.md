@@ -1,7 +1,7 @@
 # Parameter Reference
 
 This document describes all input parameters used in the brain emulation calculator.
-These values can be edited in the TSV files under `data/parameters/`.
+These values can be edited in the TSV files under the `data/` directory.
 
 ---
 
@@ -11,51 +11,51 @@ Project-level parameters that apply across all calculations.
 
 | Parameter | Value | Unit | Description |
 |-----------|-------|------|-------------|
-| Volume (biological) | undefined | mm³ | Physical brain volume to be mapped |
-| Number of neurons | undefined | count | Number of neurons in the given volume |
-| Risk buffer first connectome | undefined | fraction | Budget and schedule contingency fraction |
-| Risk buffer marginal connectomes | undefined | fraction | Budget and schedule contingency fraction |
-| Years until start | undefined | years | Years from now when initial purchases are made |
-| Project duration | undefined | years | Time span for overall project |
-| Microscope budget | undefined | $ | Upfront investment in microscopes |
-| Max parallel GPUs | undefined | count | Number of GPUs dedicated during processing |
-| Facility per year | undefined | $/year | Cleanroom, isolation, HVAC, racks |
-| Average staff salary | undefined | $/year | Average salary with all overheads |
-| Project management staff | undefined | FTE | Staff for project oversight |
-| Technical staff | undefined | FTE | Beyond sample and microscope operations |
-| Misc staff | undefined | FTE | Operations, assistants, PR, etc |
-| Other costs per connectome | undefined | $ | Shipping, permits, biosafety, IP, pubs |
-| Data science development | undefined | $ | Pipelines, data mgmt, viewers, model training |
-| Capital base | undefined | $ | Scopes + facility + core SW + initial training |
-| Peak FLOPs/s GPU | undefined | TFLOPs/s | Maximum FP16 FLOP/s for GPU |
-| GPU utilization | undefined | fraction | Continuous GPU usage across time |
-| GPU cost per hour | undefined | $/hour | Costs for access to 1h of GPU |
-| Cost drop compute/year | undefined | fraction | Cost drop compute per year |
-| Cost drop storage/year | undefined | fraction | Cost drop storage per year |
-| Active storage cost | undefined | $/PB-month | Storage for working files |
-| Archive storage cost | undefined | $/PB-month | Storage for backup files |
-| Bytes per voxel | undefined | bytes | Assuming 8-bits per voxel |
-| Lossless compression | undefined | × | Raw to lossless ratio |
-| Lossy compression | undefined | × | Raw to lossy ratio |
-| Label overhead | undefined | fraction | Labels + meshes + skeletons + graphs |
-| Replicas active (first) | undefined | count | Hot copies lossless online first |
-| Replicas archive (first) | undefined | count | Cold copies retained first |
-| Replicas active (marginal) | undefined | count | Hot copies lossless online marginal |
-| Replicas archive (marginal) | undefined | count | Cold copies retained marginal |
-| Active retention | undefined | years | How long active copies are kept |
-| Archive retention | undefined | years | How long archive copies are kept |
-| Active storage cost/PB-year | undefined | $/PB-year | Online storage price |
-| Archive storage cost/PB-year | undefined | $/PB-year | Archive storage price |
-| FLOPs registration/tile | undefined | TFLOP/tile | FP32-equivalent per tile |
-| Segmentation FLOPs/voxel | undefined | TFLOP/voxel | FP32-equivalent per voxel |
-| Registration rate | undefined | PV/day/GPU | PV processed per day per GPU |
-| Segmentation rate | undefined | PV/day/GPU | PV processed per day per GPU |
+| Volume (biological) | 500 | mm³ | Physical brain volume to be mapped |
+| Number of neurons | 70.0M | count | Number of neurons in the given volume |
+| Risk buffer first connectome | 0.20 | fraction | Budget and schedule contingency fraction |
+| Risk buffer marginal connectomes | 0.05 | fraction | Budget and schedule contingency fraction |
+| Years until start | 0 | years | Years from now when initial purchases are made |
+| Project duration | 5 | years | Time span for overall project |
+| Microscope budget | 50.0M | $ | Upfront investment in microscopes |
+| Max parallel GPUs | 1.0K | count | Number of GPUs dedicated during processing |
+| Facility per year | 2.0M | $/year | Cleanroom, isolation, HVAC, racks |
+| Average staff salary | 150.0K | $/year | Average salary with all overheads |
+| Project management staff | 10 | FTE | Staff for project oversight |
+| Technical staff | 15 | FTE | Beyond sample and microscope operations |
+| Misc staff | 10 | FTE | Operations, assistants, PR, etc |
+| Other costs per connectome | 250.0K | $ | Shipping, permits, biosafety, IP, pubs |
+| Data science development | 2.0M | $ | Pipelines, data mgmt, viewers, model training |
+| Capital base | 55.0M | $ | Scopes + facility + core SW + initial training |
+| Peak FLOPs/s GPU | 2.0K | TFLOPs/s | Maximum FP16 FLOP/s for GPU |
+| GPU utilization | 0.80 | fraction | Continuous GPU usage across time |
+| GPU cost per hour | 2 | $/hour | Costs for access to 1h of GPU |
+| Cost drop compute/year | 0.10 | fraction | Cost drop compute per year |
+| Cost drop storage/year | 0.05 | fraction | Cost drop storage per year |
+| Active storage cost | 2.6K | $/PB-month | Storage for working files |
+| Archive storage cost | 2.0K | $/PB-month | Storage for backup files |
+| Bytes per voxel | 1 | bytes | Assuming 8-bits per voxel |
+| Lossless compression | 1.50 | × | Raw to lossless ratio |
+| Lossy compression | 120 | × | Raw to lossy ratio |
+| Label overhead | 0.05 | fraction | Labels + meshes + skeletons + graphs |
+| Replicas active (first) | 3 | count | Hot copies lossless online first |
+| Replicas archive (first) | 2 | count | Cold copies retained first |
+| Replicas active (marginal) | 1 | count | Hot copies lossless online marginal |
+| Replicas archive (marginal) | 0 | count | Cold copies retained marginal |
+| Active retention | 5 | years | How long active copies are kept |
+| Archive retention | 10 | years | How long archive copies are kept |
+| Active storage cost/PB-year | 31.5K | $/PB-year | Online storage price |
+| Archive storage cost/PB-year | 24.0K | $/PB-year | Archive storage price |
+| FLOPs registration/tile | 450 | TFLOP/tile | FP32-equivalent per tile |
+| Segmentation FLOPs/voxel | 0.00 | TFLOP/voxel | FP32-equivalent per voxel |
+| Registration rate | 10 | PV/day/GPU | PV processed per day per GPU |
+| Segmentation rate | 5 | PV/day/GPU | PV processed per day per GPU |
 
 ## Imaging Modalities
 
 Parameters specific to each imaging technology.
 
-| Parameter | Unit | EM | EXM | EXM_MOLECULAR | WELLCOME |
+| Parameter | Unit | EM | EXM | EXM_MOLECULAR | WELLCOME |
 |-----------|------|---|---|---|---|
 | Microscope capital cost | $/scope | 500.0K | 500.0K | 500.0K | 5.0M |
 | Depreciation horizon | years | 10 | 5 | 5 | 10 |
@@ -98,8 +98,8 @@ Human proofreading assumptions for different technology scenarios.
 
 | Parameter | Unit | Current | 1000× Improved |
 |-----------|------|---------|----------------|
-| Human proofreading hours per neuron | hours | 5 | NaN |
-| Hourly rate of proof-reader | $/hour | 50 | NaN |
-| Proofreading hours per day | hours/day | 6 | NaN |
-| Number of proofreaders | count | 25.0K | NaN |
+| Human proofreading hours per neuron | hours | 5 | 0.01 |
+| Hourly rate of proof-reader | $/hour | 50 | 50 |
+| Proofreading hours per day | hours/day | 6 | 6 |
+| Number of proofreaders | count | 25.0K | 1.0K |
 
