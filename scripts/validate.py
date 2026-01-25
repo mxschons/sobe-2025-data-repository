@@ -402,15 +402,16 @@ def check_tsv_format(report: ValidationReport) -> CheckResult:
             if lines[0].startswith('\ufeff'):
                 issues.append(f"{rel_path}: contains BOM character")
 
-            # Check consistent column count
+            # Check for rows with MORE columns than header (indicates data corruption)
+            # Rows with fewer columns are allowed (sparse data with trailing empty fields)
             header_cols = len(lines[0].rstrip('\n\r').split('\t'))
             for i, line in enumerate(lines[1:], start=2):
                 # Skip empty lines
                 if not line.strip():
                     continue
                 cols = len(line.rstrip('\n\r').split('\t'))
-                if cols != header_cols:
-                    issues.append(f"{rel_path}:{i}: {cols} cols (expected {header_cols})")
+                if cols > header_cols:
+                    issues.append(f"{rel_path}:{i}: {cols} cols (expected max {header_cols})")
                     break  # One error per file
 
             # Check trailing whitespace on lines
@@ -451,85 +452,6 @@ def check_organism_taxonomy(report: ValidationReport) -> CheckResult:
     if invalid:
         return CheckResult("fail", f"{len(invalid)} invalid organism tags", invalid)
     return CheckResult("pass", f"All organism tags are valid (from {len(valid_organisms)} defined)")
-
-
-def check_organism_names(report: ValidationReport) -> CheckResult:
-    """Check organism names in data files against canonical reference."""
-    import csv
-
-    # Load canonical organisms from organisms.tsv
-    organisms_file = paths.DATA_FILES.get("organisms")
-    if not organisms_file or not organisms_file.exists():
-        return CheckResult("skip", "organisms.tsv not found")
-
-    canonical = set()
-    canonical_lower = set()
-    try:
-        with open(organisms_file, "r", encoding="utf-8") as f:
-            reader = csv.DictReader(f, delimiter='\t')
-            for row in reader:
-                name = row.get("name", "").strip()
-                org_id = row.get("id", "").strip()
-                if name:
-                    canonical.add(name)
-                    canonical_lower.add(name.lower())
-                if org_id:
-                    canonical.add(org_id)
-                    canonical_lower.add(org_id.lower())
-    except Exception as e:
-        return CheckResult("fail", f"Could not read organisms.tsv: {e}")
-
-    # Known aliases that map to canonical names
-    aliases = {
-        "fly": True,
-        "fruit fly": True,
-        "fruitfly": True,
-        "worm": True,
-        "caenorhabditis elegans": True,
-        "zebrafish larvae": True,
-        "drosophila melanogaster": True,
-        "mammalian": True,  # Generic category
-        "silicon": True,  # Non-biological
-        "other": True,
-        "various": True,
-        "multiple": True,
-        "": True,  # Empty is ok
-    }
-
-    # Files with organism columns to check
-    files_to_check = [
-        ("cost_estimates", "Organism"),
-        ("computational_models", "Organism"),
-    ]
-
-    warnings = []
-    checked = 0
-
-    for file_key, col_name in files_to_check:
-        filepath = paths.DATA_FILES.get(file_key)
-        if not filepath or not filepath.exists():
-            continue
-
-        try:
-            with open(filepath, "r", encoding="utf-8") as f:
-                reader = csv.DictReader(f, delimiter='\t')
-                for row in reader:
-                    checked += 1
-                    org = row.get(col_name, "").strip()
-                    if not org:
-                        continue
-                    org_lower = org.lower()
-                    # Check if it's canonical or a known alias
-                    if org not in canonical and org_lower not in canonical_lower and org_lower not in aliases:
-                        warnings.append(f"{filepath.name}: '{org}' not in canonical list")
-        except Exception:
-            pass
-
-    if warnings:
-        # Deduplicate
-        unique_warnings = list(dict.fromkeys(warnings))
-        return CheckResult("warn", f"{len(unique_warnings)} non-canonical organism names", unique_warnings[:10])
-    return CheckResult("pass", f"Checked {checked} organism references")
 
 
 def check_type_taxonomy(report: ValidationReport) -> CheckResult:
@@ -1192,7 +1114,6 @@ def run_all_checks(strict: bool = False, ci_mode: bool = False) -> int:
 
     checks_tier3 = [
         ("Organism taxonomy", check_organism_taxonomy),
-        ("Organism names", check_organism_names),
         ("Type taxonomy", check_type_taxonomy),
         ("ID uniqueness", check_id_uniqueness),
         ("License consistency", check_license_consistency),

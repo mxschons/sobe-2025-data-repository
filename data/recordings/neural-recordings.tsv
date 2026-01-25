@@ -154,7 +154,7 @@ Year	Month	Neurons	Authors	Method	Source	Publication	Method Note	DOI
 2013	6	134.0	Aggarwal et al.	Ephys	Stevenson	Journal of Neurophysiology		https://doi.org/10.1152/jn.01038.2011
 2013	11	497.0	Ifft et al.	Ephys	Stevenson	Science Translational Medicine		https://doi.org/10.1126/scitranslmed.3006159
 2013	3	80000.0	Ahrens et al. 	Imaging	Urai	Nature Methods	light-sheet	https://doi.org/10.1038/nmeth.2434
-2013	2	740.0	Ziv et al.	Imaging	Urai	Nature Neuroscience		https://doi.org/10.1038/nn.3329 
+2013	2	740.0	Ziv et al.	Imaging	Urai	Nature Neuroscience		https://doi.org/10.1038/nn.3329
 2013	7		Chen et al. 	Imaging	Svoboda	Nature	Gcamp6. note that the major advance in imaging over the last 15 years have been sensors, not microscopes; better sensor --> more neurons at fixed SNR	https://doi.org/10.1038/nature12354
 2013	10	411.0	Cotton et al.	Imaging	Meijer	Frontiers in Neural Circuits		https://doi.org/10.3389/fncir.2013.00151
 2014	1	3200.0	Maccione et al.	Ephys	Stevenson	Journal of Physiology	retina MEA, approximate	https://doi.org/10.1113/jphysiol.2013.262840
@@ -178,14 +178,14 @@ Year	Month	Neurons	Authors	Method	Source	Publication	Method Note	DOI
 2017	7	10000.0	Pachitariu et al.	Imaging	Meijer	bioRxiv		https://doi.org/10.1101/061507
 2018	1	146.0	Rutishauser et al.	Ephys	Stevenson	Neuron		https://doi.org/10.1016/j.neuron.2017.11.029
 2018	4	375.0	Chung et al.	Ephys	Stevenson	Biorxiv		https://doi.org/10.1101/242693
-2018	11	80000.0	Chen et al. 	Imaging	Urai	Neuron	zebrafish, light-sheet	https://doi.org/10.1016/j.neuron.2018.09.042 
+2018	11	80000.0	Chen et al. 	Imaging	Urai	Neuron	zebrafish, light-sheet	https://doi.org/10.1016/j.neuron.2018.09.042
 2019	4	2668.0	Stringer et al.	Ephys	Stevenson	Science	Neuropixels	https://doi.org/10.1101/306019
 2019	10	1026.0	Bartolo et al.	Ephys	Stevenson	PLoS Comp Biology	8 utah arrays	https://doi.org/10.1371/journal.pcbi.1007514
 2019	11	1769.0	Steinmetz et al.	Ephys	Stevenson	Nature	Neuropixels (max count - from shared data)	https://doi.org/10.1038/s41586-019-1787-x
 2019	4	11262.0	Stringer et al. 	Imaging	Urai	Science	2p	https://doi.org/10.1126/science.aav7893
 2019	4	11907.0	Weisenburger et al.	Imaging	Urai	Cell		https://doi.org/10.1016/j.cell.2019.03.011
 2020	2	828.0	Bartolo et al.	Ephys	Stevenson	Journal of Neuroscience	8 utah arrays	https://doi.org/10.1523/JNEUROSCI.2072-19.2019
-2020	3	221.0	Obaid et al.	Ephys	Urai	Science Advances		https://doi.org/10.1126/sciadv.aay2789 
+2020	3	221.0	Obaid et al.	Ephys	Urai	Science Advances		https://doi.org/10.1126/sciadv.aay2789
 2020	3	2000.0	Rumyantsev et al.	Imaging	Rupprecht	Nature	2p	https://doi.org/10.1038/s41586-020-2130-2
 2020	7	16000.0	Ota et al. 	Imaging	Urai	bioRxiv		https://doi.org/10.1101/2020.07.14.201699
 2020	7	791.0	Sahasrabuddhe et al.	Ephys	Urai	bioRxiv		https://doi.org/10.1101/2020.07.17.209403

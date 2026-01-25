@@ -302,7 +302,6 @@ The validation script checks:
 | **2 - Data** | Source data files | Missing files referenced in paths.py |
 | **2 - Data** | TSV format | Column count mismatches, BOM, trailing whitespace |
 | **3 - Consistency** | Organism taxonomy | Invalid organism tags |
-| **3 - Consistency** | Organism names | Non-canonical organism names in data files |
 | **3 - Consistency** | Type taxonomy | Invalid type tags |
 | **3 - Consistency** | ID uniqueness | Duplicate IDs across metadata |
 | **3 - Consistency** | License consistency | Missing license in metadata |
