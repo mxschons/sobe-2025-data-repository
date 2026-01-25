@@ -10,28 +10,53 @@
           "id": "neuron-simulations",
           "title": "Neuron Simulations Database",
           "description": "Compilation of neural simulation projects including neuron/synapse counts, hardware specifications, and simulation parameters across organisms from C. elegans to human.",
-          "filename": "Neuron Simulations - TASK 3 - Sheet1.csv",
+          "filename": "Neuron Simulations - TASK 3 - Sheet1.tsv",
           "path": "data",
           "rows": "50+",
-          "columns": ["Simulation/Initiative", "Type", "Neurons", "Synapses", "Hardware/Software", "Timestep", "Organism"]
+          "columns": [
+            "Simulation/Initiative",
+            "Type",
+            "Neurons",
+            "Synapses",
+            "Hardware/Software",
+            "Timestep",
+            "Organism"
+          ]
         },
         {
           "id": "computational-models",
           "title": "Computational Models of the Brain",
           "description": "Historical compilation of computational brain models from 1992 to present, tracking evolution from silicon implementations to biophysical models.",
-          "filename": "State of Brain Emulation Report 2025 Data Repository - Computational Models of the Brain.csv",
+          "filename": "State of Brain Emulation Report 2025 Data Repository - Computational Models of the Brain.tsv",
           "path": "data",
           "rows": "30+",
-          "columns": ["Author", "Year", "Organism", "Connectivity", "Neuron Types", "Plasticity", "Model Type", "Neurons", "Synapses"]
+          "columns": [
+            "Author",
+            "Year",
+            "Organism",
+            "Connectivity",
+            "Neuron Types",
+            "Plasticity",
+            "Model Type",
+            "Neurons",
+            "Synapses"
+          ]
         },
         {
           "id": "computational-demands",
           "title": "Computational Demands by Organism",
           "description": "Computational requirements (FLOPS, memory) for simulating nervous systems of different organisms, from nematodes to humans.",
-          "filename": "State of Brain Emulation Report 2025 Data Repository - Computational Demands Organisms.csv",
+          "filename": "State of Brain Emulation Report 2025 Data Repository - Computational Demands Organisms.tsv",
           "path": "data",
           "rows": "10",
-          "columns": ["Organism", "Neurons", "Synapses", "Firing Rate", "Spike Rate", "FLOPS Required"]
+          "columns": [
+            "Organism",
+            "Neurons",
+            "Synapses",
+            "Firing Rate",
+            "Spike Rate",
+            "FLOPS Required"
+          ]
         }
       ]
     },
@@ -45,64 +70,105 @@
           "id": "recordings-history",
           "title": "Neural Recordings History",
           "description": "Historical neural recording data from 1957 to present, tracking the progression of electrophysiology and imaging techniques.",
-          "filename": "Neural recordings - Neurons_year.csv",
+          "filename": "Neural recordings - Neurons_year.tsv",
           "path": "data",
           "rows": "100+",
-          "columns": ["Year", "Neuron Count", "Authors", "Method", "Publication", "DOI"]
+          "columns": [
+            "Year",
+            "Neuron Count",
+            "Authors",
+            "Method",
+            "Publication",
+            "DOI"
+          ]
         },
         {
           "id": "neural-dynamics",
           "title": "Neural Dynamics References",
           "description": "Neural recording studies with detailed temporal and spatial resolution metrics across model organisms.",
-          "filename": "State of Brain Emulation Report 2025 Data Repository - Neural Dynamics References.csv",
+          "filename": "State of Brain Emulation Report 2025 Data Repository - Neural Dynamics References.tsv",
           "path": "data",
           "rows": "50+",
-          "columns": ["Author", "Year", "Organism", "Method", "Temporal Resolution", "Spatial Resolution", "Neurons Recorded"]
+          "columns": [
+            "Author",
+            "Year",
+            "Organism",
+            "Method",
+            "Temporal Resolution",
+            "Spatial Resolution",
+            "Neurons Recorded"
+          ]
         },
         {
           "id": "information-rate",
           "title": "Neural Information Rate",
           "description": "Evolution of neural recording techniques and information yield from 2014-2021, including Neuropixels advances.",
-          "filename": "State of Brain Emulation Report 2025 Data Repository - Neural Information Rate.csv",
+          "filename": "State of Brain Emulation Report 2025 Data Repository - Neural Information Rate.tsv",
           "path": "data",
           "rows": "30+",
-          "columns": ["Year", "Authors", "Method", "Temporal Resolution", "Information Rate"]
+          "columns": [
+            "Year",
+            "Authors",
+            "Method",
+            "Temporal Resolution",
+            "Information Rate"
+          ]
         },
         {
           "id": "recording-comparison",
           "title": "Recording Methods Comparison",
           "description": "Comparison of recording techniques by spatial volume and cell resolution capabilities.",
-          "filename": "State of Brain Emulation Report 2025 Data Repository - Comparison recording methods across volumes.csv",
+          "filename": "State of Brain Emulation Report 2025 Data Repository - Comparison recording methods across volumes.tsv",
           "path": "data",
           "rows": "10",
-          "columns": ["Volume", "Resolution", "Total Voxels", "Coverage"]
+          "columns": [
+            "Volume",
+            "Resolution",
+            "Total Voxels",
+            "Coverage"
+          ]
         },
         {
           "id": "recording-comparison-simple",
           "title": "Comparison Recordings",
           "description": "Simplified comparison of recording methodologies.",
-          "filename": "State of Brain Emulation Report 2025 Data Repository - Comparison recordings.csv",
+          "filename": "State of Brain Emulation Report 2025 Data Repository - Comparison recordings.tsv",
           "path": "data",
           "rows": "10",
-          "columns": ["Method", "Resolution", "Coverage"]
+          "columns": [
+            "Method",
+            "Resolution",
+            "Coverage"
+          ]
         },
         {
           "id": "neurodynamics-organisms",
           "title": "Neurodynamics Recording Papers - Organisms",
           "description": "Recording papers organized by organism studied.",
-          "filename": "Neurodynamics recording papers - Organisms.csv",
+          "filename": "Neurodynamics recording papers - Organisms.tsv",
           "path": "data",
           "rows": "10",
-          "columns": ["Organism", "Papers", "References"]
+          "columns": [
+            "Organism",
+            "Papers",
+            "References"
+          ]
         },
         {
           "id": "neurodynamics-papers",
           "title": "Neurodynamics Recording Papers",
           "description": "Detailed list of neural dynamics recording publications.",
-          "filename": "Neurodynamics recording papers - Papers.csv",
+          "filename": "Neurodynamics recording papers - Papers.tsv",
           "path": "data",
           "rows": "30+",
-          "columns": ["Author", "Year", "Title", "Journal", "Organism", "Method"]
+          "columns": [
+            "Author",
+            "Year",
+            "Title",
+            "Journal",
+            "Organism",
+            "Method"
+          ]
         }
       ]
     },
@@ -116,55 +182,97 @@
           "id": "connectomics-2nm",
           "title": "Connectomics at 2nm Resolution",
           "description": "Highest resolution connectomics data with time and cost estimates for complete brain mapping.",
-          "filename": "State of Brain Emulation Report 2025 Data Repository - Connectomics 2nm.csv",
+          "filename": "State of Brain Emulation Report 2025 Data Repository - Connectomics 2nm.tsv",
           "path": "data",
           "rows": "5",
-          "columns": ["Year", "Imaging Technique", "Voxel Dimensions", "Volume Rate", "Time Estimate", "Cost"]
+          "columns": [
+            "Year",
+            "Imaging Technique",
+            "Voxel Dimensions",
+            "Volume Rate",
+            "Time Estimate",
+            "Cost"
+          ]
         },
         {
           "id": "connectomics-10nm",
           "title": "Connectomics at 10nm Resolution",
           "description": "Connectomics feasibility data at 10nm resolution for mouse and human brain mapping.",
-          "filename": "State of Brain Emulation Report 2025 Data Repository - Connectomics 10nm.csv",
+          "filename": "State of Brain Emulation Report 2025 Data Repository - Connectomics 10nm.tsv",
           "path": "data",
           "rows": "5",
-          "columns": ["Year", "Imaging Technique", "Voxel Dimensions", "Volume Rate", "Time Estimate", "Cost"]
+          "columns": [
+            "Year",
+            "Imaging Technique",
+            "Voxel Dimensions",
+            "Volume Rate",
+            "Time Estimate",
+            "Cost"
+          ]
         },
         {
           "id": "connectomics-25nm",
           "title": "Connectomics at 25nm Resolution",
           "description": "Mid-range resolution connectomics with more practical timelines for brain reconstruction.",
-          "filename": "State of Brain Emulation Report 2025 Data Repository - Connectomics 25nm.csv",
+          "filename": "State of Brain Emulation Report 2025 Data Repository - Connectomics 25nm.tsv",
           "path": "data",
           "rows": "5",
-          "columns": ["Year", "Imaging Technique", "Voxel Dimensions", "Volume Rate", "Time Estimate", "Cost"]
+          "columns": [
+            "Year",
+            "Imaging Technique",
+            "Voxel Dimensions",
+            "Volume Rate",
+            "Time Estimate",
+            "Cost"
+          ]
         },
         {
           "id": "connectomics-50nm",
           "title": "Connectomics at 50nm Resolution",
           "description": "Lower resolution connectomics offering the most feasible timelines for whole-brain mapping.",
-          "filename": "State of Brain Emulation Report 2025 Data Repository - Connectomics 50nm.csv",
+          "filename": "State of Brain Emulation Report 2025 Data Repository - Connectomics 50nm.tsv",
           "path": "data",
           "rows": "5",
-          "columns": ["Year", "Imaging Technique", "Voxel Dimensions", "Volume Rate", "Time Estimate", "Cost"]
+          "columns": [
+            "Year",
+            "Imaging Technique",
+            "Voxel Dimensions",
+            "Volume Rate",
+            "Time Estimate",
+            "Cost"
+          ]
         },
         {
           "id": "brain-scans",
           "title": "Large-Scale Brain Imaging Datasets",
           "description": "Compilation of major brain imaging datasets including volume, resolution, acquisition time, and costs.",
-          "filename": "Copy of (best) Upwork_TASK 1 (2) - Sheet1.csv",
+          "filename": "Copy of (best) Upwork_TASK 1 (2) - Sheet1.tsv",
           "path": "data/brain-scans",
           "rows": "20+",
-          "columns": ["Author", "Year", "Organism", "Dataset", "Volume", "Resolution", "Size (TB)", "Cost"]
+          "columns": [
+            "Author",
+            "Year",
+            "Organism",
+            "Dataset",
+            "Volume",
+            "Resolution",
+            "Size (TB)",
+            "Cost"
+          ]
         },
         {
           "id": "tracing-trends",
           "title": "Neuron Tracing Methods Evolution",
           "description": "Historical evolution from manual tracing (1986) to modern semi-automatic approaches.",
-          "filename": "State of Brain Emulation Report 2025 Data Repository - Tracing Trends References.csv",
+          "filename": "State of Brain Emulation Report 2025 Data Repository - Tracing Trends References.tsv",
           "path": "data",
           "rows": "10",
-          "columns": ["Year", "Method", "Source", "Notes"]
+          "columns": [
+            "Year",
+            "Method",
+            "Source",
+            "Notes"
+          ]
         }
       ]
     },
@@ -178,55 +286,94 @@
           "id": "neuron-reconstruction-costs",
           "title": "Neuron Reconstruction Costs",
           "description": "Historical cost data showing dramatic reduction from $16,556/neuron (1986) to $100/neuron (2022).",
-          "filename": "State of Brain Emulation Report 2025 Data Repository - Cost estimates Neuron Reconstruction.csv",
+          "filename": "State of Brain Emulation Report 2025 Data Repository - Cost estimates Neuron Reconstruction.tsv",
           "path": "data",
           "rows": "15",
-          "columns": ["Organism", "Year", "Neurons", "Total Cost", "Cost per Neuron", "Reference"]
+          "columns": [
+            "Organism",
+            "Year",
+            "Neurons",
+            "Total Cost",
+            "Cost per Neuron",
+            "Reference"
+          ]
         },
         {
           "id": "neuroscience-megaprojects",
           "title": "Neuroscience Megaprojects",
           "description": "Funding data for major neuroscience initiatives and commercial brain-computer interfaces.",
-          "filename": "State of Brain Emulation Report 2025 Data Repository - Costs Neuroscience Megaprojects.csv",
+          "filename": "State of Brain Emulation Report 2025 Data Repository - Costs Neuroscience Megaprojects.tsv",
           "path": "data",
           "rows": "20+",
-          "columns": ["Project", "Category", "Start Year", "Funding ($M)", "Status", "Reference"]
+          "columns": [
+            "Project",
+            "Category",
+            "Start Year",
+            "Funding ($M)",
+            "Status",
+            "Reference"
+          ]
         },
         {
           "id": "comparison-megaprojects",
           "title": "Non-Neuroscience Megaprojects (Comparison)",
           "description": "Large-scale project costs (military, communications, medicine) for scale comparison.",
-          "filename": "State of Brain Emulation Report 2025 Data Repository - Costs Non-Neuroscience Megaprojects.csv",
+          "filename": "State of Brain Emulation Report 2025 Data Repository - Costs Non-Neuroscience Megaprojects.tsv",
           "path": "data",
           "rows": "15",
-          "columns": ["Project", "Cost ($B)", "Field", "Source", "Notes"]
+          "columns": [
+            "Project",
+            "Cost ($B)",
+            "Field",
+            "Source",
+            "Notes"
+          ]
         },
         {
           "id": "storage-costs",
           "title": "Historical Storage Costs",
           "description": "Storage media pricing trends from 1957 to present, showing exponential cost reduction.",
-          "filename": "historical-cost-of-computer-memory-and-storage.csv",
+          "filename": "historical-cost-of-computer-memory-and-storage.tsv",
           "path": "data/storage-costs",
           "rows": "50+",
-          "columns": ["Year", "Memory Price", "Flash Price", "Disk Price", "SSD Price"]
+          "columns": [
+            "Year",
+            "Memory Price",
+            "Flash Price",
+            "Disk Price",
+            "SSD Price"
+          ]
         },
         {
           "id": "compute-hardware",
           "title": "Compute Hardware Characteristics",
           "description": "Modern computing hardware benchmarked for neural simulation (MacBook to TPU v5e).",
-          "filename": "State of Brain Emulation Report 2025 Data Repository - Compute Hardware Characteristics.csv",
+          "filename": "State of Brain Emulation Report 2025 Data Repository - Compute Hardware Characteristics.tsv",
           "path": "data",
           "rows": "10",
-          "columns": ["System", "Year", "TFLOPs", "Memory (GB)", "Price", "Max Neurons"]
+          "columns": [
+            "System",
+            "Year",
+            "TFLOPs",
+            "Memory (GB)",
+            "Price",
+            "Max Neurons"
+          ]
         },
         {
           "id": "initiatives-costs",
           "title": "Major Infrastructure Project Costs",
           "description": "Global benchmark costs for large projects (F-35, Apollo, ISS) for comparison.",
-          "filename": "Digital Human Intelligence Figures - Costs of different projects.csv",
+          "filename": "Digital Human Intelligence Figures - Costs of different projects.tsv",
           "path": "data/initiatives",
           "rows": "15",
-          "columns": ["Name", "Category", "Cost ($M)", "Adjusted 2024", "Duration"]
+          "columns": [
+            "Name",
+            "Category",
+            "Cost ($M)",
+            "Adjusted 2024",
+            "Duration"
+          ]
         }
       ]
     },
@@ -240,10 +387,17 @@
           "id": "organism-characteristics",
           "title": "Organism Characteristics",
           "description": "Reference data for model organisms including brain volume, neuron counts, and firing rates.",
-          "filename": "State of Brain Emulation Report 2025 Data Repository - Organism Characteristics.csv",
+          "filename": "State of Brain Emulation Report 2025 Data Repository - Organism Characteristics.tsv",
           "path": "data",
           "rows": "5",
-          "columns": ["Organism", "Brain Volume (mm3)", "Neurons", "Max Firing Rate", "Lifetime", "Resolution Required"]
+          "columns": [
+            "Organism",
+            "Brain Volume (mm3)",
+            "Neurons",
+            "Max Firing Rate",
+            "Lifetime",
+            "Resolution Required"
+          ]
         }
       ]
     },
@@ -257,10 +411,18 @@
           "id": "brain-initiatives",
           "title": "Brain Research Initiatives Overview",
           "description": "Major brain research initiatives including Allen Institute, Human Brain Project, and BRAIN Initiative.",
-          "filename": "Overview of Brain Initiatives T4 v2.xlsx - Sheet1.csv",
+          "filename": "Overview of Brain Initiatives T4 v2.xlsx - Sheet1.tsv",
           "path": "data/initiatives",
           "rows": "20+",
-          "columns": ["Project", "Category", "Status", "Budget ($M)", "Funders", "Organism", "Description"]
+          "columns": [
+            "Project",
+            "Category",
+            "Status",
+            "Budget ($M)",
+            "Funders",
+            "Organism",
+            "Description"
+          ]
         }
       ]
     },
@@ -274,10 +436,15 @@
           "id": "neuroscience-repositories",
           "title": "Neuroscience Data Repositories",
           "description": "Major data repositories including NWB, OpenNeuro, DANDI, and BioImage Archive.",
-          "filename": "State of Brain Emulation Report 2025 Data Repository - Neuroscience Repositories.csv",
+          "filename": "State of Brain Emulation Report 2025 Data Repository - Neuroscience Repositories.tsv",
           "path": "data",
           "rows": "10",
-          "columns": ["Name", "URL", "Description", "Tags"]
+          "columns": [
+            "Name",
+            "URL",
+            "Description",
+            "Tags"
+          ]
         }
       ]
     },
@@ -291,10 +458,15 @@
           "id": "ai-training-compute",
           "title": "AI Training Computation",
           "description": "Training computation requirements for various AI models (petaFLOPs) for comparison.",
-          "filename": "artificial-intelligence-training-computation.csv",
+          "filename": "artificial-intelligence-training-computation.tsv",
           "path": "data/ai-compute",
           "rows": "50+",
-          "columns": ["Entity", "Day", "Training Computation (petaFLOP)", "Domain"]
+          "columns": [
+            "Entity",
+            "Day",
+            "Training Computation (petaFLOP)",
+            "Domain"
+          ]
         }
       ]
     }
