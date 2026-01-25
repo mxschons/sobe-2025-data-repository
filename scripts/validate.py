@@ -378,6 +378,56 @@ def check_data_metadata_files(report: ValidationReport) -> CheckResult:
     return CheckResult("pass", f"All {found} data files have metadata")
 
 
+def check_tsv_format(report: ValidationReport) -> CheckResult:
+    """Validate TSV files have consistent column counts and valid format."""
+    data_dir = paths.DATA_DIR
+    issues = []
+    checked = 0
+
+    for tsv_file in data_dir.rglob("*.tsv"):
+        if "_metadata" in str(tsv_file):
+            continue
+        checked += 1
+        rel_path = tsv_file.relative_to(data_dir)
+
+        try:
+            with open(tsv_file, "r", encoding="utf-8") as f:
+                lines = f.readlines()
+
+            if not lines:
+                issues.append(f"{rel_path}: empty file")
+                continue
+
+            # Check for BOM
+            if lines[0].startswith('\ufeff'):
+                issues.append(f"{rel_path}: contains BOM character")
+
+            # Check consistent column count
+            header_cols = len(lines[0].rstrip('\n\r').split('\t'))
+            for i, line in enumerate(lines[1:], start=2):
+                # Skip empty lines
+                if not line.strip():
+                    continue
+                cols = len(line.rstrip('\n\r').split('\t'))
+                if cols != header_cols:
+                    issues.append(f"{rel_path}:{i}: {cols} cols (expected {header_cols})")
+                    break  # One error per file
+
+            # Check trailing whitespace on lines
+            for i, line in enumerate(lines, start=1):
+                stripped = line.rstrip('\n\r')
+                if stripped != stripped.rstrip(' \t'):
+                    issues.append(f"{rel_path}:{i}: trailing whitespace")
+                    break
+
+        except Exception as e:
+            issues.append(f"{rel_path}: read error: {e}")
+
+    if issues:
+        return CheckResult("warn", f"{len(issues)} TSV format issues", issues)
+    return CheckResult("pass", f"All {checked} TSV files well-formed")
+
+
 # =============================================================================
 # TIER 3: Consistency Checks
 # =============================================================================
@@ -401,6 +451,85 @@ def check_organism_taxonomy(report: ValidationReport) -> CheckResult:
     if invalid:
         return CheckResult("fail", f"{len(invalid)} invalid organism tags", invalid)
     return CheckResult("pass", f"All organism tags are valid (from {len(valid_organisms)} defined)")
+
+
+def check_organism_names(report: ValidationReport) -> CheckResult:
+    """Check organism names in data files against canonical reference."""
+    import csv
+
+    # Load canonical organisms from organisms.tsv
+    organisms_file = paths.DATA_FILES.get("organisms")
+    if not organisms_file or not organisms_file.exists():
+        return CheckResult("skip", "organisms.tsv not found")
+
+    canonical = set()
+    canonical_lower = set()
+    try:
+        with open(organisms_file, "r", encoding="utf-8") as f:
+            reader = csv.DictReader(f, delimiter='\t')
+            for row in reader:
+                name = row.get("name", "").strip()
+                org_id = row.get("id", "").strip()
+                if name:
+                    canonical.add(name)
+                    canonical_lower.add(name.lower())
+                if org_id:
+                    canonical.add(org_id)
+                    canonical_lower.add(org_id.lower())
+    except Exception as e:
+        return CheckResult("fail", f"Could not read organisms.tsv: {e}")
+
+    # Known aliases that map to canonical names
+    aliases = {
+        "fly": True,
+        "fruit fly": True,
+        "fruitfly": True,
+        "worm": True,
+        "caenorhabditis elegans": True,
+        "zebrafish larvae": True,
+        "drosophila melanogaster": True,
+        "mammalian": True,  # Generic category
+        "silicon": True,  # Non-biological
+        "other": True,
+        "various": True,
+        "multiple": True,
+        "": True,  # Empty is ok
+    }
+
+    # Files with organism columns to check
+    files_to_check = [
+        ("cost_estimates", "Organism"),
+        ("computational_models", "Organism"),
+    ]
+
+    warnings = []
+    checked = 0
+
+    for file_key, col_name in files_to_check:
+        filepath = paths.DATA_FILES.get(file_key)
+        if not filepath or not filepath.exists():
+            continue
+
+        try:
+            with open(filepath, "r", encoding="utf-8") as f:
+                reader = csv.DictReader(f, delimiter='\t')
+                for row in reader:
+                    checked += 1
+                    org = row.get(col_name, "").strip()
+                    if not org:
+                        continue
+                    org_lower = org.lower()
+                    # Check if it's canonical or a known alias
+                    if org not in canonical and org_lower not in canonical_lower and org_lower not in aliases:
+                        warnings.append(f"{filepath.name}: '{org}' not in canonical list")
+        except Exception:
+            pass
+
+    if warnings:
+        # Deduplicate
+        unique_warnings = list(dict.fromkeys(warnings))
+        return CheckResult("warn", f"{len(unique_warnings)} non-canonical organism names", unique_warnings[:10])
+    return CheckResult("pass", f"Checked {checked} organism references")
 
 
 def check_type_taxonomy(report: ValidationReport) -> CheckResult:
@@ -662,6 +791,63 @@ def check_orphan_hand_drawn_figures(report: ValidationReport) -> CheckResult:
             orphans
         )
     return CheckResult("pass", "All hand-drawn figures are in metadata")
+
+
+def check_stale_figures(report: ValidationReport) -> CheckResult:
+    """Warn if source data is newer than generated figures."""
+    from datetime import datetime
+
+    # Key data files that affect figures
+    source_files = [
+        paths.DATA_FILES.get("neuron_simulations"),
+        paths.DATA_FILES.get("neural_recordings"),
+        paths.DATA_FILES.get("brain_scans"),
+        paths.DATA_FILES.get("ai_compute"),
+        paths.DATA_FILES.get("storage_costs"),
+    ]
+
+    figures_dir = paths.OUTPUT_FIGURES
+    if not figures_dir.exists():
+        return CheckResult("skip", "No generated figures directory")
+
+    # Find newest source file
+    newest_source = 0
+    newest_source_name = ""
+    for src in source_files:
+        if src and src.exists():
+            mtime = src.stat().st_mtime
+            if mtime > newest_source:
+                newest_source = mtime
+                newest_source_name = src.name
+
+    if newest_source == 0:
+        return CheckResult("skip", "No source data files found")
+
+    # Find oldest figure
+    oldest_figure = float('inf')
+    oldest_figure_name = ""
+    figure_count = 0
+    for fig in figures_dir.glob("*.svg"):
+        figure_count += 1
+        mtime = fig.stat().st_mtime
+        if mtime < oldest_figure:
+            oldest_figure = mtime
+            oldest_figure_name = fig.name
+
+    if figure_count == 0:
+        return CheckResult("skip", "No figures found")
+
+    # Compare timestamps
+    if newest_source > oldest_figure:
+        src_time = datetime.fromtimestamp(newest_source).strftime("%Y-%m-%d %H:%M")
+        fig_time = datetime.fromtimestamp(oldest_figure).strftime("%Y-%m-%d %H:%M")
+        return CheckResult(
+            "warn",
+            "Figures may be stale",
+            [f"Source '{newest_source_name}' ({src_time}) newer than '{oldest_figure_name}' ({fig_time})"]
+        )
+
+    return CheckResult("pass", f"All {figure_count} figures up-to-date with source data")
 
 
 # =============================================================================
@@ -995,6 +1181,7 @@ def run_all_checks(strict: bool = False, ci_mode: bool = False) -> int:
         ("Data file content", check_data_file_not_empty),
         ("Source data files", check_source_data_files),
         ("Data metadata files", check_data_metadata_files),
+        ("TSV format", check_tsv_format),
     ]
 
     for name, check_fn in checks_tier2:
@@ -1005,6 +1192,7 @@ def run_all_checks(strict: bool = False, ci_mode: bool = False) -> int:
 
     checks_tier3 = [
         ("Organism taxonomy", check_organism_taxonomy),
+        ("Organism names", check_organism_names),
         ("Type taxonomy", check_type_taxonomy),
         ("ID uniqueness", check_id_uniqueness),
         ("License consistency", check_license_consistency),
@@ -1022,6 +1210,7 @@ def run_all_checks(strict: bool = False, ci_mode: bool = False) -> int:
         ("Web format coverage", check_web_format_coverage),
         ("Hand-drawn figures", check_hand_drawn_files),
         ("Orphan hand-drawn", check_orphan_hand_drawn_figures),
+        ("Stale figures", check_stale_figures),
     ]
 
     for name, check_fn in checks_tier4:

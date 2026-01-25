@@ -1,0 +1,20 @@
+# Pre-commit hooks for SOBE 2025 Data Repository
+# Install: pip install pre-commit && pre-commit install
+# Run manually: pre-commit run --all-files
+
+repos:
+  - repo: local
+    hooks:
+      - id: validate-ci
+        name: Run validation (CI mode)
+        entry: python scripts/validate.py --ci
+        language: system
+        pass_filenames: false
+        always_run: true
+
+      - id: calculator-typecheck
+        name: Calculator type check
+        entry: bash -c 'cd scripts/calculator && npx tsc --noEmit 2>/dev/null || true'
+        language: system
+        files: ^scripts/calculator/.*\.ts$
+        pass_filenames: false

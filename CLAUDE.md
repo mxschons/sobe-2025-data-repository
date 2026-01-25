@@ -274,6 +274,21 @@ python3 validate.py          # Now run full validation
 
 The CI pipeline uses `--ci` mode since figure generation is a separate step.
 
+### Pre-commit Hooks
+
+Install pre-commit hooks to automatically run validation before each commit:
+
+```bash
+pip install pre-commit
+pre-commit install
+```
+
+Hooks run automatically on `git commit`. To run manually:
+
+```bash
+pre-commit run --all-files
+```
+
 The validation script checks:
 
 | Tier | Check | What It Catches |
@@ -285,12 +300,15 @@ The validation script checks:
 | **2 - Data** | Data files exist | Missing CSV source files |
 | **2 - Data** | Data file content | Empty or truncated datasets |
 | **2 - Data** | Source data files | Missing files referenced in paths.py |
+| **2 - Data** | TSV format | Column count mismatches, BOM, trailing whitespace |
 | **3 - Consistency** | Organism taxonomy | Invalid organism tags |
+| **3 - Consistency** | Organism names | Non-canonical organism names in data files |
 | **3 - Consistency** | Type taxonomy | Invalid type tags |
 | **3 - Consistency** | ID uniqueness | Duplicate IDs across metadata |
 | **3 - Consistency** | License consistency | Missing license in metadata |
 | **4 - Reporting** | File sizes | Size metrics for monitoring |
 | **4 - Reporting** | Hand-drawn figures | PNG+SVG pairs for hand-drawn |
+| **4 - Reporting** | Stale figures | Source data newer than generated figures |
 | **5 - SEO** | HTML meta tags | Missing description, OG, Twitter tags |
 | **5 - SEO** | HTML lang attribute | Missing lang="en" on HTML elements |
 | **5 - SEO** | Heading hierarchy | H1→H3 skips, multiple H1s |
