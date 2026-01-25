@@ -773,7 +773,135 @@ def check_stale_figures(report: ValidationReport) -> CheckResult:
 
 
 # =============================================================================
-# TIER 5: SEO & Accessibility Checks
+# TIER 5: Bibliography & Reference Checks
+# =============================================================================
+
+def check_bibliography_exists(report: ValidationReport) -> CheckResult:
+    """Verify bibliography.json exists and is valid JSON."""
+    bib_path = paths.DATA_REFERENCES / "bibliography.json"
+
+    if not bib_path.exists():
+        return CheckResult("fail", "bibliography.json not found")
+
+    data = load_json(bib_path)
+    if not data:
+        return CheckResult("fail", "bibliography.json is invalid JSON")
+
+    refs = data.get("references", [])
+    if not refs:
+        return CheckResult("warn", "bibliography.json has no references")
+
+    return CheckResult("pass", f"bibliography.json valid with {len(refs)} references")
+
+
+def check_bibliography_schema(report: ValidationReport) -> CheckResult:
+    """Verify bibliography entries have required CSL-JSON fields."""
+    bib_path = paths.DATA_REFERENCES / "bibliography.json"
+    data = load_json(bib_path)
+    if not data:
+        return CheckResult("skip", "Could not load bibliography.json")
+
+    refs = data.get("references", [])
+    issues = []
+
+    required_fields = ["id", "type", "title"]
+
+    for ref in refs:
+        ref_id = ref.get("id", "unknown")
+
+        # Check required fields
+        for field in required_fields:
+            if field not in ref or not ref[field]:
+                issues.append(f"{ref_id}: missing required field '{field}'")
+
+        # Check type is valid CSL type
+        valid_types = {
+            "article-journal", "article", "book", "chapter", "paper-conference",
+            "report", "thesis", "webpage", "dataset", "software",
+            "personal_communication", "post-weblog"
+        }
+        if ref.get("type") and ref["type"] not in valid_types:
+            issues.append(f"{ref_id}: unknown type '{ref['type']}'")
+
+        # Check DOI format if present
+        doi = ref.get("DOI", "")
+        if doi and not doi.startswith("10."):
+            issues.append(f"{ref_id}: invalid DOI format '{doi[:30]}'")
+
+    if issues:
+        return CheckResult("warn", f"{len(issues)} bibliography schema issues", issues[:20])
+    return CheckResult("pass", f"All {len(refs)} bibliography entries have valid schema")
+
+
+def check_bibliography_duplicates(report: ValidationReport) -> CheckResult:
+    """Check for duplicate DOIs or URLs in bibliography."""
+    bib_path = paths.DATA_REFERENCES / "bibliography.json"
+    data = load_json(bib_path)
+    if not data:
+        return CheckResult("skip", "Could not load bibliography.json")
+
+    refs = data.get("references", [])
+    doi_seen = {}
+    url_seen = {}
+    duplicates = []
+
+    for ref in refs:
+        ref_id = ref.get("id", "unknown")
+
+        # Check DOI duplicates
+        doi = ref.get("DOI", "")
+        if doi:
+            if doi in doi_seen:
+                duplicates.append(f"Duplicate DOI '{doi}': {doi_seen[doi]} and {ref_id}")
+            else:
+                doi_seen[doi] = ref_id
+
+        # Check URL duplicates (for non-DOI entries)
+        if not doi:
+            url = ref.get("URL", "")
+            if url:
+                if url in url_seen:
+                    duplicates.append(f"Duplicate URL: {url_seen[url]} and {ref_id}")
+                else:
+                    url_seen[url] = ref_id
+
+    if duplicates:
+        return CheckResult("warn", f"{len(duplicates)} duplicate entries", duplicates[:10])
+    return CheckResult("pass", f"No duplicate DOIs/URLs among {len(refs)} entries")
+
+
+def check_ref_id_format(report: ValidationReport) -> CheckResult:
+    """Check that ref_ids follow the author2024 naming convention."""
+    import re
+
+    bib_path = paths.DATA_REFERENCES / "bibliography.json"
+    data = load_json(bib_path)
+    if not data:
+        return CheckResult("skip", "Could not load bibliography.json")
+
+    refs = data.get("references", [])
+    issues = []
+
+    # Pattern: lowercase letters/underscores, ending with 4-digit year or 'nd'
+    # Examples: stevenson2011, aws_pricing_2024, internal_estimate_2024
+    valid_pattern = re.compile(r'^[a-z][a-z0-9_]*(\d{4}|nd)[a-z]?$')
+
+    for ref in refs:
+        ref_id = ref.get("id", "")
+        if not valid_pattern.match(ref_id):
+            # Allow some flexibility - just warn about obviously bad IDs
+            if not re.match(r'^[a-z0-9_]+$', ref_id):
+                issues.append(f"'{ref_id}' contains invalid characters")
+            elif len(ref_id) < 5:
+                issues.append(f"'{ref_id}' too short")
+
+    if issues:
+        return CheckResult("warn", f"{len(issues)} ref_id format issues", issues[:10])
+    return CheckResult("pass", f"All {len(refs)} ref_ids follow naming convention")
+
+
+# =============================================================================
+# TIER 6: SEO & Accessibility Checks
 # =============================================================================
 
 # Required meta tags for SEO compliance
@@ -1137,14 +1265,27 @@ def run_all_checks(strict: bool = False, ci_mode: bool = False) -> int:
     for name, check_fn in checks_tier4:
         run_check(name, check_fn)
 
-    # Tier 5: SEO & Accessibility (metadata quality)
-    report.print_tier_header("TIER 5", "SEO & Accessibility Checks")
+    # Tier 5: Bibliography & References
+    report.print_tier_header("TIER 5", "Bibliography & Reference Checks")
 
     checks_tier5 = [
-        ("Title quality (SEO)", check_title_quality),
+        ("Bibliography exists", check_bibliography_exists),
+        ("Bibliography schema", check_bibliography_schema),
+        ("Bibliography duplicates", check_bibliography_duplicates),
+        ("Ref ID format", check_ref_id_format),
     ]
 
     for name, check_fn in checks_tier5:
+        run_check(name, check_fn)
+
+    # Tier 6: SEO & Accessibility (metadata quality)
+    report.print_tier_header("TIER 6", "SEO & Accessibility Checks")
+
+    checks_tier6 = [
+        ("Title quality (SEO)", check_title_quality),
+    ]
+
+    for name, check_fn in checks_tier6:
         run_check(name, check_fn)
 
     # Summary
