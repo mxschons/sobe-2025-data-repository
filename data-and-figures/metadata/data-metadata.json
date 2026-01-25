@@ -1,7 +1,7 @@
 {
   "categories": [
     {
-      "id": "neural-simulations",
+      "id": "simulations",
       "title": "Neural Simulations",
       "description": "Comprehensive data on computational brain models and neural simulations across organisms.",
       "icon": "cpu",
@@ -10,8 +10,8 @@
           "id": "neuron-simulations",
           "title": "Neuron Simulations Database",
           "description": "Compilation of neural simulation projects including neuron/synapse counts, hardware specifications, and simulation parameters across organisms from C. elegans to human.",
-          "filename": "Neuron Simulations - TASK 3 - Sheet1.tsv",
-          "path": "data",
+          "filename": "neuron-simulations.tsv",
+          "path": "data/simulations",
           "rows": "50+",
           "columns": [
             "Simulation/Initiative",
@@ -27,8 +27,8 @@
           "id": "computational-models",
           "title": "Computational Models of the Brain",
           "description": "Historical compilation of computational brain models from 1992 to present, tracking evolution from silicon implementations to biophysical models.",
-          "filename": "State of Brain Emulation Report 2025 Data Repository - Computational Models of the Brain.tsv",
-          "path": "data",
+          "filename": "computational-models.tsv",
+          "path": "data/simulations",
           "rows": "30+",
           "columns": [
             "Author",
@@ -41,37 +41,21 @@
             "Neurons",
             "Synapses"
           ]
-        },
-        {
-          "id": "computational-demands",
-          "title": "Computational Demands by Organism",
-          "description": "Computational requirements (FLOPS, memory) for simulating nervous systems of different organisms, from nematodes to humans.",
-          "filename": "State of Brain Emulation Report 2025 Data Repository - Computational Demands Organisms.tsv",
-          "path": "data",
-          "rows": "10",
-          "columns": [
-            "Organism",
-            "Neurons",
-            "Synapses",
-            "Firing Rate",
-            "Spike Rate",
-            "FLOPS Required"
-          ]
         }
       ]
     },
     {
-      "id": "neural-recordings",
+      "id": "recordings",
       "title": "Neural Recordings",
       "description": "Historical and contemporary data on neural recording techniques, capabilities, and information rates.",
       "icon": "activity",
       "datasets": [
         {
-          "id": "recordings-history",
+          "id": "neural-recordings",
           "title": "Neural Recordings History",
           "description": "Historical neural recording data from 1957 to present, tracking the progression of electrophysiology and imaging techniques.",
-          "filename": "Neural recordings - Neurons_year.tsv",
-          "path": "data",
+          "filename": "neural-recordings.tsv",
+          "path": "data/recordings",
           "rows": "100+",
           "columns": [
             "Year",
@@ -83,11 +67,11 @@
           ]
         },
         {
-          "id": "neural-dynamics",
+          "id": "neural-dynamics-references",
           "title": "Neural Dynamics References",
           "description": "Neural recording studies with detailed temporal and spatial resolution metrics across model organisms.",
-          "filename": "State of Brain Emulation Report 2025 Data Repository - Neural Dynamics References.tsv",
-          "path": "data",
+          "filename": "neural-dynamics-references.tsv",
+          "path": "data/recordings",
           "rows": "50+",
           "columns": [
             "Author",
@@ -100,11 +84,11 @@
           ]
         },
         {
-          "id": "information-rate",
+          "id": "neural-information-rate",
           "title": "Neural Information Rate",
           "description": "Evolution of neural recording techniques and information yield from 2014-2021, including Neuropixels advances.",
-          "filename": "State of Brain Emulation Report 2025 Data Repository - Neural Information Rate.tsv",
-          "path": "data",
+          "filename": "neural-information-rate.tsv",
+          "path": "data/recordings",
           "rows": "30+",
           "columns": [
             "Year",
@@ -115,11 +99,11 @@
           ]
         },
         {
-          "id": "recording-comparison",
+          "id": "comparison-methods-volumes",
           "title": "Recording Methods Comparison",
           "description": "Comparison of recording techniques by spatial volume and cell resolution capabilities.",
-          "filename": "State of Brain Emulation Report 2025 Data Repository - Comparison recording methods across volumes.tsv",
-          "path": "data",
+          "filename": "comparison-methods-volumes.tsv",
+          "path": "data/recordings",
           "rows": "10",
           "columns": [
             "Volume",
@@ -129,11 +113,11 @@
           ]
         },
         {
-          "id": "recording-comparison-simple",
+          "id": "comparison-recordings",
           "title": "Comparison Recordings",
           "description": "Simplified comparison of recording methodologies.",
-          "filename": "State of Brain Emulation Report 2025 Data Repository - Comparison recordings.tsv",
-          "path": "data",
+          "filename": "comparison-recordings.tsv",
+          "path": "data/recordings",
           "rows": "10",
           "columns": [
             "Method",
@@ -145,8 +129,8 @@
           "id": "neurodynamics-organisms",
           "title": "Neurodynamics Recording Papers - Organisms",
           "description": "Recording papers organized by organism studied.",
-          "filename": "Neurodynamics recording papers - Organisms.tsv",
-          "path": "data",
+          "filename": "neurodynamics-organisms.tsv",
+          "path": "data/recordings",
           "rows": "10",
           "columns": [
             "Organism",
@@ -158,8 +142,8 @@
           "id": "neurodynamics-papers",
           "title": "Neurodynamics Recording Papers",
           "description": "Detailed list of neural dynamics recording publications.",
-          "filename": "Neurodynamics recording papers - Papers.tsv",
-          "path": "data",
+          "filename": "neurodynamics-papers.tsv",
+          "path": "data/recordings",
           "rows": "30+",
           "columns": [
             "Author",
@@ -168,6 +152,33 @@
             "Journal",
             "Organism",
             "Method"
+          ]
+        },
+        {
+          "id": "neural-recording",
+          "title": "Neural Recording Parameters",
+          "description": "Recording parameters for neural data acquisition.",
+          "filename": "neural-recording.tsv",
+          "path": "data/recordings",
+          "rows": "10",
+          "columns": [
+            "Parameter",
+            "Value",
+            "Unit"
+          ]
+        },
+        {
+          "id": "neuroscience-repositories",
+          "title": "Neuroscience Data Repositories",
+          "description": "Major data repositories including NWB, OpenNeuro, DANDI, and BioImage Archive.",
+          "filename": "neuroscience-repositories.tsv",
+          "path": "data/recordings",
+          "rows": "10",
+          "columns": [
+            "Name",
+            "URL",
+            "Description",
+            "Tags"
           ]
         }
       ]
@@ -179,11 +190,29 @@
       "icon": "share-2",
       "datasets": [
         {
+          "id": "brain-scans",
+          "title": "Large-Scale Brain Imaging Datasets",
+          "description": "Compilation of major brain imaging datasets including volume, resolution, acquisition time, and costs.",
+          "filename": "brain-scans.tsv",
+          "path": "data/connectomics",
+          "rows": "20+",
+          "columns": [
+            "Author",
+            "Year",
+            "Organism",
+            "Dataset",
+            "Volume",
+            "Resolution",
+            "Size (TB)",
+            "Cost"
+          ]
+        },
+        {
           "id": "connectomics-2nm",
           "title": "Connectomics at 2nm Resolution",
           "description": "Highest resolution connectomics data with time and cost estimates for complete brain mapping.",
-          "filename": "State of Brain Emulation Report 2025 Data Repository - Connectomics 2nm.tsv",
-          "path": "data",
+          "filename": "connectomics-2nm.tsv",
+          "path": "data/connectomics",
           "rows": "5",
           "columns": [
             "Year",
@@ -198,8 +227,8 @@
           "id": "connectomics-10nm",
           "title": "Connectomics at 10nm Resolution",
           "description": "Connectomics feasibility data at 10nm resolution for mouse and human brain mapping.",
-          "filename": "State of Brain Emulation Report 2025 Data Repository - Connectomics 10nm.tsv",
-          "path": "data",
+          "filename": "connectomics-10nm.tsv",
+          "path": "data/connectomics",
           "rows": "5",
           "columns": [
             "Year",
@@ -214,8 +243,8 @@
           "id": "connectomics-25nm",
           "title": "Connectomics at 25nm Resolution",
           "description": "Mid-range resolution connectomics with more practical timelines for brain reconstruction.",
-          "filename": "State of Brain Emulation Report 2025 Data Repository - Connectomics 25nm.tsv",
-          "path": "data",
+          "filename": "connectomics-25nm.tsv",
+          "path": "data/connectomics",
           "rows": "5",
           "columns": [
             "Year",
@@ -230,8 +259,8 @@
           "id": "connectomics-50nm",
           "title": "Connectomics at 50nm Resolution",
           "description": "Lower resolution connectomics offering the most feasible timelines for whole-brain mapping.",
-          "filename": "State of Brain Emulation Report 2025 Data Repository - Connectomics 50nm.tsv",
-          "path": "data",
+          "filename": "connectomics-50nm.tsv",
+          "path": "data/connectomics",
           "rows": "5",
           "columns": [
             "Year",
@@ -243,29 +272,11 @@
           ]
         },
         {
-          "id": "brain-scans",
-          "title": "Large-Scale Brain Imaging Datasets",
-          "description": "Compilation of major brain imaging datasets including volume, resolution, acquisition time, and costs.",
-          "filename": "Copy of (best) Upwork_TASK 1 (2) - Sheet1.tsv",
-          "path": "data/brain-scans",
-          "rows": "20+",
-          "columns": [
-            "Author",
-            "Year",
-            "Organism",
-            "Dataset",
-            "Volume",
-            "Resolution",
-            "Size (TB)",
-            "Cost"
-          ]
-        },
-        {
-          "id": "tracing-trends",
+          "id": "tracing-trends-references",
           "title": "Neuron Tracing Methods Evolution",
           "description": "Historical evolution from manual tracing (1986) to modern semi-automatic approaches.",
-          "filename": "State of Brain Emulation Report 2025 Data Repository - Tracing Trends References.tsv",
-          "path": "data",
+          "filename": "tracing-trends-references.tsv",
+          "path": "data/connectomics",
           "rows": "10",
           "columns": [
             "Year",
@@ -277,17 +288,101 @@
       ]
     },
     {
-      "id": "costs-funding",
+      "id": "compute",
+      "title": "Compute & Hardware",
+      "description": "Computational requirements and hardware data for AI and neural simulations.",
+      "icon": "zap",
+      "datasets": [
+        {
+          "id": "ai-training-computation",
+          "title": "AI Training Computation",
+          "description": "Training computation requirements for various AI models (petaFLOPs) for comparison.",
+          "filename": "ai-training-computation.tsv",
+          "path": "data/compute",
+          "rows": "50+",
+          "columns": [
+            "Entity",
+            "Day",
+            "Training Computation (petaFLOP)",
+            "Domain"
+          ],
+          "source": "Epoch via Our World in Data",
+          "license": "CC BY 4.0"
+        },
+        {
+          "id": "computational-demands-organisms",
+          "title": "Computational Demands by Organism",
+          "description": "Computational requirements (FLOPS, memory) for simulating nervous systems of different organisms, from nematodes to humans.",
+          "filename": "computational-demands-organisms.tsv",
+          "path": "data/compute",
+          "rows": "10",
+          "columns": [
+            "Organism",
+            "Neurons",
+            "Synapses",
+            "Firing Rate",
+            "Spike Rate",
+            "FLOPS Required"
+          ]
+        },
+        {
+          "id": "hardware-characteristics",
+          "title": "Compute Hardware Characteristics",
+          "description": "Modern computing hardware benchmarked for neural simulation (MacBook to TPU v5e).",
+          "filename": "hardware-characteristics.tsv",
+          "path": "data/compute",
+          "rows": "10",
+          "columns": [
+            "System",
+            "Year",
+            "TFLOPs",
+            "Memory (GB)",
+            "Price",
+            "Max Neurons"
+          ]
+        },
+        {
+          "id": "compute-requirements",
+          "title": "Emulation Compute Requirements",
+          "description": "Compute requirements for brain emulation at various scales.",
+          "filename": "compute-requirements.tsv",
+          "path": "data/compute",
+          "rows": "10",
+          "columns": [
+            "Scale",
+            "FLOPS",
+            "Memory",
+            "Notes"
+          ]
+        },
+        {
+          "id": "storage-requirements",
+          "title": "Emulation Storage Requirements",
+          "description": "Storage requirements for brain emulation data at various scales.",
+          "filename": "storage-requirements.tsv",
+          "path": "data/compute",
+          "rows": "10",
+          "columns": [
+            "Scale",
+            "Storage",
+            "Format",
+            "Notes"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "costs",
       "title": "Costs & Funding",
       "description": "Economic analysis of neuroscience projects, hardware costs, and comparisons to other megaprojects.",
       "icon": "dollar-sign",
       "datasets": [
         {
-          "id": "neuron-reconstruction-costs",
+          "id": "neuron-reconstruction-estimates",
           "title": "Neuron Reconstruction Costs",
           "description": "Historical cost data showing dramatic reduction from $16,556/neuron (1986) to $100/neuron (2022).",
-          "filename": "State of Brain Emulation Report 2025 Data Repository - Cost estimates Neuron Reconstruction.tsv",
-          "path": "data",
+          "filename": "neuron-reconstruction-estimates.tsv",
+          "path": "data/costs",
           "rows": "15",
           "columns": [
             "Organism",
@@ -302,8 +397,8 @@
           "id": "neuroscience-megaprojects",
           "title": "Neuroscience Megaprojects",
           "description": "Funding data for major neuroscience initiatives and commercial brain-computer interfaces.",
-          "filename": "State of Brain Emulation Report 2025 Data Repository - Costs Neuroscience Megaprojects.tsv",
-          "path": "data",
+          "filename": "neuroscience-megaprojects.tsv",
+          "path": "data/costs",
           "rows": "20+",
           "columns": [
             "Project",
@@ -315,11 +410,11 @@
           ]
         },
         {
-          "id": "comparison-megaprojects",
+          "id": "non-neuroscience-megaprojects",
           "title": "Non-Neuroscience Megaprojects (Comparison)",
           "description": "Large-scale project costs (military, communications, medicine) for scale comparison.",
-          "filename": "State of Brain Emulation Report 2025 Data Repository - Costs Non-Neuroscience Megaprojects.tsv",
-          "path": "data",
+          "filename": "non-neuroscience-megaprojects.tsv",
+          "path": "data/costs",
           "rows": "15",
           "columns": [
             "Project",
@@ -330,11 +425,11 @@
           ]
         },
         {
-          "id": "storage-costs",
+          "id": "storage-historical",
           "title": "Historical Storage Costs",
           "description": "Storage media pricing trends from 1957 to present, showing exponential cost reduction.",
-          "filename": "historical-cost-of-computer-memory-and-storage.tsv",
-          "path": "data/storage-costs",
+          "filename": "storage-historical.tsv",
+          "path": "data/costs",
           "rows": "50+",
           "columns": [
             "Year",
@@ -342,37 +437,61 @@
             "Flash Price",
             "Disk Price",
             "SSD Price"
-          ]
+          ],
+          "source": "John C. McCallum via Our World in Data",
+          "license": "CC BY 4.0"
         },
         {
-          "id": "compute-hardware",
-          "title": "Compute Hardware Characteristics",
-          "description": "Modern computing hardware benchmarked for neural simulation (MacBook to TPU v5e).",
-          "filename": "State of Brain Emulation Report 2025 Data Repository - Compute Hardware Characteristics.tsv",
-          "path": "data",
+          "id": "proofreading",
+          "title": "Proofreading Costs",
+          "description": "Costs for proofreading connectomics reconstructions.",
+          "filename": "proofreading.tsv",
+          "path": "data/costs",
           "rows": "10",
           "columns": [
-            "System",
-            "Year",
-            "TFLOPs",
-            "Memory (GB)",
-            "Price",
-            "Max Neurons"
+            "Method",
+            "Cost per Hour",
+            "Neurons per Hour",
+            "Source"
           ]
+        }
+      ]
+    },
+    {
+      "id": "imaging",
+      "title": "Imaging",
+      "description": "Neuroimaging technologies and modalities.",
+      "icon": "eye",
+      "datasets": [
+        {
+          "id": "neuroimaging-speed",
+          "title": "Neuroimaging Speed Comparison",
+          "description": "Imaging technology capabilities over time: imaging speed (MHz), field of view (mm3), and dataset sizes (TB).",
+          "filename": "neuroimaging-speed.tsv",
+          "path": "data/imaging",
+          "rows": "20+",
+          "columns": [
+            "Year",
+            "Modality",
+            "Speed (MHz)",
+            "Field of View",
+            "Dataset Size"
+          ],
+          "source": "Carles Bosch",
+          "license": "MIT"
         },
         {
-          "id": "initiatives-costs",
-          "title": "Major Infrastructure Project Costs",
-          "description": "Global benchmark costs for large projects (F-35, Apollo, ISS) for comparison.",
-          "filename": "Digital Human Intelligence Figures - Costs of different projects.tsv",
-          "path": "data/initiatives",
-          "rows": "15",
+          "id": "imaging-modalities",
+          "title": "Imaging Modalities",
+          "description": "Comparison of different neuroimaging modalities and their characteristics.",
+          "filename": "imaging-modalities.tsv",
+          "path": "data/imaging",
+          "rows": "10",
           "columns": [
-            "Name",
-            "Category",
-            "Cost ($M)",
-            "Adjusted 2024",
-            "Duration"
+            "Modality",
+            "Resolution",
+            "Speed",
+            "Coverage"
           ]
         }
       ]
@@ -384,11 +503,25 @@
       "icon": "database",
       "datasets": [
         {
+          "id": "organisms",
+          "title": "Organisms Reference",
+          "description": "Reference data for model organisms with neuron counts and brain sizes.",
+          "filename": "organisms.tsv",
+          "path": "data/organisms",
+          "rows": "10",
+          "columns": [
+            "Organism",
+            "Common Name",
+            "Neurons",
+            "Brain Volume"
+          ]
+        },
+        {
           "id": "organism-characteristics",
           "title": "Organism Characteristics",
           "description": "Reference data for model organisms including brain volume, neuron counts, and firing rates.",
-          "filename": "State of Brain Emulation Report 2025 Data Repository - Organism Characteristics.tsv",
-          "path": "data",
+          "filename": "organism-characteristics.tsv",
+          "path": "data/organisms",
           "rows": "5",
           "columns": [
             "Organism",
@@ -408,10 +541,10 @@
       "icon": "globe",
       "datasets": [
         {
-          "id": "brain-initiatives",
+          "id": "brain-initiatives-overview",
           "title": "Brain Research Initiatives Overview",
           "description": "Major brain research initiatives including Allen Institute, Human Brain Project, and BRAIN Initiative.",
-          "filename": "Overview of Brain Initiatives T4 v2.xlsx - Sheet1.tsv",
+          "filename": "brain-initiatives-overview.tsv",
           "path": "data/initiatives",
           "rows": "20+",
           "columns": [
@@ -423,49 +556,92 @@
             "Organism",
             "Description"
           ]
-        }
-      ]
-    },
-    {
-      "id": "resources",
-      "title": "Resources & Repositories",
-      "description": "Links to major neuroscience data repositories and resources.",
-      "icon": "archive",
-      "datasets": [
+        },
         {
-          "id": "neuroscience-repositories",
-          "title": "Neuroscience Data Repositories",
-          "description": "Major data repositories including NWB, OpenNeuro, DANDI, and BioImage Archive.",
-          "filename": "State of Brain Emulation Report 2025 Data Repository - Neuroscience Repositories.tsv",
-          "path": "data",
-          "rows": "10",
+          "id": "digital-human-intelligence-costs",
+          "title": "Major Infrastructure Project Costs",
+          "description": "Global benchmark costs for large projects (F-35, Apollo, ISS) for comparison.",
+          "filename": "digital-human-intelligence-costs.tsv",
+          "path": "data/initiatives",
+          "rows": "15",
           "columns": [
             "Name",
-            "URL",
-            "Description",
-            "Tags"
+            "Category",
+            "Cost ($M)",
+            "Adjusted 2024",
+            "Duration"
           ]
         }
       ]
     },
     {
-      "id": "ai-compute",
-      "title": "AI & Compute",
-      "description": "Computational requirements for AI training as a reference point.",
-      "icon": "zap",
+      "id": "formulas",
+      "title": "Calculator Formulas",
+      "description": "Formula definitions for the brain emulation calculator.",
+      "icon": "calculator",
       "datasets": [
         {
-          "id": "ai-training-compute",
-          "title": "AI Training Computation",
-          "description": "Training computation requirements for various AI models (petaFLOPs) for comparison.",
-          "filename": "artificial-intelligence-training-computation.tsv",
-          "path": "data/ai-compute",
-          "rows": "50+",
+          "id": "formulas-connectomics",
+          "title": "Connectomics Formulas",
+          "description": "Formulas for connectomics calculations.",
+          "filename": "connectomics.tsv",
+          "path": "data/formulas",
+          "rows": "10",
           "columns": [
-            "Entity",
-            "Day",
-            "Training Computation (petaFLOP)",
-            "Domain"
+            "Variable",
+            "Formula",
+            "Unit",
+            "Description"
+          ]
+        },
+        {
+          "id": "formulas-costs",
+          "title": "Cost Formulas",
+          "description": "Formulas for cost calculations.",
+          "filename": "costs.tsv",
+          "path": "data/formulas",
+          "rows": "10",
+          "columns": [
+            "Variable",
+            "Formula",
+            "Unit",
+            "Description"
+          ]
+        },
+        {
+          "id": "formulas-storage",
+          "title": "Storage Formulas",
+          "description": "Formulas for storage calculations.",
+          "filename": "storage.tsv",
+          "path": "data/formulas",
+          "rows": "10",
+          "columns": [
+            "Variable",
+            "Formula",
+            "Unit",
+            "Description"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "parameters",
+      "title": "Shared Parameters",
+      "description": "Shared parameter definitions used across calculations.",
+      "icon": "settings",
+      "datasets": [
+        {
+          "id": "shared-parameters",
+          "title": "Shared Parameters",
+          "description": "Shared parameter values used across calculator formulas.",
+          "filename": "shared.tsv",
+          "path": "data/parameters",
+          "rows": "20+",
+          "columns": [
+            "Parameter",
+            "Value",
+            "Unit",
+            "Description"
           ]
         }
       ]

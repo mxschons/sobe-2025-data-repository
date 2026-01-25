@@ -1,5 +1,5 @@
 Type	Organism	Year	Time (y)	Neurons	Estimate total costs pre Inflation adjustment	Approximate inflation adjusted order of magnitude total costs for scanning and tracing ($)	Reconstructed Neurons / 1 Million $	Cost / Neuron	Reference	Note
-Budget	C. elegans (White et al 1986)	1986	10.0	302	$1,450,000	$5,000,000	60	$16,556	Estimate: 4 FTEs at $20k / year for 10 years with 50% institutional overhead and $250k in EM costs = $1.45M	
+Estimate	C. elegans (White et al 1986)	1986	10.0	302	$1,450,000	$5,000,000	60	$16,556	Estimate: 4 FTEs at $20k / year for 10 years with 50% institutional overhead and $250k in EM costs = $1.45M	
 Budget	"Fruitfly Zheng et al, 2018 
 (Murthy, Seung, et al., 2024)"	2018	5.0	140000	$25,000,000	$30,000,000	4,667	$214	Estimate based on conversations with experts and authors.	
 Budget	Zebrafish (Svara et al., 2022)	2021	5.0	100000	$10,000,000	$10,000,000	10,000	$100	Conversation with authors	No adjustment as project still ongoing
