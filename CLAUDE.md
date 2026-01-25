@@ -213,12 +213,19 @@ python3 -m http.server 8000
 
 | Category | Location | Description |
 |----------|----------|-------------|
-| Neural Simulations | `data/*.csv` | Neuron/synapse counts, 1957-2025 |
-| Neural Recordings | `data/*.csv` | Recording capabilities by organism |
-| Connectomics | `data/brain-scans/` | Brain tissue scanning data |
-| AI Compute | `data/ai-compute/` | AI training compute trends |
-| Storage Costs | `data/storage-costs/` | Storage cost evolution |
-| Initiatives | `data/initiatives/` | Global brain research programs |
+| Neural Simulations | `data/simulations/*.tsv` | Neuron/synapse counts, 1957-2025 |
+| Neural Recordings | `data/recordings/*.tsv` | Recording capabilities by organism |
+| Connectomics | `data/connectomics/*.tsv` | Brain tissue scanning data |
+| AI Compute | `data/compute/*.tsv` | AI training compute trends |
+| Storage Costs | `data/costs/*.tsv` | Storage cost evolution |
+| Initiatives | `data/initiatives/*.tsv` | Global brain research programs |
+| Formulas | `data/formulas/*.tsv` | Calculator formula definitions |
+| Imaging | `data/imaging/*.tsv` | Imaging modality data |
+
+## Data Attribution
+
+All data files in `data/` have corresponding metadata in `data/_metadata/` (mirrored structure).
+See README.md "Data Attribution Guidelines" for the metadata schema and contributor guidelines.
 
 ## Dependencies
 

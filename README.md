@@ -35,21 +35,31 @@ python3 build_downloads.py
 ## Repository Structure
 
 ```
-sobe25-scripts/
+sobe-2025-data-repository/
 ├── scripts/                          # Figure generation code
 │   ├── style.py                      # Centralized style configuration
 │   ├── run_all_figures.py            # Main pipeline (generates all figures)
 │   ├── build_downloads.py            # Creates ZIP archives
-│   ├── validate.py                   # Quality validation checks
-│   └── *.ipynb                       # Analysis notebooks
-├── data/                             # Source datasets (CSV, Excel)
+│   └── validate.py                   # Quality validation checks
+├── data/                             # Source datasets (TSV format)
+│   ├── compute/                      # AI training, hardware data
+│   ├── connectomics/                 # Brain scanning data
+│   ├── costs/                        # Cost estimates, megaprojects
+│   ├── formulas/                     # Calculator formulas
+│   ├── imaging/                      # Imaging modalities
+│   ├── initiatives/                  # Brain research programs
+│   ├── organisms/                    # Organism reference data
+│   ├── parameters/                   # Shared calculation parameters
+│   ├── recordings/                   # Neural recording data
+│   ├── simulations/                  # Simulation history data
+│   └── _metadata/                    # Attribution metadata (mirrors data/ structure)
 └── data-and-figures/                 # Data assets for website
     ├── figures/
     │   ├── generated/                # Programmatic figures (SVG, PNG, WebP, AVIF)
     │   │   ├── neuro-sim/            # Per-organism simulation figures
     │   │   └── neuro-rec/            # Per-organism recording figures
     │   └── hand-drawn/               # Anatomical illustrations
-    ├── data/                         # CSV datasets
+    ├── data/                         # TSV datasets
     ├── metadata/                     # JSON metadata catalogs
     │   ├── figures-metadata.json     # Generated figures catalog
     │   ├── data-metadata.json        # Datasets catalog
@@ -100,18 +110,6 @@ save_figure(fig, 'my-figure')  # Saves both .svg and .png
 | `build_downloads.py` | Creates ZIP archives with CC BY 4.0 license |
 | `validate.py` | Runs quality checks on figures and metadata |
 
-### Jupyter Notebooks
-
-| Notebook | Description |
-|----------|-------------|
-| `ConnectomicsDataviz.ipynb` | Main visualization work |
-| `January.ipynb` | Extended analysis |
-| `information_rate.ipynb` | Compute/storage parallel coordinate plots |
-| `Computational demands across organisms.ipynb` | Organism comparison charts |
-| `Estimated Requirements for Brain Emulation.ipynb` | Emulation cost analysis |
-| `comparison_recording_modalities.ipynb` | Recording technique comparison |
-| `Cost_estimates_Neurons.ipynb` | Cost per neuron trends |
-
 ## Generated Figures
 
 The pipeline produces 38+ figures across categories:
@@ -148,7 +146,7 @@ The `data-and-figures/` directory provides assets for the main website:
 |-------|----------|--------|
 | Generated figures | `figures/generated/` | SVG, PNG, WebP, AVIF |
 | Hand-drawn figures | `figures/hand-drawn/` | SVG, PNG, WebP, AVIF |
-| Datasets | `data/` | CSV |
+| Datasets | `data/` | TSV |
 | Figure metadata | `metadata/figures-metadata.json` | JSON |
 | Dataset metadata | `metadata/data-metadata.json` | JSON |
 | Hand-drawn metadata | `metadata/hand-drawn-metadata.json` | JSON |
@@ -213,6 +211,56 @@ openpyxl        # Excel file support
 nbconvert       # Notebook processing
 ipykernel       # Jupyter kernel
 ```
+
+## Data Attribution Guidelines
+
+### Structure
+
+All data files in `data/` have a corresponding metadata file in `data/_metadata/`, mirroring the folder structure:
+
+```
+data/
+├── compute/
+│   └── ai-training-computation.tsv
+├── connectomics/
+│   └── brain-scans.tsv
+└── _metadata/
+    ├── compute/
+    │   └── ai-training-computation.json
+    └── connectomics/
+        └── brain-scans.json
+```
+
+### Metadata Schema
+
+Each `.json` metadata file contains:
+
+```json
+{
+  "title": "Human-readable dataset name",
+  "source": "State of Brain Emulation Report 2025",
+  "originalAuthor": "Original creator(s)",
+  "contributors": ["Name (year)", "Name (year)"],
+  "license": "CC BY 4.0",
+  "url": "Source URL (external data only)",
+  "dateAccessed": "YYYY-MM-DD (external data only)",
+  "description": "Brief description of what this data contains"
+}
+```
+
+### For Contributors
+
+- **Adding a new dataset**: Create both the data file and corresponding metadata file
+- **Modifying an existing dataset**: Add yourself to the `contributors` array with the year
+- **External data**: Always include `url` and `dateAccessed`
+
+### External Data Sources
+
+| Dataset | Original Author | License |
+|---------|-----------------|---------|
+| `ai-training-computation.tsv` | Epoch via Our World in Data | CC BY 4.0 |
+| `storage-historical.tsv` | John C. McCallum via Our World in Data | CC BY 4.0 |
+| `neuroimaging-speed.tsv` | Carles Bosch | MIT |
 
 ## License
 

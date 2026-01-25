@@ -1,0 +1,8 @@
+{
+  "title": "Shared Parameters",
+  "source": "State of Brain Emulation Report 2025",
+  "originalAuthor": "Zanichelli, Schons et al",
+  "contributors": [],
+  "license": "CC BY 4.0",
+  "description": "Common parameters used across multiple calculations in the brain emulation calculator."
+}

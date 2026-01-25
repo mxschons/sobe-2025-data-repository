@@ -1,0 +1,10 @@
+{
+  "title": "Neuroimaging Speed Comparison",
+  "source": "https://github.com/cboschp/wtlandscape_mbc",
+  "originalAuthor": "Carles Bosch",
+  "contributors": [],
+  "license": "MIT",
+  "url": "https://github.com/cboschp/wtlandscape_mbc",
+  "dateAccessed": "2023-01-19",
+  "description": "Imaging technology capabilities over time: imaging speed (MHz), field of view (mm³), and dataset sizes (TB). Data supporting 'The road to a whole mouse brain connectome'."
+}

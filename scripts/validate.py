@@ -280,8 +280,8 @@ def check_data_files_exist(report: ValidationReport) -> CheckResult:
             data_path = dataset.get("path", "data")
             dataset_id = dataset.get("id", "unknown")
 
-            # Path is relative to repo root
-            full_path = paths.REPO_ROOT / data_path / filename
+            # Path is relative to data-and-figures/ (OUTPUT_ROOT)
+            full_path = paths.OUTPUT_ROOT / data_path / filename
 
             if not full_path.exists():
                 missing.append(f"{dataset_id}: {data_path}/{filename}")
@@ -305,15 +305,18 @@ def check_data_file_not_empty(report: ValidationReport) -> CheckResult:
     low_row_files = []
     checked = 0
 
-    for csv_file in data_dir.rglob("*.csv"):
+    for tsv_file in data_dir.rglob("*.tsv"):
+        # Skip _metadata directory
+        if "_metadata" in str(tsv_file):
+            continue
         checked += 1
         try:
-            with open(csv_file, "r", encoding="utf-8") as f:
+            with open(tsv_file, "r", encoding="utf-8") as f:
                 lines = f.readlines()
             # Subtract 1 for header
             data_rows = len(lines) - 1
             if data_rows < 2:
-                rel_path = csv_file.relative_to(data_dir)
+                rel_path = tsv_file.relative_to(data_dir)
                 low_row_files.append(f"{rel_path}: {data_rows} data rows")
         except Exception:
             pass
@@ -324,7 +327,7 @@ def check_data_file_not_empty(report: ValidationReport) -> CheckResult:
             f"{len(low_row_files)} files with very few rows",
             low_row_files
         )
-    return CheckResult("pass", f"All {checked} CSV files have sufficient data")
+    return CheckResult("pass", f"All {checked} TSV files have sufficient data")
 
 
 def check_source_data_files(report: ValidationReport) -> CheckResult:
@@ -341,6 +344,37 @@ def check_source_data_files(report: ValidationReport) -> CheckResult:
     if missing:
         return CheckResult("fail", f"{len(missing)} source data files missing", missing)
     return CheckResult("pass", f"All {found} source data files exist")
+
+
+def check_data_metadata_files(report: ValidationReport) -> CheckResult:
+    """Verify every TSV data file has a corresponding metadata JSON file."""
+    data_dir = paths.DATA_DIR
+    metadata_dir = paths.DATA_METADATA
+    missing = []
+    found = 0
+
+    for tsv_file in data_dir.rglob("*.tsv"):
+        # Skip _metadata directory
+        if "_metadata" in str(tsv_file):
+            continue
+
+        # Get relative path from data dir
+        relative = tsv_file.relative_to(data_dir)
+        # Construct expected metadata path
+        metadata_path = metadata_dir / relative.with_suffix(".json")
+
+        if not metadata_path.exists():
+            missing.append(f"{relative} -> missing {metadata_path.relative_to(data_dir)}")
+        else:
+            found += 1
+
+    if missing:
+        return CheckResult(
+            "fail",
+            f"{len(missing)} data files missing metadata",
+            missing
+        )
+    return CheckResult("pass", f"All {found} data files have metadata")
 
 
 # =============================================================================
@@ -940,6 +974,7 @@ def run_all_checks(strict: bool = False) -> int:
         ("Data files exist", check_data_files_exist),
         ("Data file content", check_data_file_not_empty),
         ("Source data files", check_source_data_files),
+        ("Data metadata files", check_data_metadata_files),
     ]
 
     for name, check_fn in checks_tier2:
