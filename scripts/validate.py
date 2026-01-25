@@ -17,6 +17,7 @@ Runs comprehensive quality checks before major pushes to ensure:
 Usage:
     python3 validate.py          # Run all checks
     python3 validate.py --strict # Fail on warnings too
+    python3 validate.py --ci     # Skip checks requiring generated content
     python3 validate.py --fix    # Auto-fix some issues (future)
 """
 
@@ -943,13 +944,35 @@ def check_seo_length_limits(report: ValidationReport) -> CheckResult:
 # Main Execution
 # =============================================================================
 
-def run_all_checks(strict: bool = False) -> int:
-    """Run all validation checks and return exit code."""
+def run_all_checks(strict: bool = False, ci_mode: bool = False) -> int:
+    """Run all validation checks and return exit code.
+
+    Args:
+        strict: If True, fail on warnings too
+        ci_mode: If True, skip checks requiring generated content (figures, dist/data)
+    """
     print("=" * 50)
     print(f"{Colors.BOLD}SOBE 2025 Data Repository - Quality Checks{Colors.RESET}")
+    if ci_mode:
+        print(f"{Colors.INFO}(CI mode: skipping checks for generated content){Colors.RESET}")
     print("=" * 50)
 
     report = ValidationReport()
+
+    # Checks to skip in CI mode (require generated content)
+    ci_skip_checks = {
+        "Metadata-file sync",  # Requires generated figures
+        "Orphan figures",      # Requires generated figures
+        "Data files exist",    # Requires dist/data/ TSV files
+    }
+
+    def run_check(name: str, check_fn):
+        if ci_mode and name in ci_skip_checks:
+            result = CheckResult("skip", "Skipped in CI mode (requires generated content)")
+        else:
+            result = check_fn(report)
+        report.add(name, result)
+        report.print_result(name, result)
 
     # Tier 1: Critical
     report.print_tier_header("TIER 1", "Critical Checks")
@@ -962,9 +985,7 @@ def run_all_checks(strict: bool = False) -> int:
     ]
 
     for name, check_fn in checks_tier1:
-        result = check_fn(report)
-        report.add(name, result)
-        report.print_result(name, result)
+        run_check(name, check_fn)
 
     # Tier 2: Data Quality
     report.print_tier_header("TIER 2", "Data Quality Checks")
@@ -977,9 +998,7 @@ def run_all_checks(strict: bool = False) -> int:
     ]
 
     for name, check_fn in checks_tier2:
-        result = check_fn(report)
-        report.add(name, result)
-        report.print_result(name, result)
+        run_check(name, check_fn)
 
     # Tier 3: Consistency
     report.print_tier_header("TIER 3", "Consistency Checks")
@@ -993,9 +1012,7 @@ def run_all_checks(strict: bool = False) -> int:
     ]
 
     for name, check_fn in checks_tier3:
-        result = check_fn(report)
-        report.add(name, result)
-        report.print_result(name, result)
+        run_check(name, check_fn)
 
     # Tier 4: Reporting
     report.print_tier_header("TIER 4", "Reporting & Metrics")
@@ -1008,9 +1025,7 @@ def run_all_checks(strict: bool = False) -> int:
     ]
 
     for name, check_fn in checks_tier4:
-        result = check_fn(report)
-        report.add(name, result)
-        report.print_result(name, result)
+        run_check(name, check_fn)
 
     # Tier 5: SEO & Accessibility (metadata quality)
     report.print_tier_header("TIER 5", "SEO & Accessibility Checks")
@@ -1020,9 +1035,7 @@ def run_all_checks(strict: bool = False) -> int:
     ]
 
     for name, check_fn in checks_tier5:
-        result = check_fn(report)
-        report.add(name, result)
-        report.print_result(name, result)
+        run_check(name, check_fn)
 
     # Summary
     report.print_summary()
@@ -1038,5 +1051,6 @@ def run_all_checks(strict: bool = False) -> int:
 
 if __name__ == "__main__":
     strict_mode = "--strict" in sys.argv
-    exit_code = run_all_checks(strict=strict_mode)
+    ci_mode = "--ci" in sys.argv
+    exit_code = run_all_checks(strict=strict_mode, ci_mode=ci_mode)
     sys.exit(exit_code)

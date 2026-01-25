@@ -22,7 +22,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run validation
-        run: python scripts/validate.py
+        run: python scripts/validate.py --ci
 
   calculator:
     runs-on: ubuntu-latest
@@ -50,5 +50,5 @@ jobs:
 
       - name: Check outputs are up-to-date
         run: |
-          git diff --exit-code data-and-figures/calculator/ || \
+          git diff --exit-code dist/calculator/ || \
           (echo "Calculator outputs out of date. Run 'cd scripts/calculator && npm run build:data' and commit." && exit 1)
