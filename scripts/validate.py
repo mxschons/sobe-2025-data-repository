@@ -900,6 +900,31 @@ def check_ref_id_format(report: ValidationReport) -> CheckResult:
     return CheckResult("pass", f"All {len(refs)} ref_ids follow naming convention")
 
 
+def check_dist_bibliography_sync(report: ValidationReport) -> CheckResult:
+    """Verify dist/references/bibliography.json exists and matches source."""
+    source_path = paths.DATA_REFERENCES / "bibliography.json"
+    dist_path = paths.OUTPUT_REFERENCES / "bibliography.json"
+
+    if not source_path.exists():
+        return CheckResult("skip", "Source bibliography.json not found")
+
+    if not dist_path.exists():
+        return CheckResult("fail", "dist/references/bibliography.json not found - run: cp data/references/bibliography.json dist/references/")
+
+    # Compare file contents
+    source_content = source_path.read_bytes()
+    dist_content = dist_path.read_bytes()
+
+    if source_content != dist_content:
+        return CheckResult(
+            "fail",
+            "dist/references/bibliography.json out of sync with source",
+            ["Run: cp data/references/bibliography.json dist/references/"]
+        )
+
+    return CheckResult("pass", "dist/references/bibliography.json in sync with source")
+
+
 # =============================================================================
 # TIER 6: SEO & Accessibility Checks
 # =============================================================================
@@ -1273,6 +1298,7 @@ def run_all_checks(strict: bool = False, ci_mode: bool = False) -> int:
         ("Bibliography schema", check_bibliography_schema),
         ("Bibliography duplicates", check_bibliography_duplicates),
         ("Ref ID format", check_ref_id_format),
+        ("Dist bibliography sync", check_dist_bibliography_sync),
     ]
 
     for name, check_fn in checks_tier5:
