@@ -108,7 +108,7 @@ mpl.rcParams.update({
 # =============================================================================
 @figure("neuron-counts-organism-comparison", "Neuron simulation counts over time")
 def generate_num_neurons():
-    neurons_df = pd.read_csv(DATA_FILES["neuron_simulations"])
+    neurons_df = pd.read_csv(DATA_FILES["neuron_simulations"], sep='\t')
     neurons_df['Year'] = neurons_df['Simulation/Initiative'].str.extract(r'(\d{4})').apply(pd.to_datetime)
 
     min_year = neurons_df['Year'].min() - dt.timedelta(days=365)
@@ -143,8 +143,8 @@ def generate_num_neurons():
 # =============================================================================
 @figure("neuroimaging-speed-comparison", "Neuroimaging technology progress")
 def generate_imaging_speed():
-    imaging_speed_df = pd.read_excel(
-        DATA_FILES["imaging_speed"],
+    imaging_speed_df = pd.read_csv(
+        DATA_FILES["imaging_speed"], sep='\t',
         skiprows=[1],
         parse_dates=['released_year'],
     )
@@ -202,7 +202,7 @@ def generate_imaging_speed():
 @figure("compute-hardware-trends-brain-emulation", "AI training compute vs species requirements")
 def generate_compute():
     compute_df = pd.read_csv(
-        DATA_FILES["ai_compute"],
+        DATA_FILES["ai_compute"], sep='\t',
         parse_dates=['Day']
     )
 
@@ -239,7 +239,7 @@ def generate_compute():
 @figure("storage-cost-trends-brain-data", "Storage costs over time with species thresholds")
 def generate_storage_costs():
     storage_df = pd.read_csv(
-        DATA_FILES["storage_costs"],
+        DATA_FILES["storage_costs"], sep='\t',
         parse_dates=['Year']
     )
     storage_df.rename(columns={
@@ -290,7 +290,7 @@ def generate_storage_costs():
 def generate_neuro_recordings():
     import statsmodels.formula.api as smf
 
-    neuro_df = pd.read_csv(DATA_FILES["neural_recordings"])
+    neuro_df = pd.read_csv(DATA_FILES["neural_recordings"], sep='\t')
 
     # Fit models
     ephys_fit = smf.rlm('np.log(Neurons) ~ Year', data=neuro_df.query('Method == "Ephys"')).fit()
@@ -337,7 +337,7 @@ def generate_neuro_recordings():
 @figure("connectomics-tissue-scanning-progress", "Brain scan resolution, volume, and dataset size")
 def generate_scanned_brain_tissue():
     scans_df = pd.read_csv(
-        DATA_FILES["brain_scans"],
+        DATA_FILES["brain_scans"], sep='\t',
         parse_dates=['Year'],
     )
 
@@ -510,7 +510,7 @@ def generate_cost_per_neuron():
     from matplotlib.ticker import FuncFormatter
     import textwrap
 
-    df = pd.read_csv(DATA_FILES["cost_estimates"])
+    df = pd.read_csv(DATA_FILES["cost_estimates"], sep='\t')
     df['CostPerNeuron'] = df['Cost / Neuron'].replace('[\\$,]', '', regex=True).astype(float)
 
     # Define style by Type (Budget, Estimate, Illustration)
@@ -682,7 +682,7 @@ def generate_initiatives():
     from matplotlib.patches import Patch
 
     brain_proj_df = pd.read_csv(
-        DATA_FILES["initiatives_overview"],
+        DATA_FILES["initiatives_overview"], sep='\t',
         parse_dates=['Start Year (cleaned)', 'End Year (cleaned)']
     )
     brain_proj_df.dropna(subset=['Start Year (cleaned)', 'Budget (in million $) (cleaned)'], inplace=True)
@@ -690,7 +690,7 @@ def generate_initiatives():
     brain_proj_df['End Year (cleaned)'] = brain_proj_df['End Year (cleaned)'].fillna(dt.datetime(2024, 12, 31))
 
     other_proj_df = pd.read_csv(
-        DATA_FILES["initiatives_costs"],
+        DATA_FILES["initiatives_costs"], sep='\t',
         parse_dates=['StartYear', 'EndYear'],
         converters={'Adjusted2024_M': lambda s: 1e3 * float(s.replace('$', ''))}
     )
@@ -801,7 +801,7 @@ def generate_sim_heatmap():
     from matplotlib.colors import ListedColormap, BoundaryNorm
 
     # Load simulation data
-    neuro_sim_df = pd.read_csv(DATA_FILES["computational_models"])
+    neuro_sim_df = pd.read_csv(DATA_FILES["computational_models"], sep='\t')
 
     # Define organisms and data columns
     organisms = ['C. elegans', 'Drosophila', 'Zebrafish', 'Mouse', 'Human']
@@ -975,7 +975,7 @@ def generate_rec_heatmap():
     from matplotlib.colors import LinearSegmentedColormap, BoundaryNorm
 
     # Load recording data
-    neuro_rec_df = pd.read_csv(DATA_FILES["neural_dynamics"])
+    neuro_rec_df = pd.read_csv(DATA_FILES["neural_dynamics"], sep='\t')
 
     # Rename columns to match expected format
     neuro_rec_df = neuro_rec_df.copy()
@@ -1154,7 +1154,7 @@ def generate_neuro_sim_radar():
     OUTPUT_FIGURES_NEURO_SIM.mkdir(parents=True, exist_ok=True)
 
     # Load simulation data
-    neuro_sim_df = pd.read_csv(DATA_FILES["computational_models"])
+    neuro_sim_df = pd.read_csv(DATA_FILES["computational_models"], sep='\t')
 
     organisms = ['C. elegans', 'Drosophila', 'Zebrafish', 'Mouse', 'Human']
     organism_map = {
@@ -1300,8 +1300,8 @@ def generate_neuro_rec_radar():
     OUTPUT_FIGURES_NEURO_REC.mkdir(parents=True, exist_ok=True)
 
     # Load recording data from the original data files
-    neuro_rec_df = pd.read_csv(DATA_FILES["neurodynamics_papers"])
-    organism_neuro_df = pd.read_csv(DATA_FILES["neurodynamics_organisms"])
+    neuro_rec_df = pd.read_csv(DATA_FILES["neurodynamics_papers"], sep='\t')
+    organism_neuro_df = pd.read_csv(DATA_FILES["neurodynamics_organisms"], sep='\t')
 
     # Standardize organism names in organism_neuro_df
     organism_neuro_df.replace('Zebrafish Larvae', 'Zebrafish', inplace=True)
@@ -1677,8 +1677,8 @@ def generate_all_sim_rec():
     import textwrap
 
     # Load both datasets
-    neuro_sim_df = pd.read_csv(DATA_FILES["computational_models"])
-    neuro_rec_df = pd.read_csv(DATA_FILES["neural_dynamics"])
+    neuro_sim_df = pd.read_csv(DATA_FILES["computational_models"], sep='\t')
+    neuro_rec_df = pd.read_csv(DATA_FILES["neural_dynamics"], sep='\t')
 
     organisms = ['C. elegans', 'Drosophila', 'Zebrafish', 'Mouse', 'Human']
 
@@ -1806,10 +1806,10 @@ def generate_all_sim_rec():
 def generate_funding():
     # Load funding data from new data structure
     neuro_proj_df = pd.read_csv(
-        DATA_FILES["costs_neuro_megaprojects"]
+        DATA_FILES["costs_neuro_megaprojects"], sep='\t'
     )
     other_proj_df = pd.read_csv(
-        DATA_FILES["costs_non_neuro_megaprojects"]
+        DATA_FILES["costs_non_neuro_megaprojects"], sep='\t'
     )
 
     # Clean neuroscience projects data
@@ -1873,7 +1873,7 @@ def generate_funding():
 def generate_organism_compute():
     # Load computational demands data
     compute_df = pd.read_csv(
-        DATA_FILES["computational_demands"]
+        DATA_FILES["computational_demands"], sep='\t'
     )
 
     # Parse the data - it's in a wide format with organisms as columns
@@ -2100,10 +2100,10 @@ def generate_compute_storage_parallel():
     import matplotlib.transforms as transforms
 
     # Load computer hardware data
-    hardware_df = pd.read_csv(DATA_FILES["compute_hardware"])
+    hardware_df = pd.read_csv(DATA_FILES["compute_hardware"], sep='\t')
 
     # Load computational demands data for organisms
-    demands_df = pd.read_csv(DATA_FILES["computational_demands"])
+    demands_df = pd.read_csv(DATA_FILES["computational_demands"], sep='\t')
 
     # Parse organism event-driven simulation requirements from the CSV
     # The CSV has sections separated by empty rows

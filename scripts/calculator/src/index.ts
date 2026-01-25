@@ -23,6 +23,4 @@
  */
 
 export { Calculator, createCalculator, createCalculatorSync } from './engine/index.js';
-
-// Re-export types (these will be generated)
-export type * from './generated/types.js';
+export type { FormulaDefinition, OrganismData, CalculatorData } from './engine/index.js';

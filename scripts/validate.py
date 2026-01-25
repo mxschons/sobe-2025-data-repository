@@ -17,6 +17,7 @@ Runs comprehensive quality checks before major pushes to ensure:
 Usage:
     python3 validate.py          # Run all checks
     python3 validate.py --strict # Fail on warnings too
+    python3 validate.py --ci     # Skip checks requiring generated content
     python3 validate.py --fix    # Auto-fix some issues (future)
 """
 
@@ -195,7 +196,7 @@ def check_zero_size_files(report: ValidationReport) -> CheckResult:
 
 def check_figures_metadata_sync(report: ValidationReport) -> CheckResult:
     """Verify every metadata entry has a corresponding file."""
-    metadata_path = paths.OUTPUT_METADATA / "figures-metadata.json"
+    metadata_path = paths.OUTPUT_FIGURES_METADATA
     data = load_json(metadata_path)
     if not data:
         return CheckResult("fail", "Could not load figures-metadata.json")
@@ -228,7 +229,7 @@ def check_figures_metadata_sync(report: ValidationReport) -> CheckResult:
 
 def check_orphan_figures(report: ValidationReport) -> CheckResult:
     """Find generated figures not listed in metadata."""
-    metadata_path = paths.OUTPUT_METADATA / "figures-metadata.json"
+    metadata_path = paths.OUTPUT_FIGURES_METADATA
     data = load_json(metadata_path)
     if not data:
         return CheckResult("fail", "Could not load figures-metadata.json")
@@ -266,7 +267,7 @@ def check_orphan_figures(report: ValidationReport) -> CheckResult:
 
 def check_data_files_exist(report: ValidationReport) -> CheckResult:
     """Verify all referenced CSV files exist and are readable."""
-    metadata_path = paths.OUTPUT_METADATA / "data-metadata.json"
+    metadata_path = paths.OUTPUT_DATA_METADATA
     data = load_json(metadata_path)
     if not data:
         return CheckResult("fail", "Could not load data-metadata.json")
@@ -280,8 +281,8 @@ def check_data_files_exist(report: ValidationReport) -> CheckResult:
             data_path = dataset.get("path", "data")
             dataset_id = dataset.get("id", "unknown")
 
-            # Path is relative to repo root
-            full_path = paths.REPO_ROOT / data_path / filename
+            # Path is relative to data-and-figures/ (OUTPUT_ROOT)
+            full_path = paths.OUTPUT_ROOT / data_path / filename
 
             if not full_path.exists():
                 missing.append(f"{dataset_id}: {data_path}/{filename}")
@@ -305,15 +306,18 @@ def check_data_file_not_empty(report: ValidationReport) -> CheckResult:
     low_row_files = []
     checked = 0
 
-    for csv_file in data_dir.rglob("*.csv"):
+    for tsv_file in data_dir.rglob("*.tsv"):
+        # Skip _metadata directory
+        if "_metadata" in str(tsv_file):
+            continue
         checked += 1
         try:
-            with open(csv_file, "r", encoding="utf-8") as f:
+            with open(tsv_file, "r", encoding="utf-8") as f:
                 lines = f.readlines()
             # Subtract 1 for header
             data_rows = len(lines) - 1
             if data_rows < 2:
-                rel_path = csv_file.relative_to(data_dir)
+                rel_path = tsv_file.relative_to(data_dir)
                 low_row_files.append(f"{rel_path}: {data_rows} data rows")
         except Exception:
             pass
@@ -324,7 +328,7 @@ def check_data_file_not_empty(report: ValidationReport) -> CheckResult:
             f"{len(low_row_files)} files with very few rows",
             low_row_files
         )
-    return CheckResult("pass", f"All {checked} CSV files have sufficient data")
+    return CheckResult("pass", f"All {checked} TSV files have sufficient data")
 
 
 def check_source_data_files(report: ValidationReport) -> CheckResult:
@@ -343,13 +347,95 @@ def check_source_data_files(report: ValidationReport) -> CheckResult:
     return CheckResult("pass", f"All {found} source data files exist")
 
 
+def check_data_metadata_files(report: ValidationReport) -> CheckResult:
+    """Verify every TSV data file has a corresponding metadata JSON file."""
+    data_dir = paths.DATA_DIR
+    metadata_dir = paths.DATA_METADATA
+    missing = []
+    found = 0
+
+    for tsv_file in data_dir.rglob("*.tsv"):
+        # Skip _metadata directory
+        if "_metadata" in str(tsv_file):
+            continue
+
+        # Get relative path from data dir
+        relative = tsv_file.relative_to(data_dir)
+        # Construct expected metadata path
+        metadata_path = metadata_dir / relative.with_suffix(".json")
+
+        if not metadata_path.exists():
+            missing.append(f"{relative} -> missing {metadata_path.relative_to(data_dir)}")
+        else:
+            found += 1
+
+    if missing:
+        return CheckResult(
+            "fail",
+            f"{len(missing)} data files missing metadata",
+            missing
+        )
+    return CheckResult("pass", f"All {found} data files have metadata")
+
+
+def check_tsv_format(report: ValidationReport) -> CheckResult:
+    """Validate TSV files have consistent column counts and valid format."""
+    data_dir = paths.DATA_DIR
+    issues = []
+    checked = 0
+
+    for tsv_file in data_dir.rglob("*.tsv"):
+        if "_metadata" in str(tsv_file):
+            continue
+        checked += 1
+        rel_path = tsv_file.relative_to(data_dir)
+
+        try:
+            with open(tsv_file, "r", encoding="utf-8") as f:
+                lines = f.readlines()
+
+            if not lines:
+                issues.append(f"{rel_path}: empty file")
+                continue
+
+            # Check for BOM
+            if lines[0].startswith('\ufeff'):
+                issues.append(f"{rel_path}: contains BOM character")
+
+            # Check for rows with MORE columns than header (indicates data corruption)
+            # Rows with fewer columns are allowed (sparse data with trailing empty fields)
+            header_cols = len(lines[0].rstrip('\n\r').split('\t'))
+            for i, line in enumerate(lines[1:], start=2):
+                # Skip empty lines
+                if not line.strip():
+                    continue
+                cols = len(line.rstrip('\n\r').split('\t'))
+                if cols > header_cols:
+                    issues.append(f"{rel_path}:{i}: {cols} cols (expected max {header_cols})")
+                    break  # One error per file
+
+            # Check trailing whitespace on lines
+            for i, line in enumerate(lines, start=1):
+                stripped = line.rstrip('\n\r')
+                if stripped != stripped.rstrip(' \t'):
+                    issues.append(f"{rel_path}:{i}: trailing whitespace")
+                    break
+
+        except Exception as e:
+            issues.append(f"{rel_path}: read error: {e}")
+
+    if issues:
+        return CheckResult("warn", f"{len(issues)} TSV format issues", issues)
+    return CheckResult("pass", f"All {checked} TSV files well-formed")
+
+
 # =============================================================================
 # TIER 3: Consistency Checks
 # =============================================================================
 
 def check_organism_taxonomy(report: ValidationReport) -> CheckResult:
     """Verify all organism tags are valid."""
-    metadata_path = paths.OUTPUT_METADATA / "figures-metadata.json"
+    metadata_path = paths.OUTPUT_FIGURES_METADATA
     data = load_json(metadata_path)
     if not data:
         return CheckResult("fail", "Could not load figures-metadata.json")
@@ -370,7 +456,7 @@ def check_organism_taxonomy(report: ValidationReport) -> CheckResult:
 
 def check_type_taxonomy(report: ValidationReport) -> CheckResult:
     """Verify all type tags are valid."""
-    metadata_path = paths.OUTPUT_METADATA / "figures-metadata.json"
+    metadata_path = paths.OUTPUT_FIGURES_METADATA
     data = load_json(metadata_path)
     if not data:
         return CheckResult("fail", "Could not load figures-metadata.json")
@@ -394,12 +480,12 @@ def check_id_uniqueness(report: ValidationReport) -> CheckResult:
     all_ids = []
 
     # Figures metadata
-    figures_meta = load_json(paths.OUTPUT_METADATA / "figures-metadata.json")
+    figures_meta = load_json(paths.OUTPUT_FIGURES_METADATA)
     if figures_meta:
         all_ids.extend((f["id"], "figures") for f in figures_meta.get("figures", []))
 
     # Hand-drawn metadata
-    hand_drawn_meta = load_json(paths.OUTPUT_METADATA / "hand-drawn-metadata.json")
+    hand_drawn_meta = load_json(paths.OUTPUT_HAND_DRAWN_METADATA)
     if hand_drawn_meta:
         all_ids.extend((f["id"], "hand-drawn") for f in hand_drawn_meta.get("figures", []))
 
@@ -420,18 +506,17 @@ def check_id_uniqueness(report: ValidationReport) -> CheckResult:
 def check_license_consistency(report: ValidationReport) -> CheckResult:
     """Verify all metadata files have license information."""
     files_to_check = [
-        ("figures-metadata.json", True),
-        ("data-metadata.json", True),
-        ("hand-drawn-metadata.json", True),
+        ("figures", paths.OUTPUT_FIGURES_METADATA),
+        ("data", paths.OUTPUT_DATA_METADATA),
+        ("hand-drawn", paths.OUTPUT_HAND_DRAWN_METADATA),
     ]
 
     missing_license = []
 
-    for filename, required in files_to_check:
-        filepath = paths.OUTPUT_METADATA / filename
+    for name, filepath in files_to_check:
         data = load_json(filepath)
         if data and "license" not in data:
-            missing_license.append(filename)
+            missing_license.append(name)
 
     if missing_license:
         return CheckResult("warn", f"{len(missing_license)} files missing license", missing_license)
@@ -443,7 +528,7 @@ def check_description_quality(report: ValidationReport) -> CheckResult:
     poor_descriptions = []
 
     # Check figures metadata
-    figures_meta = load_json(paths.OUTPUT_METADATA / "figures-metadata.json")
+    figures_meta = load_json(paths.OUTPUT_FIGURES_METADATA)
     if figures_meta:
         for fig in figures_meta.get("figures", []):
             desc = fig.get("description", "")
@@ -553,7 +638,7 @@ def check_web_format_coverage(report: ValidationReport) -> CheckResult:
 
 def check_hand_drawn_files(report: ValidationReport) -> CheckResult:
     """Check hand-drawn figures have both PNG and SVG."""
-    metadata_path = paths.OUTPUT_METADATA / "hand-drawn-metadata.json"
+    metadata_path = paths.OUTPUT_HAND_DRAWN_METADATA
     data = load_json(metadata_path)
     if not data:
         return CheckResult("fail", "Could not load hand-drawn-metadata.json")
@@ -592,7 +677,7 @@ def check_hand_drawn_files(report: ValidationReport) -> CheckResult:
 
 def check_orphan_hand_drawn_figures(report: ValidationReport) -> CheckResult:
     """Find hand-drawn figures not listed in metadata."""
-    metadata_path = paths.OUTPUT_METADATA / "hand-drawn-metadata.json"
+    metadata_path = paths.OUTPUT_HAND_DRAWN_METADATA
     data = load_json(metadata_path)
     if not data:
         return CheckResult("fail", "Could not load hand-drawn-metadata.json")
@@ -611,8 +696,8 @@ def check_orphan_hand_drawn_figures(report: ValidationReport) -> CheckResult:
     hand_drawn_dir = paths.OUTPUT_FIGURES_HAND_DRAWN
     orphans = []
 
-    # Skip non-figure files like metadata.json
-    skip_files = {"metadata.json"}
+    # Skip non-figure files like _metadata.json
+    skip_files = {"_metadata.json"}
 
     for f in hand_drawn_dir.iterdir():
         if f.name in skip_files:
@@ -628,6 +713,63 @@ def check_orphan_hand_drawn_figures(report: ValidationReport) -> CheckResult:
             orphans
         )
     return CheckResult("pass", "All hand-drawn figures are in metadata")
+
+
+def check_stale_figures(report: ValidationReport) -> CheckResult:
+    """Warn if source data is newer than generated figures."""
+    from datetime import datetime
+
+    # Key data files that affect figures
+    source_files = [
+        paths.DATA_FILES.get("neuron_simulations"),
+        paths.DATA_FILES.get("neural_recordings"),
+        paths.DATA_FILES.get("brain_scans"),
+        paths.DATA_FILES.get("ai_compute"),
+        paths.DATA_FILES.get("storage_costs"),
+    ]
+
+    figures_dir = paths.OUTPUT_FIGURES
+    if not figures_dir.exists():
+        return CheckResult("skip", "No generated figures directory")
+
+    # Find newest source file
+    newest_source = 0
+    newest_source_name = ""
+    for src in source_files:
+        if src and src.exists():
+            mtime = src.stat().st_mtime
+            if mtime > newest_source:
+                newest_source = mtime
+                newest_source_name = src.name
+
+    if newest_source == 0:
+        return CheckResult("skip", "No source data files found")
+
+    # Find oldest figure
+    oldest_figure = float('inf')
+    oldest_figure_name = ""
+    figure_count = 0
+    for fig in figures_dir.glob("*.svg"):
+        figure_count += 1
+        mtime = fig.stat().st_mtime
+        if mtime < oldest_figure:
+            oldest_figure = mtime
+            oldest_figure_name = fig.name
+
+    if figure_count == 0:
+        return CheckResult("skip", "No figures found")
+
+    # Compare timestamps
+    if newest_source > oldest_figure:
+        src_time = datetime.fromtimestamp(newest_source).strftime("%Y-%m-%d %H:%M")
+        fig_time = datetime.fromtimestamp(oldest_figure).strftime("%Y-%m-%d %H:%M")
+        return CheckResult(
+            "warn",
+            "Figures may be stale",
+            [f"Source '{newest_source_name}' ({src_time}) newer than '{oldest_figure_name}' ({fig_time})"]
+        )
+
+    return CheckResult("pass", f"All {figure_count} figures up-to-date with source data")
 
 
 # =============================================================================
@@ -801,7 +943,7 @@ def check_title_quality(report: ValidationReport) -> CheckResult:
     poor_titles = []
 
     # Check figures metadata
-    figures_meta = load_json(paths.OUTPUT_METADATA / "figures-metadata.json")
+    figures_meta = load_json(paths.OUTPUT_FIGURES_METADATA)
     if figures_meta:
         for fig in figures_meta.get("figures", []):
             title = fig.get("title", "")
@@ -818,7 +960,7 @@ def check_title_quality(report: ValidationReport) -> CheckResult:
                     poor_titles.append(f"{fig_id}: title may be too vague ('{title}')")
 
     # Check hand-drawn metadata
-    hand_drawn_meta = load_json(paths.OUTPUT_METADATA / "hand-drawn-metadata.json")
+    hand_drawn_meta = load_json(paths.OUTPUT_HAND_DRAWN_METADATA)
     if hand_drawn_meta:
         for fig in hand_drawn_meta.get("figures", []):
             if fig.get("id", "").startswith("_"):
@@ -910,13 +1052,35 @@ def check_seo_length_limits(report: ValidationReport) -> CheckResult:
 # Main Execution
 # =============================================================================
 
-def run_all_checks(strict: bool = False) -> int:
-    """Run all validation checks and return exit code."""
+def run_all_checks(strict: bool = False, ci_mode: bool = False) -> int:
+    """Run all validation checks and return exit code.
+
+    Args:
+        strict: If True, fail on warnings too
+        ci_mode: If True, skip checks requiring generated content (figures, dist/data)
+    """
     print("=" * 50)
     print(f"{Colors.BOLD}SOBE 2025 Data Repository - Quality Checks{Colors.RESET}")
+    if ci_mode:
+        print(f"{Colors.INFO}(CI mode: skipping checks for generated content){Colors.RESET}")
     print("=" * 50)
 
     report = ValidationReport()
+
+    # Checks to skip in CI mode (require generated content)
+    ci_skip_checks = {
+        "Metadata-file sync",  # Requires generated figures
+        "Orphan figures",      # Requires generated figures
+        "Data files exist",    # Requires dist/data/ TSV files
+    }
+
+    def run_check(name: str, check_fn):
+        if ci_mode and name in ci_skip_checks:
+            result = CheckResult("skip", "Skipped in CI mode (requires generated content)")
+        else:
+            result = check_fn(report)
+        report.add(name, result)
+        report.print_result(name, result)
 
     # Tier 1: Critical
     report.print_tier_header("TIER 1", "Critical Checks")
@@ -929,9 +1093,7 @@ def run_all_checks(strict: bool = False) -> int:
     ]
 
     for name, check_fn in checks_tier1:
-        result = check_fn(report)
-        report.add(name, result)
-        report.print_result(name, result)
+        run_check(name, check_fn)
 
     # Tier 2: Data Quality
     report.print_tier_header("TIER 2", "Data Quality Checks")
@@ -940,12 +1102,12 @@ def run_all_checks(strict: bool = False) -> int:
         ("Data files exist", check_data_files_exist),
         ("Data file content", check_data_file_not_empty),
         ("Source data files", check_source_data_files),
+        ("Data metadata files", check_data_metadata_files),
+        ("TSV format", check_tsv_format),
     ]
 
     for name, check_fn in checks_tier2:
-        result = check_fn(report)
-        report.add(name, result)
-        report.print_result(name, result)
+        run_check(name, check_fn)
 
     # Tier 3: Consistency
     report.print_tier_header("TIER 3", "Consistency Checks")
@@ -959,9 +1121,7 @@ def run_all_checks(strict: bool = False) -> int:
     ]
 
     for name, check_fn in checks_tier3:
-        result = check_fn(report)
-        report.add(name, result)
-        report.print_result(name, result)
+        run_check(name, check_fn)
 
     # Tier 4: Reporting
     report.print_tier_header("TIER 4", "Reporting & Metrics")
@@ -971,12 +1131,11 @@ def run_all_checks(strict: bool = False) -> int:
         ("Web format coverage", check_web_format_coverage),
         ("Hand-drawn figures", check_hand_drawn_files),
         ("Orphan hand-drawn", check_orphan_hand_drawn_figures),
+        ("Stale figures", check_stale_figures),
     ]
 
     for name, check_fn in checks_tier4:
-        result = check_fn(report)
-        report.add(name, result)
-        report.print_result(name, result)
+        run_check(name, check_fn)
 
     # Tier 5: SEO & Accessibility (metadata quality)
     report.print_tier_header("TIER 5", "SEO & Accessibility Checks")
@@ -986,9 +1145,7 @@ def run_all_checks(strict: bool = False) -> int:
     ]
 
     for name, check_fn in checks_tier5:
-        result = check_fn(report)
-        report.add(name, result)
-        report.print_result(name, result)
+        run_check(name, check_fn)
 
     # Summary
     report.print_summary()
@@ -1004,5 +1161,6 @@ def run_all_checks(strict: bool = False) -> int:
 
 if __name__ == "__main__":
     strict_mode = "--strict" in sys.argv
-    exit_code = run_all_checks(strict=strict_mode)
+    ci_mode = "--ci" in sys.argv
+    exit_code = run_all_checks(strict=strict_mode, ci_mode=ci_mode)
     sys.exit(exit_code)

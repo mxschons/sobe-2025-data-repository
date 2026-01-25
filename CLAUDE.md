@@ -40,17 +40,27 @@ sobe-2025-data-repository/
 │   ├── run_all_figures.py     # Main pipeline with figure registry
 │   ├── validate.py            # Quality validation (run before commits!)
 │   └── build_downloads.py     # ZIP archive builder
-├── data/                       # Source datasets (CSV files)
-│   ├── ai-compute/            # AI training compute data
-│   ├── brain-scans/           # Connectomics scanning data
-│   ├── initiatives/           # Research initiatives data
-│   └── storage-costs/         # Storage cost trends
-├── data-and-figures/          # Data assets for website
-│   ├── data/                  # CSV datasets
-│   ├── figures/               # Generated + hand-drawn images
+├── data/                       # Source datasets (TSV files)
+│   ├── compute/               # AI training, hardware data
+│   ├── connectomics/          # Brain scanning data
+│   ├── costs/                 # Cost estimates, megaprojects
+│   ├── formulas/              # Calculator formulas
+│   ├── imaging/               # Imaging modalities
+│   ├── initiatives/           # Brain research programs
+│   ├── organisms/             # Organism reference data
+│   ├── parameters/            # Shared calculation parameters
+│   ├── recordings/            # Neural recording data
+│   ├── simulations/           # Simulation history data
+│   └── _metadata/             # Attribution metadata (mirrors data/ structure)
+├── dist/                       # Distribution output for website
+│   ├── calculator/            # Calculator outputs (data.json, types.ts, docs/)
+│   ├── data/                  # TSV datasets (mirrors data/ structure)
+│   │   └── _metadata.json     # Datasets catalog
+│   ├── figures/
 │   │   ├── generated/         # Output SVG, PNG, WebP, AVIF figures
+│   │   │   └── _metadata.json # Generated figures catalog
 │   │   └── hand-drawn/        # Hand-drawn illustrations
-│   ├── metadata/              # JSON metadata catalogs
+│   │       └── _metadata.json # Hand-drawn figures catalog
 │   └── downloads/             # ZIP archives for bulk download
 └── requirements.txt           # Python dependencies
 ```
@@ -74,6 +84,50 @@ Centralized styling with:
 
 ### `scripts/paths.py`
 Path configuration for all data and output directories. Always use these paths instead of hardcoding.
+
+## Calculator Module
+
+The TypeScript calculator at `scripts/calculator/` estimates brain emulation project costs and timelines based on organism size, imaging modality, and technology assumptions.
+
+### Calculator Quick Start
+
+```bash
+cd scripts/calculator
+npm install          # Also runs build:data via postinstall
+npm test             # Run tests
+```
+
+### Calculator Structure
+
+```
+scripts/calculator/
+├── build/             # Build scripts (validate, generate-types, bundle, generate-docs)
+├── src/               # TypeScript source code
+│   └── engine/        # Core calculator engine
+├── tests/             # Unit tests and spreadsheet parity tests
+├── data/              # Symlinks to root data/ TSV files
+└── original/          # Reference Excel spreadsheets
+```
+
+### Calculator Outputs
+
+Outputs are generated in `dist/calculator/` (distribution folder):
+
+| File | Purpose |
+|------|---------|
+| `data.json` | Bundled parameters and formulas for web apps |
+| `types.ts` | TypeScript interfaces for type-safe usage |
+| `docs/parameters.md` | Human-readable parameter reference |
+| `docs/formulas.md` | Human-readable formula reference |
+
+### Calculator Workflow
+
+1. Edit TSV files in `data/` (formulas, organisms, imaging, etc.)
+2. Run `npm run build:data` to regenerate outputs
+3. Run `npm test` to verify calculations
+4. Commit both source TSV files and generated outputs
+
+CI will fail if generated outputs are stale.
 
 ## Code Conventions
 
@@ -154,26 +208,33 @@ Same conventions apply. Use descriptive names that explain the illustration:
 1. Add a function in `scripts/run_all_figures.py` with the `@figure()` decorator
 2. Use styling from `style.py`
 3. Save to `paths.GENERATED_FIGURES_DIR`
-4. Update `data-and-figures/metadata/figures-metadata.json` if needed
+4. Update `dist/figures/generated/_metadata.json` if needed
 
 ### Serving Data Locally
 
 ```bash
-cd data-and-figures
+cd dist
 python3 -m http.server 8000
-# Access metadata at http://localhost:8000/metadata/
+# Access figures metadata at http://localhost:8000/figures/generated/_metadata.json
 ```
 
 ## Data Categories
 
 | Category | Location | Description |
 |----------|----------|-------------|
-| Neural Simulations | `data/*.csv` | Neuron/synapse counts, 1957-2025 |
-| Neural Recordings | `data/*.csv` | Recording capabilities by organism |
-| Connectomics | `data/brain-scans/` | Brain tissue scanning data |
-| AI Compute | `data/ai-compute/` | AI training compute trends |
-| Storage Costs | `data/storage-costs/` | Storage cost evolution |
-| Initiatives | `data/initiatives/` | Global brain research programs |
+| Neural Simulations | `data/simulations/*.tsv` | Neuron/synapse counts, 1957-2025 |
+| Neural Recordings | `data/recordings/*.tsv` | Recording capabilities by organism |
+| Connectomics | `data/connectomics/*.tsv` | Brain tissue scanning data |
+| AI Compute | `data/compute/*.tsv` | AI training compute trends |
+| Storage Costs | `data/costs/*.tsv` | Storage cost evolution |
+| Initiatives | `data/initiatives/*.tsv` | Global brain research programs |
+| Formulas | `data/formulas/*.tsv` | Calculator formula definitions |
+| Imaging | `data/imaging/*.tsv` | Imaging modality data |
+
+## Data Attribution
+
+All data files in `data/` have corresponding metadata in `data/_metadata/` (mirrored structure).
+See README.md "Data Attribution Guidelines" for the metadata schema and contributor guidelines.
 
 ## Dependencies
 
@@ -191,6 +252,41 @@ Key Python packages (see `requirements.txt`):
 cd scripts
 python3 validate.py          # Run all checks
 python3 validate.py --strict # Fail on warnings too
+python3 validate.py --ci     # Skip checks requiring generated content
+```
+
+### Validation Modes
+
+| Mode | Use Case |
+|------|----------|
+| Default | Full validation - requires figures to be generated first |
+| `--strict` | Treats warnings as failures |
+| `--ci` | Skips checks that require generated content (figures, dist/data/) |
+
+**Important**: Full validation (without `--ci`) requires figures to be generated first:
+
+```bash
+cd scripts/figures
+python3 run_all_figures.py   # Generate figures to dist/
+cd ..
+python3 validate.py          # Now run full validation
+```
+
+The CI pipeline uses `--ci` mode since figure generation is a separate step.
+
+### Pre-commit Hooks
+
+Install pre-commit hooks to automatically run validation before each commit:
+
+```bash
+pip install pre-commit
+pre-commit install
+```
+
+Hooks run automatically on `git commit`. To run manually:
+
+```bash
+pre-commit run --all-files
 ```
 
 The validation script checks:
@@ -204,12 +300,14 @@ The validation script checks:
 | **2 - Data** | Data files exist | Missing CSV source files |
 | **2 - Data** | Data file content | Empty or truncated datasets |
 | **2 - Data** | Source data files | Missing files referenced in paths.py |
+| **2 - Data** | TSV format | Column count mismatches, BOM, trailing whitespace |
 | **3 - Consistency** | Organism taxonomy | Invalid organism tags |
 | **3 - Consistency** | Type taxonomy | Invalid type tags |
 | **3 - Consistency** | ID uniqueness | Duplicate IDs across metadata |
 | **3 - Consistency** | License consistency | Missing license in metadata |
 | **4 - Reporting** | File sizes | Size metrics for monitoring |
 | **4 - Reporting** | Hand-drawn figures | PNG+SVG pairs for hand-drawn |
+| **4 - Reporting** | Stale figures | Source data newer than generated figures |
 | **5 - SEO** | HTML meta tags | Missing description, OG, Twitter tags |
 | **5 - SEO** | HTML lang attribute | Missing lang="en" on HTML elements |
 | **5 - SEO** | Heading hierarchy | H1→H3 skips, multiple H1s |
@@ -238,9 +336,11 @@ Some legacy assets don't follow all conventions. These are documented in `script
 ## Notes for Claude Instances
 
 - **Run `validate.py` before every commit** to catch issues early
+- **Regenerate figures before full validation**: Run `run_all_figures.py` before `validate.py` (without `--ci`)
 - No unit test suite exists - validation + visual inspection are the quality gates
 - The web interface is self-contained and can be embedded via iframes
 - All figures are licensed under CC BY 4.0
 - When modifying figures, regenerate using `run_all_figures.py`
 - JSON metadata files control the web interface display
 - If validation fails, fix the issues before committing
+- Use `validate.py --ci` if you only changed source data/code (not figures)

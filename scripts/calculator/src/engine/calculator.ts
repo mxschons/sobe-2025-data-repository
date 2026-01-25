@@ -18,7 +18,7 @@ math.import({
   }
 }, { override: true });
 
-interface FormulaDefinition {
+export interface FormulaDefinition {
   id: string;
   formula: string;
   inputs: string[];
@@ -28,18 +28,20 @@ interface FormulaDefinition {
   description: string;
 }
 
-interface CalculatorData {
+export interface OrganismData {
+  id: string;
+  name: string;
+  neurons: number;
+  volumeMm3: number;
+  synapses: number;
+  source: string;
+}
+
+export interface CalculatorData {
   parameters: {
     shared: Record<string, number | string>;
     modalities: Record<string, Record<string, number>>;
-    organisms: Record<string, {
-      id: string;
-      name: string;
-      neurons: number;
-      volumeMm3: number;
-      synapses: number;
-      source: string;
-    }>;
+    organisms: Record<string, OrganismData>;
     proofreading: Record<string, Record<string, number>>;
   };
   formulas: FormulaDefinition[];
@@ -284,7 +286,7 @@ export class Calculator {
 export async function createCalculator(): Promise<Calculator> {
   // In a real app, this would load from the generated JSON
   // For now, we'll import it directly
-  const data = await import('../generated/data.json', { assert: { type: 'json' } });
+  const data = await import('../../../../dist/calculator/data.json', { assert: { type: 'json' } });
   return new Calculator(data.default as CalculatorData);
 }
 

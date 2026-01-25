@@ -6,15 +6,16 @@
   "main": "src/index.ts",
   "scripts": {
     "build:data": "npm run validate && npm run generate:types && npm run generate:docs && npm run bundle",
-    "validate": "tsx scripts/validate.ts",
-    "generate:types": "tsx scripts/generate-types.ts",
-    "generate:docs": "tsx scripts/generate-docs.ts",
-    "bundle": "tsx scripts/bundle.ts",
+    "validate": "tsx build/validate.ts",
+    "generate:types": "tsx build/generate-types.ts",
+    "generate:docs": "tsx build/generate-docs.ts",
+    "bundle": "tsx build/bundle.ts",
     "dev": "npm run build:data && vite",
     "build": "npm run build:data && tsc && vite build",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:parity": "vitest run tests/spreadsheet-parity.test.ts"
+    "test:parity": "vitest run tests/spreadsheet-parity.test.ts",
+    "postinstall": "npm run build:data"
   },
   "dependencies": {
     "mathjs": "^12.2.1"

@@ -17,7 +17,7 @@ const ORGANISMS_DIR = join(DATA_ROOT, 'organisms');
 const IMAGING_DIR = join(DATA_ROOT, 'imaging');
 const RECORDINGS_DIR = join(DATA_ROOT, 'recordings');
 const COSTS_DIR = join(DATA_ROOT, 'costs');
-const OUTPUT_FILE = join(__dirname, '..', 'src', 'generated', 'data.json');
+const OUTPUT_FILE = join(__dirname, '..', '..', '..', 'dist', 'calculator', 'data.json');
 
 interface ParameterRow {
   id: string;

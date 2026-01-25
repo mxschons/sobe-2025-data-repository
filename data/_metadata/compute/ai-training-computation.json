@@ -1,0 +1,10 @@
+{
+  "title": "AI Training Computation",
+  "source": "https://ourworldindata.org/grapher/artificial-intelligence-training-computation",
+  "originalAuthor": "Epoch (2024) via Our World in Data",
+  "contributors": [],
+  "license": "CC BY 4.0",
+  "url": "https://ourworldindata.org/grapher/artificial-intelligence-training-computation",
+  "dateAccessed": "2024-11-28",
+  "description": "Computation used to train notable artificial intelligence systems, measured in petaFLOP by domain."
+}

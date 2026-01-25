@@ -35,25 +35,34 @@ python3 build_downloads.py
 ## Repository Structure
 
 ```
-sobe25-scripts/
+sobe-2025-data-repository/
 ├── scripts/                          # Figure generation code
 │   ├── style.py                      # Centralized style configuration
 │   ├── run_all_figures.py            # Main pipeline (generates all figures)
 │   ├── build_downloads.py            # Creates ZIP archives
-│   ├── validate.py                   # Quality validation checks
-│   └── *.ipynb                       # Analysis notebooks
-├── data/                             # Source datasets (CSV, Excel)
-└── data-and-figures/                 # Data assets for website
+│   └── validate.py                   # Quality validation checks
+├── data/                             # Source datasets (TSV format)
+│   ├── compute/                      # AI training, hardware data
+│   ├── connectomics/                 # Brain scanning data
+│   ├── costs/                        # Cost estimates, megaprojects
+│   ├── formulas/                     # Calculator formulas
+│   ├── imaging/                      # Imaging modalities
+│   ├── initiatives/                  # Brain research programs
+│   ├── organisms/                    # Organism reference data
+│   ├── parameters/                   # Shared calculation parameters
+│   ├── recordings/                   # Neural recording data
+│   ├── simulations/                  # Simulation history data
+│   └── _metadata/                    # Attribution metadata (mirrors data/ structure)
+└── dist/                 # Data assets for website
     ├── figures/
     │   ├── generated/                # Programmatic figures (SVG, PNG, WebP, AVIF)
+    │   │   ├── _metadata.json        # Generated figures catalog
     │   │   ├── neuro-sim/            # Per-organism simulation figures
     │   │   └── neuro-rec/            # Per-organism recording figures
     │   └── hand-drawn/               # Anatomical illustrations
-    ├── data/                         # CSV datasets
-    ├── metadata/                     # JSON metadata catalogs
-    │   ├── figures-metadata.json     # Generated figures catalog
-    │   ├── data-metadata.json        # Datasets catalog
-    │   └── hand-drawn-metadata.json  # Hand-drawn figures catalog
+    │       └── _metadata.json        # Hand-drawn figures catalog
+    ├── data/                         # TSV datasets (mirrors data/ structure)
+    │   └── _metadata.json            # Datasets catalog
     └── downloads/                    # ZIP archives for bulk download
 ```
 
@@ -100,18 +109,6 @@ save_figure(fig, 'my-figure')  # Saves both .svg and .png
 | `build_downloads.py` | Creates ZIP archives with CC BY 4.0 license |
 | `validate.py` | Runs quality checks on figures and metadata |
 
-### Jupyter Notebooks
-
-| Notebook | Description |
-|----------|-------------|
-| `ConnectomicsDataviz.ipynb` | Main visualization work |
-| `January.ipynb` | Extended analysis |
-| `information_rate.ipynb` | Compute/storage parallel coordinate plots |
-| `Computational demands across organisms.ipynb` | Organism comparison charts |
-| `Estimated Requirements for Brain Emulation.ipynb` | Emulation cost analysis |
-| `comparison_recording_modalities.ipynb` | Recording technique comparison |
-| `Cost_estimates_Neurons.ipynb` | Cost per neuron trends |
-
 ## Generated Figures
 
 The pipeline produces 38+ figures across categories:
@@ -140,18 +137,18 @@ All figures are saved in both **SVG** (vector) and **PNG** (150 DPI) formats.
 
 ## Data Assets
 
-The `data-and-figures/` directory provides assets for the main website:
+The `dist/` directory provides assets for the main website:
 
 ### What This Repo Provides
 
 | Asset | Location | Format |
 |-------|----------|--------|
 | Generated figures | `figures/generated/` | SVG, PNG, WebP, AVIF |
+| Figure metadata | `figures/generated/_metadata.json` | JSON |
 | Hand-drawn figures | `figures/hand-drawn/` | SVG, PNG, WebP, AVIF |
-| Datasets | `data/` | CSV |
-| Figure metadata | `metadata/figures-metadata.json` | JSON |
-| Dataset metadata | `metadata/data-metadata.json` | JSON |
-| Hand-drawn metadata | `metadata/hand-drawn-metadata.json` | JSON |
+| Hand-drawn metadata | `figures/hand-drawn/_metadata.json` | JSON |
+| Datasets | `data/` | TSV |
+| Dataset metadata | `data/_metadata.json` | JSON |
 | Bulk downloads | `downloads/` | ZIP |
 
 ### How the Website Uses This Data
@@ -159,7 +156,7 @@ The `data-and-figures/` directory provides assets for the main website:
 The main website repository reads the metadata JSON files and renders the UI natively.
 When you add new figures or datasets:
 
-1. Add the actual files (CSV, PNG, SVG)
+1. Add the actual files (TSV, PNG, SVG)
 2. Update the relevant metadata JSON
 3. Regenerate ZIP archives if needed
 4. The website will automatically display the new content
@@ -181,8 +178,8 @@ Source data is organized by topic:
 
 ## Adding Hand-Drawn Figures
 
-1. Add PNG and SVG files to `data-and-figures/figures/hand-drawn/`
-2. Update `data-and-figures/metadata/hand-drawn-metadata.json`:
+1. Add PNG and SVG files to `dist/figures/hand-drawn/`
+2. Update `dist/metadata/hand-drawn-metadata.json`:
 
 ```json
 {
@@ -213,6 +210,56 @@ openpyxl        # Excel file support
 nbconvert       # Notebook processing
 ipykernel       # Jupyter kernel
 ```
+
+## Data Attribution Guidelines
+
+### Structure
+
+All data files in `data/` have a corresponding metadata file in `data/_metadata/`, mirroring the folder structure:
+
+```
+data/
+├── compute/
+│   └── ai-training-computation.tsv
+├── connectomics/
+│   └── brain-scans.tsv
+└── _metadata/
+    ├── compute/
+    │   └── ai-training-computation.json
+    └── connectomics/
+        └── brain-scans.json
+```
+
+### Metadata Schema
+
+Each `.json` metadata file contains:
+
+```json
+{
+  "title": "Human-readable dataset name",
+  "source": "State of Brain Emulation Report 2025",
+  "originalAuthor": "Original creator(s)",
+  "contributors": ["Name (year)", "Name (year)"],
+  "license": "CC BY 4.0",
+  "url": "Source URL (external data only)",
+  "dateAccessed": "YYYY-MM-DD (external data only)",
+  "description": "Brief description of what this data contains"
+}
+```
+
+### For Contributors
+
+- **Adding a new dataset**: Create both the data file and corresponding metadata file
+- **Modifying an existing dataset**: Add yourself to the `contributors` array with the year
+- **External data**: Always include `url` and `dateAccessed`
+
+### External Data Sources
+
+| Dataset | Original Author | License |
+|---------|-----------------|---------|
+| `ai-training-computation.tsv` | Epoch via Our World in Data | CC BY 4.0 |
+| `storage-historical.tsv` | John C. McCallum via Our World in Data | CC BY 4.0 |
+| `neuroimaging-speed.tsv` | Carles Bosch | MIT |
 
 ## License
 
