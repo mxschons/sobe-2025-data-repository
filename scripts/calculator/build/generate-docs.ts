@@ -16,7 +16,7 @@ const ORGANISMS_DIR = join(DATA_ROOT, 'organisms');
 const IMAGING_DIR = join(DATA_ROOT, 'imaging');
 const COSTS_DIR = join(DATA_ROOT, 'costs');
 const PARAMS_DIR = join(DATA_ROOT, 'parameters');
-const DOCS_DIR = join(__dirname, '..', '..', '..', 'data-and-figures', 'calculator', 'docs');
+const DOCS_DIR = join(__dirname, '..', '..', '..', 'dist', 'calculator', 'docs');
 
 interface ParameterRow {
   id: string;
