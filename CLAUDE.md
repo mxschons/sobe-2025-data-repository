@@ -46,6 +46,7 @@ sobe-2025-data-repository/
 │   ├── initiatives/           # Research initiatives data
 │   └── storage-costs/         # Storage cost trends
 ├── data-and-figures/          # Data assets for website
+│   ├── calculator/            # Calculator outputs (data.json, types.ts, docs/)
 │   ├── data/                  # CSV datasets
 │   ├── figures/               # Generated + hand-drawn images
 │   │   ├── generated/         # Output SVG, PNG, WebP, AVIF figures
@@ -74,6 +75,50 @@ Centralized styling with:
 
 ### `scripts/paths.py`
 Path configuration for all data and output directories. Always use these paths instead of hardcoding.
+
+## Calculator Module
+
+The TypeScript calculator at `scripts/calculator/` estimates brain emulation project costs and timelines based on organism size, imaging modality, and technology assumptions.
+
+### Calculator Quick Start
+
+```bash
+cd scripts/calculator
+npm install          # Also runs build:data via postinstall
+npm test             # Run tests
+```
+
+### Calculator Structure
+
+```
+scripts/calculator/
+├── build/             # Build scripts (validate, generate-types, bundle, generate-docs)
+├── src/               # TypeScript source code
+│   └── engine/        # Core calculator engine
+├── tests/             # Unit tests and spreadsheet parity tests
+├── data/              # Symlinks to root data/ TSV files
+└── original/          # Reference Excel spreadsheets
+```
+
+### Calculator Outputs
+
+Outputs are generated in `data-and-figures/calculator/`:
+
+| File | Purpose |
+|------|---------|
+| `data.json` | Bundled parameters and formulas for web apps |
+| `types.ts` | TypeScript interfaces for type-safe usage |
+| `docs/parameters.md` | Human-readable parameter reference |
+| `docs/formulas.md` | Human-readable formula reference |
+
+### Calculator Workflow
+
+1. Edit TSV files in `data/` (formulas, organisms, imaging, etc.)
+2. Run `npm run build:data` to regenerate outputs
+3. Run `npm test` to verify calculations
+4. Commit both source TSV files and generated outputs
+
+CI will fail if generated outputs are stale.
 
 ## Code Conventions
 

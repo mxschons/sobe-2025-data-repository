@@ -14,7 +14,8 @@
     "build": "npm run build:data && tsc && vite build",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:parity": "vitest run tests/spreadsheet-parity.test.ts"
+    "test:parity": "vitest run tests/spreadsheet-parity.test.ts",
+    "postinstall": "npm run build:data"
   },
   "dependencies": {
     "mathjs": "^12.2.1"

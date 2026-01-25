@@ -1,7 +1,7 @@
 # Brain Emulation Report 2025 - Makefile
 # Common tasks for figure generation and build pipeline
 
-.PHONY: help install figures downloads validate serve clean all
+.PHONY: help install figures downloads validate serve clean all calculator-install calculator-build calculator-test calculator-clean
 
 PYTHON ?= python3
 SCRIPTS_DIR = scripts
@@ -19,7 +19,13 @@ help:
 	@echo "  validate    Run quality checks"
 	@echo "  serve       Start local development server"
 	@echo "  clean       Remove generated files"
-	@echo "  all         Run full pipeline (figures + downloads)"
+	@echo "  all         Run full pipeline (figures + calculator + downloads)"
+	@echo ""
+	@echo "Calculator targets:"
+	@echo "  calculator-install  Install calculator dependencies"
+	@echo "  calculator-build    Build calculator outputs"
+	@echo "  calculator-test     Run calculator tests"
+	@echo "  calculator-clean    Remove calculator outputs"
 	@echo ""
 
 install:
@@ -48,7 +54,20 @@ clean:
 	rm -rf $(OUTPUT_DIR)/figures/generated/radar-charts/*
 	rm -rf $(OUTPUT_DIR)/downloads/*.zip
 
-all: figures downloads
+all: figures calculator-build downloads
 	@echo ""
 	@echo "Build complete!"
 	@echo "Output in: $(OUTPUT_DIR)/"
+
+# Calculator targets
+calculator-install:
+	cd $(SCRIPTS_DIR)/calculator && npm ci
+
+calculator-build:
+	cd $(SCRIPTS_DIR)/calculator && npm run build:data
+
+calculator-test:
+	cd $(SCRIPTS_DIR)/calculator && npm test
+
+calculator-clean:
+	rm -rf $(OUTPUT_DIR)/calculator/

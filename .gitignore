@@ -30,3 +30,12 @@ Thumbs.db
 
 # Generated downloads (can be rebuilt with scripts/build_downloads.py)
 data-and-figures/downloads/*.zip
+
+# Node.js (calculator)
+node_modules/
+dist/
+*.log
+npm-debug.log*
+coverage/
+.env
+.env.local

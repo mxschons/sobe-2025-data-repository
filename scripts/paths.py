@@ -37,6 +37,12 @@ OUTPUT_DOWNLOADS = OUTPUT_ROOT / "downloads"
 OUTPUT_CSS = OUTPUT_ROOT / "css"
 OUTPUT_JS = OUTPUT_ROOT / "js"
 
+# Calculator outputs
+OUTPUT_CALCULATOR = OUTPUT_ROOT / "calculator"
+OUTPUT_CALCULATOR_DATA = OUTPUT_CALCULATOR / "data.json"
+OUTPUT_CALCULATOR_TYPES = OUTPUT_CALCULATOR / "types.ts"
+OUTPUT_CALCULATOR_DOCS = OUTPUT_CALCULATOR / "docs"
+
 # Specific data files (commonly used)
 DATA_FILES = {
     # Simulations
@@ -110,5 +116,7 @@ def ensure_output_dirs():
         OUTPUT_DATA,
         OUTPUT_METADATA,
         OUTPUT_DOWNLOADS,
+        OUTPUT_CALCULATOR,
+        OUTPUT_CALCULATOR_DOCS,
     ]:
         dir_path.mkdir(parents=True, exist_ok=True)
