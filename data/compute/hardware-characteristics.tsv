@@ -5,4 +5,4 @@ NVIDIA A100 SXM 80GB	2020	310.0	80.0	600.0	$15,000	2	Single GPU, Tensor Core FP1
 NVIDIA H100 NVL	2023	840.0	94.0	900.0	$25,000	3	2-GPU pair, NVLink, Tensor Core FP16	https://www.pny.com/file%20library/company/support/product%20brochures/nvidia%20data%20center%20gpus/english/h100-nvl-datasheet.pdf
 NVIDIA DGX GH200	2023	250000.0	140000.0	120000.0	$500,000	50	Supercomputer node, 256 Grace Hopper	https://developer.nvidia.com/blog/announcing-nvidia-dgx-gh200-first-100-terabyte-gpu-memory-system/
 NVIDIA HGX B200	2024	18000.0	1400.0	14000.0	$350,000	10	8x Blackwell GPUs, NVLink 5.0	https://lenovopress.lenovo.com/lp2226-thinksystem-nvidia-b200-180gb-1000w-gpu
-NVIDIA Tesla C870	2007	0.35	1.5		$1,500		Historical reference GPU	https://www.techpowerup.com/gpu-specs/tesla-c870.c1542
+NVIDIA Tesla C870	2007	0.35	1.5		$1,500	0.1	Historical reference GPU	https://www.techpowerup.com/gpu-specs/tesla-c870.c1542
