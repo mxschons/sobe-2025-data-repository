@@ -296,9 +296,11 @@ def generate_compute():
         else:
             return f'{flops:.0f} FLOP'
 
-    from matplotlib.ticker import FuncFormatter, LogLocator
+    from matplotlib.ticker import FuncFormatter, FixedLocator
     ax.yaxis.set_major_formatter(FuncFormatter(pflops_formatter))
-    ax.yaxis.set_major_locator(LogLocator(base=10, numticks=19))  # 10x steps
+    # Show ticks at every 3rd power of 10 (KFLOP, MFLOP, GFLOP, TFLOP, PFLOP, EFLOP)
+    # Values are in petaFLOP, so 1e-12 pFLOP = 1 KFLOP, 1e-9 = 1 MFLOP, etc.
+    ax.yaxis.set_major_locator(FixedLocator([1e-12, 1e-9, 1e-6, 1e-3, 1, 1e3, 1e6]))
 
     ax.set_xlabel(None)
     ax.set_ylabel('Inference Compute')
