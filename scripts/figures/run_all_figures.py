@@ -266,11 +266,20 @@ def generate_compute():
     max_year = dt.datetime(year=2030, month=1, day=1)
     label_year = dt.datetime(year=2030, month=6, day=1)
 
-    for name, val in species_pf.items():
+    # Sort by value to handle overlapping labels
+    sorted_species = sorted(species_pf.items(), key=lambda x: x[1])
+
+    for name, val in sorted_species:
         ax.axhline(y=val, color=COLORS['caption'], ls=':', lw=1, alpha=0.7)
+        # Offset overlapping labels (Drosophila and Zebrafish are close)
+        va = 'center'
+        if name == 'Drosophila':
+            va = 'bottom'
+        elif name == 'Zebrafish (larva)':
+            va = 'top'
         ax.text(
             label_year, val, f' {name}',
-            va='center', fontsize=FONT_SIZES['annotation'] - 1,
+            va=va, fontsize=FONT_SIZES['annotation'] - 1,
             color=COLORS['caption'], clip_on=False
         )
 
@@ -302,8 +311,8 @@ def generate_compute():
     ax.yaxis.set_major_locator(LogLocator(base=10, numticks=19))  # 10x steps
 
     ax.set_xlabel(None)
-    ax.set_ylabel('AI Model Inference Compute (2 × parameters)')
-    ax.set_title('AI Model Inference Compute vs Brain Emulation Requirements')
+    ax.set_ylabel('Inference Compute')
+    ax.set_title('AI Model Inference Compute (2 × parameters) vs Brain Emulation Requirements')
 
     # Fix legend title
     legend = ax.legend(frameon=True, loc='upper left', fontsize=8, title='Domain')
