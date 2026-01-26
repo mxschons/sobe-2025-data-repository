@@ -1,0 +1,10 @@
+{
+  "title": "Neuroimaging Speed Data",
+  "source": "https://github.com/cboschp/wtlandscape_mbc",
+  "originalAuthor": "Carles Bosch",
+  "contributors": [],
+  "license": "MIT",
+  "url": "https://github.com/cboschp/wtlandscape_mbc",
+  "dateAccessed": "2025-01-19",
+  "description": "Imaging technology capabilities over time from 'The road to a whole mouse brain connectome'. Includes imaging rates, field of view, and dataset sizes."
+}

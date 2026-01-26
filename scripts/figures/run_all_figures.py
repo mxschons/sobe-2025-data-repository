@@ -209,8 +209,8 @@ def generate_compute():
 
     Inference FLOPs = 2 × parameters (for transformer forward pass)
     """
-    # Load Epoch AI data
-    epoch_df = pd.read_csv(DATA_COMPUTE / "epoch-ai-models.csv")
+    # Load Epoch AI data (external source)
+    epoch_df = pd.read_csv(DATA_FILES["epoch_ai_models"])
 
     # Filter to models with valid parameters and dates
     epoch_df = epoch_df[epoch_df['Parameters'].notna()].copy()
