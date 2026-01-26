@@ -911,7 +911,7 @@ def generate_initiatives():
     proj_colors = [category_colormap[cat] for cat in all_proj_df['Category']]
 
     # initiatives2 - Megaproject Budgets and Durations (brain vs other megaprojects)
-    fig, ax = plt.subplots(figsize=(14, 7))
+    fig, ax = plt.subplots(figsize=(14, 8))
     for i in range(len(all_proj_df)):
         ax.errorbar(
             [proj_midpoints[i]],
@@ -931,36 +931,68 @@ def generate_initiatives():
         for category, color in zip(proj_categories, category_colors)
     ]
 
-    # Label top brain projects by budget
-    brain_projects = all_proj_df[all_proj_df['Category'] == 'Brain'].nlargest(10, 'Budget_M')
-    # More non-brain projects for context
-    other_projects = all_proj_df[all_proj_df['Category'] != 'Brain'].nlargest(8, 'Budget_M')
+    # Name shortening map for cleaner labels
+    name_map = {
+        'Brain Mapping by Integrated Neurotechnologies for Disease Studies (Brain/MINDS) project': 'Brain/MINDS',
+        'Brain Research Through Advancing Innovative Neurotechnologies (BRAIN) Initiative': 'BRAIN Initiative',
+        'The Chinese Human Brain Connectome Project': 'Chinese Brain Connectome',
+        'Bioelectronic Medical (SetPoint Medical)': 'SetPoint Medical',
+        'Allen Institute Brain Observatory': 'Allen Brain Observatory',
+        'The Green Brain Project': 'Green Brain Project',
+    }
 
-    # Place labels at the END of each bar (after the duration), not centered
-    for idx in brain_projects.index:
-        proj = all_proj_df.loc[idx]
-        # Calculate end position (start + duration)
-        end_date = proj['EndYear']
-        budget_y = 1e6 * proj['Budget_M']
-        # Shorten long names
-        name = proj['Name']
-        if len(name) > 30:
-            name = name[:27] + '...'
-        # Place label to the right of the bar end
-        ax.text(end_date + pd.Timedelta(days=180), budget_y, name,
-                fontsize=7, color=COLORS['text'], ha='left', va='center')
+    def shorten_name(name):
+        if name in name_map:
+            return name_map[name]
+        if len(name) > 25:
+            return name[:22] + '...'
+        return name
 
+    # Select projects strategically to avoid overlap
+    # For brain: pick ones at different budget levels with space
+    brain_projects = all_proj_df[all_proj_df['Category'] == 'Brain'].nlargest(15, 'Budget_M')
+    # For non-brain: pick top few that have clear visual space (earlier dates, higher budgets)
+    other_projects = all_proj_df[all_proj_df['Category'] != 'Brain'].nlargest(6, 'Budget_M')
+
+    # Track labeled y-positions to avoid overlap (in log space)
+    labeled_positions = []
+
+    def can_place_label(y_pos, min_gap_factor=1.8):
+        """Check if label can be placed without overlapping (in log space)"""
+        import math
+        log_y = math.log10(y_pos)
+        for labeled_log_y in labeled_positions:
+            if abs(log_y - labeled_log_y) < math.log10(min_gap_factor):
+                return False
+        return True
+
+    # Label non-brain projects first (they're generally higher budget, top of chart)
     for idx in other_projects.index:
         proj = all_proj_df.loc[idx]
         end_date = proj['EndYear']
         budget_y = 1e6 * proj['Budget_M']
-        name = proj['Name']
-        if len(name) > 30:
-            name = name[:27] + '...'
-        ax.text(end_date + pd.Timedelta(days=180), budget_y, name,
-                fontsize=7, color=COLORS['text'], ha='left', va='center')
+        if can_place_label(budget_y, 1.5):
+            name = shorten_name(proj['Name'])
+            ax.text(end_date + pd.Timedelta(days=200), budget_y, name,
+                    fontsize=7, color=COLORS['text'], ha='left', va='center')
+            import math
+            labeled_positions.append(math.log10(budget_y))
 
-    place_legend(ax, fig, position='outside_right', handles=legend_handles, title="Category")
+    # Label brain projects, being selective about overlap
+    for idx in brain_projects.index:
+        proj = all_proj_df.loc[idx]
+        end_date = proj['EndYear']
+        budget_y = 1e6 * proj['Budget_M']
+        if can_place_label(budget_y, 1.6):
+            name = shorten_name(proj['Name'])
+            ax.text(end_date + pd.Timedelta(days=200), budget_y, name,
+                    fontsize=7, color=COLORS['text'], ha='left', va='center')
+            import math
+            labeled_positions.append(math.log10(budget_y))
+
+    # Place legend at bottom right to avoid label conflicts
+    ax.legend(handles=legend_handles, title="Category", loc='lower right',
+              fontsize=8, title_fontsize=9, frameon=True, framealpha=0.9)
     ax.set_title('Brain vs Non-Brain Megaproject Budgets and Durations')
     plt.tight_layout()
     save_figure(fig, 'megaproject-budgets-brain-vs-other-timeline')
