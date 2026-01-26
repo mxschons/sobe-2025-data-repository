@@ -302,8 +302,8 @@ def generate_compute():
     ax.yaxis.set_major_locator(LogLocator(base=10, numticks=19))  # 10x steps
 
     ax.set_xlabel(None)
-    ax.set_ylabel('Inference Compute (per forward pass)')
-    ax.set_title('AI Inference Compute vs Brain Emulation Requirements')
+    ax.set_ylabel('AI Model Inference Compute (2 × parameters)')
+    ax.set_title('AI Model Inference Compute vs Brain Emulation Requirements')
 
     # Fix legend title
     legend = ax.legend(frameon=True, loc='upper left', fontsize=8, title='Domain')
