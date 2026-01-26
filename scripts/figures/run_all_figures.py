@@ -2102,6 +2102,17 @@ def generate_funding():
         # Combine and sort by budget
         combined = pd.concat([top_neuro, top_other]).sort_values('Budget_M', ascending=True)
 
+        # Shorten long project names to prevent wide figure
+        name_map = {
+            'Brain Mapping by Integrated Neurotechnologies for Disease Studies (Brain/MINDS) project': 'Brain/MINDS',
+            'Brain Research Through Advancing Innovative Neurotechnologies (BRAIN) Initiative': 'BRAIN Initiative',
+            'The Chinese Human Brain Connectome Project': 'Chinese Brain Connectome',
+            'President\'s Emergency Plan for AIDS Relief': 'PEPFAR',
+            'Bioelectronic Medical (SetPoint Medical)': 'SetPoint Medical',
+            'Allen Institute Brain Observatory': 'Allen Brain Observatory',
+        }
+        combined['Name'] = combined['Name'].apply(lambda x: name_map.get(x, x))
+
         # Simple two-color scheme: GOLD for neuroscience, gray for everything else
         colors = [GOLD if cat == 'Neuroscience' else COLORS['caption'] for cat in combined['Category']]
 
