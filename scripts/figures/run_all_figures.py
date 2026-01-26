@@ -30,10 +30,10 @@ from style import (
     apply_style, save_figure, add_attribution,
     COLORS, PRIMARY_COLORS, CATEGORICAL_COLORS,
     GOLD, TEAL, PURPLE, GREEN,
-    SPECIES_NEURONS, plot_species_hlines,
+    SPECIES_NEURONS, plot_species_hlines, plot_reference_hlines,
     EXTENDED_CATEGORICAL, HARDWARE_COLORS,
     place_legend, scale_fontsize, get_categorical_palette,
-    FONT_SIZES
+    FONT_SIZES, REFERENCE_LINE_STYLE
 )
 from paths import (
     DATA_DIR, DATA_FILES, OUTPUT_FIGURES,
@@ -261,27 +261,17 @@ def generate_compute():
         palette=EXTENDED_CATEGORICAL[:8], s=40, alpha=0.6, ax=ax
     )
 
-    # Add organism reference lines
+    # Add organism reference lines using shared style
     min_year = dt.datetime(year=2000, month=1, day=1)
     max_year = dt.datetime(year=2030, month=1, day=1)
     label_year = dt.datetime(year=2030, month=6, day=1)
 
-    # Sort by value to handle overlapping labels
-    sorted_species = sorted(species_pf.items(), key=lambda x: x[1])
-
-    for name, val in sorted_species:
-        ax.axhline(y=val, color=COLORS['caption'], ls=':', lw=1, alpha=0.7)
-        # Offset overlapping labels (Drosophila and Zebrafish are close)
-        va = 'center'
-        if name == 'Drosophila':
-            va = 'bottom'
-        elif name == 'Zebrafish (larva)':
-            va = 'top'
-        ax.text(
-            label_year, val, f' {name}',
-            va=va, fontsize=FONT_SIZES['annotation'] - 1,
-            color=COLORS['caption'], clip_on=False
-        )
+    # Handle overlapping labels (Drosophila and Zebrafish are close)
+    va_overrides = {
+        'Drosophila': 'bottom',
+        'Zebrafish (larva)': 'top',
+    }
+    plot_reference_hlines(ax, species_pf, label_year, label_position='right', va_overrides=va_overrides)
 
     ax.set_yscale('log')
     ax.set_xlim(min_year, max_year)
@@ -388,14 +378,13 @@ def generate_gpu_memory_brain_emulation():
                 label=mfr, color=mfr_colors[mfr], s=40, alpha=0.6
             )
 
-    # Add organism reference lines for memory requirements
-    for name, mem_bytes in species_storage_bytes.items():
-        ax.axhline(y=mem_bytes, color=COLORS['caption'], ls=':', lw=1, alpha=0.7)
-        ax.text(
-            2030 + 0.5, mem_bytes, f' {name}',
-            va='center', fontsize=FONT_SIZES['annotation'] - 1,
-            color=COLORS['caption'], clip_on=False
-        )
+    # Add organism reference lines for memory requirements using shared style
+    # Handle overlapping labels (Drosophila and Zebrafish are close)
+    va_overrides = {
+        'Drosophila': 'bottom',
+        'Zebrafish (larva)': 'top',
+    }
+    plot_reference_hlines(ax, species_storage_bytes, 2030 + 0.5, label_position='right', va_overrides=va_overrides)
 
     ax.set_yscale('log')
     ax.set_xlim(1995, 2030)

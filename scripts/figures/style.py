@@ -117,6 +117,20 @@ HATCHING_PATTERNS = [
 ]
 
 # =============================================================================
+# REFERENCE LINE STYLING
+# =============================================================================
+# Style configuration for horizontal/vertical reference lines (e.g., organism thresholds)
+
+REFERENCE_LINE_STYLE = {
+    'color': '#9A9590',           # Slightly darker than caption for visibility
+    'linestyle': '--',            # Dashed (more visible than dotted)
+    'linewidth': 1.2,             # Slightly thicker
+    'alpha': 0.8,                 # More opaque
+    'label_fontsize_offset': -1,  # Relative to FONT_SIZES['annotation']
+    'label_color': '#6A6560',     # Darker label color for readability
+}
+
+# =============================================================================
 # TYPOGRAPHY
 # =============================================================================
 
@@ -620,20 +634,62 @@ def save_figure(fig, name, output_dir=None, print_quality=False, web_formats=Tru
 SPECIES_NEURONS = get_species_neurons()
 
 
+def plot_reference_hlines(ax, values, label_x, label_position='right', va_overrides=None):
+    """
+    Plot horizontal reference lines with labels.
+
+    Args:
+        ax: matplotlib axes
+        values: dict of {label: y_value}
+        label_x: x position for labels
+        label_position: 'left' or 'right' - which side of label_x to place text
+        va_overrides: dict of {label: 'top'|'center'|'bottom'} for overlapping labels
+
+    Uses REFERENCE_LINE_STYLE from style.py for consistent appearance.
+    """
+    if va_overrides is None:
+        va_overrides = {}
+
+    style = REFERENCE_LINE_STYLE
+
+    for name, val in values.items():
+        ax.axhline(
+            y=val,
+            color=style['color'],
+            ls=style['linestyle'],
+            lw=style['linewidth'],
+            alpha=style['alpha']
+        )
+
+        # Determine vertical alignment
+        va = va_overrides.get(name, 'center')
+
+        # Label text with proper positioning
+        label_text = f' {name}' if label_position == 'right' else f'{name} '
+        ha = 'left' if label_position == 'right' else 'right'
+
+        ax.text(
+            label_x, val, label_text,
+            va=va,
+            ha=ha,
+            fontsize=FONT_SIZES['annotation'] + style['label_fontsize_offset'],
+            color=style['label_color'],
+            clip_on=False
+        )
+
+
 def plot_species_hlines(ax, xmin, xmax, label_x=None, species=None):
-    """Plot horizontal reference lines for species neuron counts."""
+    """
+    Plot horizontal reference lines for species neuron counts.
+
+    Wrapper around plot_reference_hlines for backward compatibility.
+    """
     if species is None:
         species = SPECIES_NEURONS
     if label_x is None:
         label_x = xmin
 
-    for name, neurons in species.items():
-        ax.axhline(y=neurons, color=COLORS['caption'], ls=':', lw=1, alpha=0.7)
-        ax.text(
-            label_x, neurons, f'  {name}',
-            va='bottom', fontsize=FONT_SIZES['annotation'] - 1,
-            color=COLORS['caption']
-        )
+    plot_reference_hlines(ax, species, label_x, label_position='left')
 
 
 # Initialize style on import
