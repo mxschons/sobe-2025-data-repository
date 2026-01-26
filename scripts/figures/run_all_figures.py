@@ -38,6 +38,7 @@ from style import (
 from paths import (
     DATA_DIR, DATA_FILES, OUTPUT_FIGURES,
     OUTPUT_FIGURES_NEURO_SIM, OUTPUT_FIGURES_NEURO_REC,
+    DATA_COMPUTE,
     ensure_output_dirs
 )
 from data_loader import get_compute_requirements, get_storage_requirements
@@ -199,38 +200,94 @@ def generate_imaging_speed():
 # =============================================================================
 # Figure 3: Compute
 # =============================================================================
-@figure("compute-hardware-trends-brain-emulation", "AI training compute vs species requirements")
+@figure("compute-hardware-trends-brain-emulation", "AI inference compute vs brain emulation requirements")
 def generate_compute():
-    compute_df = pd.read_csv(
-        DATA_FILES["ai_compute"], sep='\t',
-        parse_dates=['Day']
-    )
+    """
+    Generate figure showing AI model inference compute (FLOPs per forward pass)
+    compared to brain emulation real-time compute requirements.
 
-    # Get compute requirements from shared data
+    Inference FLOPs = 2 × parameters (for transformer forward pass)
+    """
+    # Load Epoch AI data
+    epoch_df = pd.read_csv(DATA_COMPUTE / "epoch-ai-models.csv")
+
+    # Filter to models with valid parameters and dates
+    epoch_df = epoch_df[epoch_df['Parameters'].notna()].copy()
+    epoch_df = epoch_df[epoch_df['Publication date'].notna()].copy()
+
+    # Parse dates and filter to 2000+
+    epoch_df['date'] = pd.to_datetime(epoch_df['Publication date'], errors='coerce')
+    epoch_df = epoch_df[epoch_df['date'].notna()].copy()
+    epoch_df = epoch_df[epoch_df['date'].dt.year >= 2000].copy()
+
+    # Calculate inference FLOPs (2 × parameters for one forward pass)
+    # Convert to petaFLOP: divide by 1e15
+    epoch_df['inference_pflop'] = (2 * epoch_df['Parameters']) / 1e15
+
+    # Simplify domain categories
+    def simplify_domain(domain):
+        if pd.isna(domain):
+            return 'Other'
+        domain = str(domain).lower()
+        if 'language' in domain:
+            return 'Language'
+        elif 'vision' in domain or 'image' in domain:
+            return 'Vision'
+        elif 'game' in domain:
+            return 'Games'
+        elif 'speech' in domain or 'audio' in domain:
+            return 'Speech/Audio'
+        elif 'video' in domain:
+            return 'Video'
+        elif 'biology' in domain or 'medicine' in domain:
+            return 'Biology'
+        elif 'multimodal' in domain:
+            return 'Multimodal'
+        else:
+            return 'Other'
+
+    epoch_df['domain_simple'] = epoch_df['Domain'].apply(simplify_domain)
+
+    # Get compute requirements from shared data (in petaFLOPS)
     species_pf = get_compute_requirements()
 
-    fig, ax = plt.subplots(figsize=(10, 5))
+    fig, ax = plt.subplots(figsize=(12, 6))
+
+    # Plot by simplified domain using seaborn
+    domain_order = ['Language', 'Vision', 'Multimodal', 'Games', 'Speech/Audio', 'Video', 'Biology', 'Other']
     sns.scatterplot(
-        data=compute_df, x='Day', y='Training computation (petaFLOP)',
-        hue='Domain', palette=EXTENDED_CATEGORICAL, s=60, alpha=0.7, ax=ax
+        data=epoch_df, x='date', y='inference_pflop',
+        hue='domain_simple', hue_order=domain_order,
+        palette=EXTENDED_CATEGORICAL[:8], s=40, alpha=0.6, ax=ax
     )
 
-    min_year = dt.datetime(year=1945, month=1, day=1)
+    # Add organism reference lines
+    min_year = dt.datetime(year=2000, month=1, day=1)
     max_year = dt.datetime(year=2030, month=1, day=1)
-    label_year = dt.datetime(year=1955, month=1, day=1)
+    label_year = dt.datetime(year=2030, month=6, day=1)
 
     for name, val in species_pf.items():
         ax.axhline(y=val, color=COLORS['caption'], ls=':', lw=1, alpha=0.7)
-        ax.text(label_year, val, f'  {name}', va='bottom', fontsize=10, color=COLORS['caption'])
+        ax.text(
+            label_year, val, f' {name}',
+            va='center', fontsize=FONT_SIZES['annotation'] - 1,
+            color=COLORS['caption'], clip_on=False
+        )
 
-    place_legend(ax, fig, position='outside_right')
     ax.set_yscale('log')
-    ax.set_xlabel('Year')
-    ax.set_ylabel('Training Computation (petaFLOP)')
     ax.set_xlim(min_year, max_year)
-    ax.set_title('AI Training Compute vs Species Requirements')
-    plt.tight_layout()
-    save_figure(fig, 'compute-hardware-trends-brain-emulation')
+    ax.set_ylim(1e-12, 1e6)  # From tiny models to beyond human brain
+
+    ax.set_xlabel(None)
+    ax.set_ylabel('Inference FLOPs (petaFLOP per forward pass)')
+    ax.set_title('AI Inference Compute vs Brain Emulation Requirements')
+
+    # Fix legend title
+    legend = ax.legend(frameon=True, loc='upper left', fontsize=8, title='Domain')
+    legend.get_title().set_fontsize(9)
+
+    plt.subplots_adjust(right=0.82)
+    save_figure(fig, 'compute-hardware-trends-brain-emulation', attribution_position='axes')
     plt.close()
 
 # =============================================================================

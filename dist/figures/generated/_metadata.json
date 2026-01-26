@@ -46,8 +46,8 @@
     },
     {
       "id": "compute",
-      "title": "Compute Hardware Trends",
-      "description": "Historical trends in computational hardware relevant to brain emulation.",
+      "title": "AI Inference Compute vs Brain Emulation Requirements",
+      "description": "AI model inference compute (FLOPs per forward pass) compared to real-time brain emulation compute requirements by organism. Data from Epoch AI.",
       "filename": "compute-hardware-trends-brain-emulation",
       "path": "figures/generated",
       "organism": [
@@ -55,7 +55,8 @@
       ],
       "type": [
         "technology",
-        "compute"
+        "compute",
+        "emulation"
       ]
     },
     {
