@@ -1,6 +1,6 @@
 {
   "$schema": "https://resource.citationstyles.org/schema/v1.0/input/json/csl-data.json",
-  "_generated": "2026-01-26T01:55:41.128611",
+  "_generated": "2026-01-26T04:29:58.880717",
   "_generator": "build_bibliography.py",
   "references": [
     {
@@ -455,6 +455,52 @@
           ]
         ]
       }
+    },
+    {
+      "id": "allenlee2016",
+      "type": "article-journal",
+      "title": "Anatomy and function of an excitatory network in the visual cortex",
+      "DOI": "10.1038/nature17192",
+      "URL": "https://doi.org/10.1038/nature17192",
+      "container-title": "Nature",
+      "volume": "532",
+      "page": "370-374",
+      "issued": {
+        "date-parts": [
+          [
+            2016,
+            4,
+            21
+          ]
+        ]
+      },
+      "author": [
+        {
+          "family": "Lee",
+          "given": "Wei-Chung Allen"
+        },
+        {
+          "family": "Bonin",
+          "given": "Vincent"
+        },
+        {
+          "family": "Reed",
+          "given": "Michael"
+        },
+        {
+          "family": "Graham",
+          "given": "Brett J."
+        },
+        {
+          "family": "Hood",
+          "given": "Greg"
+        },
+        {
+          "family": "Reid",
+          "given": "R. Clay"
+        }
+      ],
+      "note": "Visual cortex network anatomy with ss-TEMCA"
     },
     {
       "id": "amassian1959",
@@ -2586,6 +2632,51 @@
       "page": "53-64"
     },
     {
+      "id": "chakraborty2019",
+      "type": "article-journal",
+      "title": "Light-sheet microscopy of cleared tissues with isotropic, subcellular resolution",
+      "DOI": "10.1038/s41592-019-0615-4",
+      "URL": "https://doi.org/10.1038/s41592-019-0615-4",
+      "container-title": "Nature Methods",
+      "volume": "16",
+      "page": "1109-1113",
+      "issued": {
+        "date-parts": [
+          [
+            2019,
+            11
+          ]
+        ]
+      },
+      "author": [
+        {
+          "family": "Chakraborty",
+          "given": "Tonmoy"
+        },
+        {
+          "family": "Driscoll",
+          "given": "Meghan K."
+        },
+        {
+          "family": "Jeffery",
+          "given": "Elise"
+        },
+        {
+          "family": "Murphy",
+          "given": "Malea M."
+        },
+        {
+          "family": "Roudot",
+          "given": "Philippe"
+        },
+        {
+          "family": "Bhaskaran",
+          "given": "Bo-Jui Chang"
+        }
+      ],
+      "note": "ctASLM cleared-tissue axially swept light-sheet microscopy"
+    },
+    {
       "id": "chang1996",
       "type": "article-journal",
       "title": "Neuronal spike activity in rat nucleus accumbens during cocaine self-administration under different fixed-ratio schedules",
@@ -2913,6 +3004,51 @@
       "container-title": "Neuron",
       "volume": "100",
       "page": "876-890.e5"
+    },
+    {
+      "id": "chen2023",
+      "type": "article-journal",
+      "title": "Low-cost and scalable projected light-sheet microscopy for the high-resolution imaging of cleared tissue and living samples",
+      "DOI": "10.1038/s41551-024-01249-9",
+      "URL": "https://doi.org/10.1038/s41551-024-01249-9",
+      "container-title": "Nature Biomedical Engineering",
+      "volume": "8",
+      "page": "1109-1123",
+      "issued": {
+        "date-parts": [
+          [
+            2024,
+            9
+          ]
+        ]
+      },
+      "author": [
+        {
+          "family": "Chen",
+          "given": "Yannan"
+        },
+        {
+          "family": "Gong",
+          "given": "Cheng"
+        },
+        {
+          "family": "Chauhan",
+          "given": "Shradha"
+        },
+        {
+          "family": "De La Cruz",
+          "given": "Estanislao Daniel"
+        },
+        {
+          "family": "Datta",
+          "given": "Malika S."
+        },
+        {
+          "family": "Tomer",
+          "given": "Raju"
+        }
+      ],
+      "note": "pLSM projected light-sheet microscopy"
     },
     {
       "id": "cheng2011",
@@ -4151,6 +4287,55 @@
       "page": "121-130"
     },
     {
+      "id": "economo2016",
+      "type": "article-journal",
+      "title": "A platform for brain-wide imaging and reconstruction of individual neurons",
+      "DOI": "10.7554/eLife.10566",
+      "URL": "https://doi.org/10.7554/eLife.10566",
+      "container-title": "eLife",
+      "volume": "5",
+      "page": "e10566",
+      "issued": {
+        "date-parts": [
+          [
+            2016,
+            1,
+            20
+          ]
+        ]
+      },
+      "author": [
+        {
+          "family": "Economo",
+          "given": "Michael N."
+        },
+        {
+          "family": "Clack",
+          "given": "Nathan G."
+        },
+        {
+          "family": "Lavis",
+          "given": "Luke D."
+        },
+        {
+          "family": "Gerfen",
+          "given": "Charles R."
+        },
+        {
+          "family": "Svoboda",
+          "given": "Karel"
+        },
+        {
+          "family": "Myers",
+          "given": "Eugene W."
+        },
+        {
+          "family": "Bhaskaran",
+          "given": "Jayaram Chandrashekar"
+        }
+      ]
+    },
+    {
       "id": "edition_index_html_2026",
       "type": "webpage",
       "title": "Index.Html",
@@ -5051,6 +5236,52 @@
       "page": "e1000153"
     },
     {
+      "id": "gao2018",
+      "type": "article-journal",
+      "title": "Cortical column and whole-brain imaging with molecular contrast and nanoscale resolution",
+      "DOI": "10.1126/science.aau8302",
+      "URL": "https://doi.org/10.1126/science.aau8302",
+      "container-title": "Science",
+      "volume": "363",
+      "page": "eaau8302",
+      "issued": {
+        "date-parts": [
+          [
+            2019,
+            1,
+            18
+          ]
+        ]
+      },
+      "author": [
+        {
+          "family": "Gao",
+          "given": "Ruixuan"
+        },
+        {
+          "family": "Asano",
+          "given": "Shoh M."
+        },
+        {
+          "family": "Upadhyayula",
+          "given": "Srigokul"
+        },
+        {
+          "family": "Pisarev",
+          "given": "Igor"
+        },
+        {
+          "family": "Milkie",
+          "given": "Daniel E."
+        },
+        {
+          "family": "Liu",
+          "given": "Tsung-Li"
+        }
+      ],
+      "note": "ExLLSM - Expansion + Lattice Light Sheet"
+    },
+    {
       "id": "gao_716924_pdf_2026",
       "type": "webpage",
       "title": "716924.Pdf",
@@ -5475,6 +5706,86 @@
       }
     },
     {
+      "id": "glaser2022",
+      "type": "article-journal",
+      "title": "A hybrid open-top light-sheet microscope for versatile multi-scale imaging of cleared tissues",
+      "DOI": "10.1038/s41592-022-01468-5",
+      "URL": "https://doi.org/10.1038/s41592-022-01468-5",
+      "container-title": "Nature Methods",
+      "volume": "19",
+      "page": "613-619",
+      "issued": {
+        "date-parts": [
+          [
+            2022,
+            5
+          ]
+        ]
+      },
+      "author": [
+        {
+          "family": "Glaser",
+          "given": "Adam K."
+        },
+        {
+          "family": "Bishop",
+          "given": "Kevin W."
+        },
+        {
+          "family": "Barner",
+          "given": "Lindsey A."
+        },
+        {
+          "family": "Susaki",
+          "given": "Etsuo A."
+        },
+        {
+          "family": "Kubota",
+          "given": "Shimpei I."
+        }
+      ]
+    },
+    {
+      "id": "glaser2023",
+      "type": "article-journal",
+      "title": "Expansion-assisted selective plane illumination microscopy for nanoscale imaging of centimeter-scale tissues",
+      "DOI": "10.7554/eLife.91979",
+      "URL": "https://doi.org/10.7554/eLife.91979",
+      "container-title": "eLife",
+      "volume": "12",
+      "page": "RP91979",
+      "issued": {
+        "date-parts": [
+          [
+            2025
+          ]
+        ]
+      },
+      "author": [
+        {
+          "family": "Glaser",
+          "given": "Adam K."
+        },
+        {
+          "family": "Chandrashekar",
+          "given": "Jayaram"
+        },
+        {
+          "family": "Vasquez",
+          "given": "Joshua"
+        },
+        {
+          "family": "Arshadi",
+          "given": "Cameron"
+        },
+        {
+          "family": "Ouellette",
+          "given": "Naveen"
+        }
+      ],
+      "note": "ExA-SPIM expansion-assisted selective plane illumination microscopy"
+    },
+    {
       "id": "globalventuring_darpa_helps_implant_10m_in_syn_2026",
       "type": "webpage",
       "title": "Darpa Helps Implant 10M In Synchron",
@@ -5493,6 +5804,51 @@
           ]
         ]
       }
+    },
+    {
+      "id": "gong2016",
+      "type": "article-journal",
+      "title": "High-throughput dual-colour precision imaging for brain-wide connectome with cytoarchitectonic landmarks at the cellular level",
+      "DOI": "10.1038/ncomms12142",
+      "URL": "https://doi.org/10.1038/ncomms12142",
+      "container-title": "Nature Communications",
+      "volume": "7",
+      "page": "12142",
+      "issued": {
+        "date-parts": [
+          [
+            2016,
+            7,
+            4
+          ]
+        ]
+      },
+      "author": [
+        {
+          "family": "Gong",
+          "given": "Hui"
+        },
+        {
+          "family": "Xu",
+          "given": "Dongli"
+        },
+        {
+          "family": "Yuan",
+          "given": "Jing"
+        },
+        {
+          "family": "Li",
+          "given": "Xiangning"
+        },
+        {
+          "family": "Guo",
+          "given": "Congdi"
+        },
+        {
+          "family": "Peng",
+          "given": "Jie"
+        }
+      ]
     },
     {
       "id": "goris2014",
@@ -5627,6 +5983,50 @@
       "container-title": "Nature",
       "volume": "199",
       "page": "876-876"
+    },
+    {
+      "id": "guo2020",
+      "type": "article-journal",
+      "title": "Rapid image deconvolution and multiview fusion for optical microscopy",
+      "DOI": "10.1038/s41587-020-0560-x",
+      "URL": "https://doi.org/10.1038/s41587-020-0560-x",
+      "container-title": "Nature Biotechnology",
+      "volume": "38",
+      "page": "1337-1346",
+      "issued": {
+        "date-parts": [
+          [
+            2020
+          ]
+        ]
+      },
+      "author": [
+        {
+          "family": "Guo",
+          "given": "Min"
+        },
+        {
+          "family": "Li",
+          "given": "Yue"
+        },
+        {
+          "family": "Su",
+          "given": "Yicong"
+        },
+        {
+          "family": "Lambert",
+          "given": "Talley"
+        },
+        {
+          "family": "Bhaskaran",
+          "given": "Damian Dalle Nogare"
+        },
+        {
+          "family": "Bhaskaran",
+          "given": "Harshad Nagaraj"
+        }
+      ],
+      "note": "Dual-inverted SPIM deconvolution and multiview fusion"
     },
     {
       "id": "hal_peer_stage2_10_1038_252fnn_286_2026",
@@ -6253,6 +6653,52 @@
       "page": "500-544"
     },
     {
+      "id": "hoffman2020",
+      "type": "article-journal",
+      "title": "Correlative three-dimensional super-resolution and block-face electron microscopy of whole vitreously frozen cells",
+      "DOI": "10.1126/science.aaz5357",
+      "URL": "https://doi.org/10.1126/science.aaz5357",
+      "container-title": "Science",
+      "volume": "367",
+      "page": "eaaz5357",
+      "issued": {
+        "date-parts": [
+          [
+            2020,
+            1,
+            17
+          ]
+        ]
+      },
+      "author": [
+        {
+          "family": "Hoffman",
+          "given": "David P."
+        },
+        {
+          "family": "Shtengel",
+          "given": "Gleb"
+        },
+        {
+          "family": "Xu",
+          "given": "C. Shan"
+        },
+        {
+          "family": "Campbell",
+          "given": "Kirsten R."
+        },
+        {
+          "family": "Freeman",
+          "given": "Melanie"
+        },
+        {
+          "family": "Hess",
+          "given": "Harald F."
+        }
+      ],
+      "note": "Correlative super-resolution and FIB-SEM imaging"
+    },
+    {
       "id": "hua2015",
       "type": "article-journal",
       "title": "Large-volume en-bloc staining for electron microscopy-based connectomics",
@@ -6535,6 +6981,48 @@
           ]
         ]
       }
+    },
+    {
+      "id": "humbel2024",
+      "type": "article-journal",
+      "title": "Synchrotron radiation-based tomography of an entire mouse brain with sub-micron voxels: augmenting interactive brain atlases with terabyte data",
+      "DOI": "10.1002/advs.202416879",
+      "URL": "https://doi.org/10.1002/advs.202416879",
+      "container-title": "Advanced Science",
+      "issued": {
+        "date-parts": [
+          [
+            2025
+          ]
+        ]
+      },
+      "author": [
+        {
+          "family": "Humbel",
+          "given": "Mattia"
+        },
+        {
+          "family": "Tanner",
+          "given": "Christine"
+        },
+        {
+          "family": "Girona Alarcón",
+          "given": "Marta"
+        },
+        {
+          "family": "Schulz",
+          "given": "Georg"
+        },
+        {
+          "family": "Müller",
+          "given": "Bert"
+        },
+        {
+          "family": "Rodgers",
+          "given": "Griffin"
+        }
+      ],
+      "note": "Whole mouse brain µXCT at 0.65 µm voxel resolution"
     },
     {
       "id": "humphrey1970",
@@ -7902,6 +8390,49 @@
       "container-title": "IEEE Transactions on Neural Systems and Rehabilitation Engineering",
       "volume": "19",
       "page": "193-203"
+    },
+    {
+      "id": "kim2014",
+      "type": "article-journal",
+      "title": "Space-time wiring specificity supports direction selectivity in the retina",
+      "DOI": "10.1038/nature13240",
+      "URL": "https://doi.org/10.1038/nature13240",
+      "container-title": "Nature",
+      "volume": "509",
+      "page": "331-336",
+      "issued": {
+        "date-parts": [
+          [
+            2014
+          ]
+        ]
+      },
+      "author": [
+        {
+          "family": "Kim",
+          "given": "Jinseop S."
+        },
+        {
+          "family": "Greene",
+          "given": "Matthew J."
+        },
+        {
+          "family": "Bhaskaran",
+          "given": "Rampraveen"
+        },
+        {
+          "family": "Bharioke",
+          "given": "Arjun"
+        },
+        {
+          "family": "Chklovskii",
+          "given": "Dmitri B."
+        },
+        {
+          "family": "Helmstaedter",
+          "given": "Moritz"
+        }
+      ]
     },
     {
       "id": "kim2016",
@@ -9826,6 +10357,28 @@
       "volume": "51"
     },
     {
+      "id": "microns2021",
+      "type": "article-journal",
+      "title": "Functional connectomics spanning multiple areas of mouse visual cortex",
+      "DOI": "10.1038/s41586-025-08790-w",
+      "URL": "https://doi.org/10.1038/s41586-025-08790-w",
+      "container-title": "Nature",
+      "issued": {
+        "date-parts": [
+          [
+            2025
+          ]
+        ]
+      },
+      "author": [
+        {
+          "family": "MICrONS Consortium",
+          "given": ""
+        }
+      ],
+      "note": "MICrONS cubic millimeter dataset"
+    },
+    {
       "id": "microns_explorer_cortical_mm3_2026",
       "type": "webpage",
       "title": "Cortical Mm3",
@@ -9844,6 +10397,49 @@
           ]
         ]
       }
+    },
+    {
+      "id": "migliori2018",
+      "type": "article-journal",
+      "title": "Light sheet theta microscopy for rapid high-resolution imaging of large biological samples",
+      "DOI": "10.1186/s12915-018-0521-8",
+      "URL": "https://doi.org/10.1186/s12915-018-0521-8",
+      "container-title": "BMC Biology",
+      "volume": "16",
+      "page": "57",
+      "issued": {
+        "date-parts": [
+          [
+            2018
+          ]
+        ]
+      },
+      "author": [
+        {
+          "family": "Migliori",
+          "given": "Bianca"
+        },
+        {
+          "family": "Datta",
+          "given": "Malika S."
+        },
+        {
+          "family": "Dupre",
+          "given": "Christophe"
+        },
+        {
+          "family": "Apak",
+          "given": "Mehmet C."
+        },
+        {
+          "family": "Yuste",
+          "given": "Rafael"
+        },
+        {
+          "family": "Bhaskaran",
+          "given": "Raju Tomer"
+        }
+      ]
     },
     {
       "id": "mioche1988",
@@ -10003,6 +10599,44 @@
           ]
         ]
       }
+    },
+    {
+      "id": "narasimhan2017",
+      "type": "article-journal",
+      "title": "Oblique light-sheet tomography: fast and high resolution volumetric imaging of mouse brains",
+      "DOI": "10.1101/132423",
+      "URL": "https://doi.org/10.1101/132423",
+      "container-title": "bioRxiv",
+      "issued": {
+        "date-parts": [
+          [
+            2017
+          ]
+        ]
+      },
+      "author": [
+        {
+          "family": "Narasimhan",
+          "given": "Arun"
+        },
+        {
+          "family": "Venkataraju",
+          "given": "Kannan Umadevi"
+        },
+        {
+          "family": "Mizrachi",
+          "given": "Joseph"
+        },
+        {
+          "family": "Albeanu",
+          "given": "Dinu F."
+        },
+        {
+          "family": "Osten",
+          "given": "Pavel"
+        }
+      ],
+      "note": "bioRxiv preprint"
     },
     {
       "id": "nationalinterest_120000000000_ford_class_aircra_2026",
@@ -11903,6 +12537,55 @@
       }
     },
     {
+      "id": "pacureanu2019",
+      "type": "article-journal",
+      "title": "Dense neuronal reconstruction through X-ray holographic nano-tomography",
+      "DOI": "10.1038/s41593-020-0704-9",
+      "URL": "https://doi.org/10.1038/s41593-020-0704-9",
+      "container-title": "Nature Neuroscience",
+      "volume": "23",
+      "page": "1637-1643",
+      "issued": {
+        "date-parts": [
+          [
+            2020,
+            12
+          ]
+        ]
+      },
+      "author": [
+        {
+          "family": "Pacureanu",
+          "given": "Alexandra"
+        },
+        {
+          "family": "Maniates-Selvin",
+          "given": "Jasper"
+        },
+        {
+          "family": "Kuan",
+          "given": "Aaron T."
+        },
+        {
+          "family": "Thomas",
+          "given": "Logan A."
+        },
+        {
+          "family": "Chen",
+          "given": "Chiao-Lin"
+        },
+        {
+          "family": "Cloetens",
+          "given": "Peter"
+        },
+        {
+          "family": "Lee",
+          "given": "Wei-Chung Allen"
+        }
+      ],
+      "note": "Originally posted bioRxiv 2019"
+    },
+    {
       "id": "pandaily_brain_machine_interface_firm_b_2026",
       "type": "webpage",
       "title": "Brain Machine Interface Firm Braincos Brainrobotics Hand Obtains Fda Certification",
@@ -12890,6 +13573,36 @@
       "page": "1021-1028"
     },
     {
+      "id": "prince2024",
+      "type": "article-journal",
+      "title": "Signal improved ultra-fast light-sheet microscope for large tissue imaging",
+      "DOI": "10.1038/s44172-024-00205-4",
+      "URL": "https://doi.org/10.1038/s44172-024-00205-4",
+      "container-title": "Communications Engineering",
+      "volume": "3",
+      "page": "52",
+      "issued": {
+        "date-parts": [
+          [
+            2024,
+            4,
+            2
+          ]
+        ]
+      },
+      "author": [
+        {
+          "family": "Prince",
+          "given": "Md Nasful Huda"
+        },
+        {
+          "family": "Bhaskaran",
+          "given": "Rampraveen"
+        }
+      ],
+      "note": "Ultra-fast axially swept light-sheet microscopy (ALSM)"
+    },
+    {
       "id": "prut1998",
       "type": "article-journal",
       "title": "Spatiotemporal Structure of Cortical Activity: Properties and Behavioral Relevance",
@@ -13013,6 +13726,44 @@
           ]
         ]
       }
+    },
+    {
+      "id": "qi2023",
+      "type": "article-journal",
+      "title": "Confocal Airy beam oblique light-sheet tomography for brain-wide cell type distribution and morphology",
+      "DOI": "10.1038/s41592-025-02888-9",
+      "URL": "https://doi.org/10.1038/s41592-025-02888-9",
+      "container-title": "Nature Methods",
+      "issued": {
+        "date-parts": [
+          [
+            2025
+          ]
+        ]
+      },
+      "author": [
+        {
+          "family": "Qi",
+          "given": "Xiaoli"
+        },
+        {
+          "family": "Muñoz-Castañeda",
+          "given": "Rodrigo"
+        },
+        {
+          "family": "Narasimhan",
+          "given": "Arun"
+        },
+        {
+          "family": "Ding",
+          "given": "Liya"
+        },
+        {
+          "family": "Osten",
+          "given": "Pavel"
+        }
+      ],
+      "note": "CAB-OLST confocal Airy beam oblique light-sheet tomography"
     },
     {
       "id": "qiu2020",
@@ -15959,6 +16710,43 @@
       }
     },
     {
+      "id": "sievers2024",
+      "type": "article-journal",
+      "title": "RoboEM: automated 3D flight tracing for synaptic-resolution connectomics",
+      "DOI": "10.1038/s41592-024-02226-5",
+      "URL": "https://doi.org/10.1038/s41592-024-02226-5",
+      "container-title": "Nature Methods",
+      "volume": "21",
+      "page": "908-913",
+      "issued": {
+        "date-parts": [
+          [
+            2024,
+            5
+          ]
+        ]
+      },
+      "author": [
+        {
+          "family": "Schmidt",
+          "given": "Martin"
+        },
+        {
+          "family": "Motta",
+          "given": "Alessandro"
+        },
+        {
+          "family": "Sievers",
+          "given": "Meike"
+        },
+        {
+          "family": "Helmstaedter",
+          "given": "Moritz"
+        }
+      ],
+      "note": "RoboEM AI-based flight tracing for mSEM connectomics"
+    },
+    {
       "id": "silver2010",
       "type": "article-journal",
       "title": "Neuronal arithmetic",
@@ -17096,6 +17884,80 @@
           ]
         ]
       }
+    },
+    {
+      "id": "tang2024",
+      "type": "article-journal",
+      "title": "Curved light sheet microscopy for centimeter-scale cleared tissues imaging",
+      "DOI": "10.1101/2024.04.28.591483",
+      "URL": "https://doi.org/10.1101/2024.04.28.591483",
+      "container-title": "bioRxiv",
+      "issued": {
+        "date-parts": [
+          [
+            2024,
+            4,
+            29
+          ]
+        ]
+      },
+      "author": [
+        {
+          "family": "Tang",
+          "given": "Lijuan"
+        },
+        {
+          "family": "Wang",
+          "given": "Jiayu"
+        },
+        {
+          "family": "Ding",
+          "given": "Jiayi"
+        },
+        {
+          "family": "Sun",
+          "given": "Junyou"
+        },
+        {
+          "family": "Wu",
+          "given": "Jianglai"
+        }
+      ],
+      "note": "Curved LSFM for centimeter-scale tissue imaging"
+    },
+    {
+      "id": "tavakoli2024",
+      "type": "article-journal",
+      "title": "Light-microscopy-based connectomic reconstruction of mammalian brain tissue",
+      "DOI": "10.1038/s41586-025-08985-1",
+      "URL": "https://doi.org/10.1038/s41586-025-08985-1",
+      "container-title": "Nature",
+      "issued": {
+        "date-parts": [
+          [
+            2025
+          ]
+        ]
+      },
+      "author": [
+        {
+          "family": "Tavakoli",
+          "given": "Mojtaba R."
+        },
+        {
+          "family": "Bharioke",
+          "given": "Arjun"
+        },
+        {
+          "family": "Bhaskaran",
+          "given": "Rampraveen"
+        },
+        {
+          "family": "Bharioke",
+          "given": "Arjun"
+        }
+      ],
+      "note": "LICONN light microscopy connectomics method"
     },
     {
       "id": "taylor2002",
@@ -19405,6 +20267,37 @@
       "page": "e1000278"
     },
     {
+      "id": "tobin2017",
+      "type": "article-journal",
+      "title": "Wiring variations that enable and constrain neural computation in a sensory microcircuit",
+      "DOI": "10.7554/eLife.24838",
+      "URL": "https://doi.org/10.7554/eLife.24838",
+      "container-title": "eLife",
+      "volume": "6",
+      "page": "e24838",
+      "issued": {
+        "date-parts": [
+          [
+            2017
+          ]
+        ]
+      },
+      "author": [
+        {
+          "family": "Tobin",
+          "given": "William F."
+        },
+        {
+          "family": "Wilson",
+          "given": "Rachel I."
+        },
+        {
+          "family": "Lee",
+          "given": "Wei-Chung Allen"
+        }
+      ]
+    },
+    {
       "id": "tracxn_ef8jht4ldblpu1pdu3lwcprzf177_2026",
       "type": "webpage",
       "title": "  Ef8Jht4Ldblpu1Pdu3Lwcprzf177Angjxafbkys2Zd4",
@@ -20539,6 +21432,97 @@
       "page": "1106-1111"
     },
     {
+      "id": "vladimirov2024",
+      "type": "article-journal",
+      "title": "Benchtop mesoSPIM: a next-generation open-source light-sheet microscope for cleared samples",
+      "DOI": "10.1038/s41467-024-46770-2",
+      "URL": "https://doi.org/10.1038/s41467-024-46770-2",
+      "container-title": "Nature Communications",
+      "volume": "15",
+      "page": "2679",
+      "issued": {
+        "date-parts": [
+          [
+            2024,
+            3,
+            27
+          ]
+        ]
+      },
+      "author": [
+        {
+          "family": "Vladimirov",
+          "given": "Nikita"
+        },
+        {
+          "family": "Voigt",
+          "given": "Fabian F."
+        },
+        {
+          "family": "Naert",
+          "given": "Thomas"
+        },
+        {
+          "family": "Araujo",
+          "given": "Gabriela R."
+        },
+        {
+          "family": "Cai",
+          "given": "Ruiyao"
+        },
+        {
+          "family": "Helmchen",
+          "given": "Fritjof"
+        }
+      ],
+      "note": "Benchtop mesoSPIM open-source light-sheet microscope"
+    },
+    {
+      "id": "voleti2019",
+      "type": "article-journal",
+      "title": "Real-time volumetric microscopy of in vivo dynamics and large-scale samples with SCAPE 2.0",
+      "DOI": "10.1038/s41592-019-0579-4",
+      "URL": "https://doi.org/10.1038/s41592-019-0579-4",
+      "container-title": "Nature Methods",
+      "volume": "16",
+      "page": "1054-1062",
+      "issued": {
+        "date-parts": [
+          [
+            2019,
+            10
+          ]
+        ]
+      },
+      "author": [
+        {
+          "family": "Voleti",
+          "given": "Venkatakaushik"
+        },
+        {
+          "family": "Patel",
+          "given": "Kripa B."
+        },
+        {
+          "family": "Li",
+          "given": "Wenze"
+        },
+        {
+          "family": "Perez Campos",
+          "given": "Citlali"
+        },
+        {
+          "family": "Bharadwaj",
+          "given": "Srinidhi"
+        },
+        {
+          "family": "Hillman",
+          "given": "Elizabeth M. C."
+        }
+      ],
+      "note": "SCAPE 2.0 swept confocally-aligned planar excitation microscopy"
+    },
+    {
       "id": "vonbaumgarten1957",
       "type": "article-journal",
       "title": "Kopplungsvorgänge an benachbarten Nervenzellen im Hirnstamm und im motorischen Cortex der Katze",
@@ -20601,6 +21585,79 @@
       "container-title": "Brain Research",
       "volume": "92",
       "page": "385-403"
+    },
+    {
+      "id": "wang2021",
+      "type": "article-journal",
+      "title": "Chemical sectioning fluorescence tomography: high-throughput, high-contrast, multicolor, whole-brain imaging at subcellular resolution",
+      "DOI": "10.1016/j.celrep.2021.108709",
+      "URL": "https://doi.org/10.1016/j.celrep.2021.108709",
+      "container-title": "Cell Reports",
+      "volume": "34",
+      "page": "108709",
+      "issued": {
+        "date-parts": [
+          [
+            2021,
+            2
+          ]
+        ]
+      },
+      "author": [
+        {
+          "family": "Wang",
+          "given": "Xiaojun"
+        },
+        {
+          "family": "Tomer",
+          "given": "Raju"
+        }
+      ],
+      "note": "fMOST/CSFT chemical sectioning fluorescence tomography"
+    },
+    {
+      "id": "wang2024",
+      "type": "article-journal",
+      "title": "Mesoscale volumetric fluorescence imaging at nanoscale resolution by photochemical sectioning",
+      "DOI": "10.1126/science.adr9109",
+      "URL": "https://doi.org/10.1126/science.adr9109",
+      "container-title": "Science",
+      "volume": "390",
+      "page": "eadr9109",
+      "issued": {
+        "date-parts": [
+          [
+            2025
+          ]
+        ]
+      },
+      "author": [
+        {
+          "family": "Wang",
+          "given": "Wei"
+        },
+        {
+          "family": "Ruan",
+          "given": "Xiongtao"
+        },
+        {
+          "family": "Liu",
+          "given": "Gaoxiang"
+        },
+        {
+          "family": "Milkie",
+          "given": "Daniel E."
+        },
+        {
+          "family": "Betzig",
+          "given": "Eric"
+        },
+        {
+          "family": "Gao",
+          "given": "Ruixuan"
+        }
+      ],
+      "note": "VIPS volumetric imaging via photochemical sectioning"
     },
     {
       "id": "wanner2016",
@@ -21065,6 +22122,48 @@
       "page": "752-759"
     },
     {
+      "id": "wildenberg2024",
+      "type": "article-journal",
+      "title": "Laminography as a tool for imaging large-size samples with high resolution",
+      "DOI": "10.1107/S1600577524002923",
+      "URL": "https://doi.org/10.1107/S1600577524002923",
+      "container-title": "Journal of Synchrotron Radiation",
+      "volume": "31",
+      "page": "851-866",
+      "issued": {
+        "date-parts": [
+          [
+            2024,
+            7,
+            1
+          ]
+        ]
+      },
+      "author": [
+        {
+          "family": "Nikitin",
+          "given": "Viktor"
+        },
+        {
+          "family": "Wildenberg",
+          "given": "Gregg"
+        },
+        {
+          "family": "Mittone",
+          "given": "Alberto"
+        },
+        {
+          "family": "Shevchenko",
+          "given": "Pavel"
+        },
+        {
+          "family": "De Carlo",
+          "given": "Francesco"
+        }
+      ],
+      "note": "Laminography pipeline for µXCT imaging of large brain samples"
+    },
+    {
       "id": "williams1999",
       "type": "article-journal",
       "title": "Long-term neural recording characteristics of wire microelectrode arrays implanted in cerebral cortex",
@@ -21193,6 +22292,50 @@
           ]
         ]
       }
+    },
+    {
+      "id": "xu2021",
+      "type": "article-journal",
+      "title": "An open-access volume electron microscopy atlas of whole cells and tissues",
+      "DOI": "10.1038/s41586-021-03992-4",
+      "URL": "https://doi.org/10.1038/s41586-021-03992-4",
+      "container-title": "Nature",
+      "volume": "599",
+      "page": "147-151",
+      "issued": {
+        "date-parts": [
+          [
+            2021
+          ]
+        ]
+      },
+      "author": [
+        {
+          "family": "Xu",
+          "given": "C. Shan"
+        },
+        {
+          "family": "Pang",
+          "given": "Song"
+        },
+        {
+          "family": "Shtengel",
+          "given": "Gleb"
+        },
+        {
+          "family": "Muller",
+          "given": "Andreas"
+        },
+        {
+          "family": "Ritter",
+          "given": "Alex T."
+        },
+        {
+          "family": "Bhaskaran",
+          "given": "Hanna K. Hoffman"
+        }
+      ],
+      "note": "Enhanced FIB-SEM technology"
     },
     {
       "id": "yamazaki2021",
@@ -21333,6 +22476,52 @@
       }
     },
     {
+      "id": "yin2020",
+      "type": "article-journal",
+      "title": "A petascale automated imaging pipeline for mapping neuronal circuits with high-throughput transmission electron microscopy",
+      "DOI": "10.1038/s41467-020-18659-3",
+      "URL": "https://doi.org/10.1038/s41467-020-18659-3",
+      "container-title": "Nature Communications",
+      "volume": "11",
+      "page": "4949",
+      "issued": {
+        "date-parts": [
+          [
+            2020,
+            10,
+            2
+          ]
+        ]
+      },
+      "author": [
+        {
+          "family": "Yin",
+          "given": "Wenjing"
+        },
+        {
+          "family": "Brittain",
+          "given": "Derrick"
+        },
+        {
+          "family": "Borseth",
+          "given": "Jay"
+        },
+        {
+          "family": "Scott",
+          "given": "Marie E."
+        },
+        {
+          "family": "Williams",
+          "given": "Derric"
+        },
+        {
+          "family": "da Costa",
+          "given": "Nuno Macarico"
+        }
+      ],
+      "note": "autoTEM/piTEAM petascale automated imaging pipeline"
+    },
+    {
       "id": "zacksenhouse2007",
       "type": "article-journal",
       "title": "Cortical Modulations Increase in Early Sessions with Brain-Machine Interface",
@@ -21413,6 +22602,52 @@
       "container-title": "Journal of Computational Neuroscience",
       "volume": "44",
       "page": "45-61"
+    },
+    {
+      "id": "zhang2021",
+      "type": "article-journal",
+      "title": "Multi-Scale Light-Sheet Fluorescence Microscopy for Fast Whole Brain Imaging",
+      "DOI": "10.3389/fnana.2021.732464",
+      "URL": "https://doi.org/10.3389/fnana.2021.732464",
+      "container-title": "Frontiers in Neuroanatomy",
+      "volume": "15",
+      "page": "732464",
+      "issued": {
+        "date-parts": [
+          [
+            2021,
+            9,
+            24
+          ]
+        ]
+      },
+      "author": [
+        {
+          "family": "Zhang",
+          "given": "Zhouzhou"
+        },
+        {
+          "family": "Yao",
+          "given": "Xiao"
+        },
+        {
+          "family": "Yin",
+          "given": "Xinxin"
+        },
+        {
+          "family": "Ding",
+          "given": "Zhangcan"
+        },
+        {
+          "family": "Huang",
+          "given": "Tianyi"
+        },
+        {
+          "family": "Guo",
+          "given": "Zengcai V."
+        }
+      ],
+      "note": "mLSFM multi-scale light-sheet fluorescence microscopy"
     },
     {
       "id": "zheng2018",
@@ -21525,6 +22760,46 @@
       "container-title": "Cell",
       "volume": "174",
       "page": "730-743.e22"
+    },
+    {
+      "id": "zheng2022",
+      "type": "article-journal",
+      "title": "Fast imaging of millimeter-scale areas with beam deflection transmission electron microscopy",
+      "DOI": "10.1038/s41467-024-50846-4",
+      "URL": "https://doi.org/10.1038/s41467-024-50846-4",
+      "container-title": "Nature Communications",
+      "volume": "15",
+      "page": "6860",
+      "issued": {
+        "date-parts": [
+          [
+            2024
+          ]
+        ]
+      },
+      "author": [
+        {
+          "family": "Zheng",
+          "given": "Zhihao"
+        },
+        {
+          "family": "Own",
+          "given": "Christopher S."
+        },
+        {
+          "family": "Wanner",
+          "given": "Adrian A."
+        },
+        {
+          "family": "Koene",
+          "given": "Randal A."
+        },
+        {
+          "family": "Seung",
+          "given": "H. Sebastian"
+        }
+      ],
+      "note": "bdTEM beam deflection transmission electron microscopy"
     },
     {
       "id": "zhong2024",
