@@ -988,6 +988,72 @@ def check_tsv_column_values(report: ValidationReport) -> CheckResult:
     return CheckResult("pass", "All confidence and validated_by values are valid")
 
 
+# Required reference columns for internal TSV files
+REQUIRED_REFERENCE_COLUMNS = ["ref_id", "supporting_refs", "ref_note", "confidence", "validated_by"]
+
+# Directories to exclude from reference column check (external datasets, metadata)
+EXCLUDED_REFERENCE_CHECK_DIRS = {"external", "_metadata"}
+
+
+def check_standardized_reference_columns(report: ValidationReport) -> CheckResult:
+    """Verify all internal TSV files have standardized reference columns.
+
+    Checks that all TSV files in data/ (excluding external/ and _metadata/)
+    have the 5 required reference tracking columns:
+    - ref_id: Reference to bibliography.json entry
+    - supporting_refs: Additional references (semicolon-separated)
+    - ref_note: Explanation of how source applies
+    - confidence: measured, derived, estimated, assumed, or none
+    - validated_by: human, ai, human+ai, or none
+    """
+    issues = []
+    compliant_files = 0
+    checked_files = 0
+
+    for tsv_file in paths.DATA_DIR.rglob("*.tsv"):
+        # Skip excluded directories
+        if any(excluded in tsv_file.parts for excluded in EXCLUDED_REFERENCE_CHECK_DIRS):
+            continue
+
+        checked_files += 1
+        rel_path = tsv_file.relative_to(paths.DATA_DIR)
+
+        try:
+            with open(tsv_file, 'r', encoding='utf-8') as f:
+                header_line = f.readline()
+                if not header_line:
+                    issues.append(f"{rel_path}: empty file")
+                    continue
+
+                # Handle BOM if present
+                if header_line.startswith('\ufeff'):
+                    header_line = header_line[1:]
+
+                header = [col.strip() for col in header_line.strip().split('\t')]
+
+                # Check for missing columns
+                missing = [col for col in REQUIRED_REFERENCE_COLUMNS if col not in header]
+                if missing:
+                    issues.append(f"{rel_path}: missing columns: {', '.join(missing)}")
+                else:
+                    compliant_files += 1
+
+        except Exception as e:
+            issues.append(f"{rel_path}: read error: {e}")
+
+    if issues:
+        return CheckResult(
+            "warn",
+            f"{len(issues)}/{checked_files} TSV files missing reference columns",
+            issues
+        )
+
+    return CheckResult(
+        "pass",
+        f"All {compliant_files} internal TSV files have standardized reference columns"
+    )
+
+
 # =============================================================================
 # TIER 6: SEO & Accessibility Checks
 # =============================================================================
@@ -1353,6 +1419,7 @@ def run_all_checks(strict: bool = False, ci_mode: bool = False) -> int:
         ("Ref ID format", check_ref_id_format),
         ("Dist bibliography sync", check_dist_bibliography_sync),
         ("TSV column values", check_tsv_column_values),
+        ("Standardized ref columns", check_standardized_reference_columns),
     ]
 
     for name, check_fn in checks_tier5:
