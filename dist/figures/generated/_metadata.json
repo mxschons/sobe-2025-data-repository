@@ -90,8 +90,8 @@
     },
     {
       "id": "neuro-recordings",
-      "title": "Neural Recordings",
-      "description": "Overview of neural recording capabilities and progress over time.",
+      "title": "Neural Recording Information Rate",
+      "description": "Information rate (neurons × temporal resolution) of neural recordings over time, showing progress toward whole-brain recording capabilities.",
       "filename": "neural-recording-timeline-overview",
       "path": "figures/generated",
       "organism": [
