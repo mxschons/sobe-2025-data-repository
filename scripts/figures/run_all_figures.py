@@ -911,7 +911,7 @@ def generate_initiatives():
     proj_colors = [category_colormap[cat] for cat in all_proj_df['Category']]
 
     # initiatives2 - Megaproject Budgets and Durations (brain vs other megaprojects)
-    fig, ax = plt.subplots(figsize=(12, 6))
+    fig, ax = plt.subplots(figsize=(14, 7))
     for i in range(len(all_proj_df)):
         ax.errorbar(
             [proj_midpoints[i]],
@@ -931,35 +931,34 @@ def generate_initiatives():
         for category, color in zip(proj_categories, category_colors)
     ]
 
-    # Label top brain projects by budget (not just first 6 rows)
-    brain_projects = all_proj_df[all_proj_df['Category'] == 'Brain'].nlargest(8, 'Budget_M')
-    # Also label a few top non-brain projects for context
-    other_projects = all_proj_df[all_proj_df['Category'] != 'Brain'].nlargest(3, 'Budget_M')
-    projects_to_label = pd.concat([brain_projects, other_projects])
+    # Label top brain projects by budget
+    brain_projects = all_proj_df[all_proj_df['Category'] == 'Brain'].nlargest(10, 'Budget_M')
+    # More non-brain projects for context
+    other_projects = all_proj_df[all_proj_df['Category'] != 'Brain'].nlargest(8, 'Budget_M')
 
-    # Use adjustText for better label placement to avoid overlaps
-    texts = []
-    for idx in projects_to_label.index:
+    # Place labels at the END of each bar (after the duration), not centered
+    for idx in brain_projects.index:
         proj = all_proj_df.loc[idx]
-        # Shorten long names for readability
+        # Calculate end position (start + duration)
+        end_date = proj['EndYear']
+        budget_y = 1e6 * proj['Budget_M']
+        # Shorten long names
         name = proj['Name']
-        if len(name) > 25:
-            name = name[:22] + '...'
-        texts.append(ax.text(
-            proj_midpoints[idx], 1e6 * proj['Budget_M'], name,
-            fontsize=8, color=COLORS['text'], ha='center', va='bottom'
-        ))
+        if len(name) > 30:
+            name = name[:27] + '...'
+        # Place label to the right of the bar end
+        ax.text(end_date + pd.Timedelta(days=180), budget_y, name,
+                fontsize=7, color=COLORS['text'], ha='left', va='center')
 
-    # Try to adjust text positions to avoid overlaps (manual offset approach)
-    # Since adjustText may not be available, use alternating vertical offsets
-    for i, txt in enumerate(texts):
-        x, y = txt.get_position()
-        # Alternate between above and below, with slight horizontal offset
-        if i % 2 == 0:
-            txt.set_position((x, y * 1.3))
-        else:
-            txt.set_position((x, y * 0.7))
-            txt.set_va('top')
+    for idx in other_projects.index:
+        proj = all_proj_df.loc[idx]
+        end_date = proj['EndYear']
+        budget_y = 1e6 * proj['Budget_M']
+        name = proj['Name']
+        if len(name) > 30:
+            name = name[:27] + '...'
+        ax.text(end_date + pd.Timedelta(days=180), budget_y, name,
+                fontsize=7, color=COLORS['text'], ha='left', va='center')
 
     place_legend(ax, fig, position='outside_right', handles=legend_handles, title="Category")
     ax.set_title('Brain vs Non-Brain Megaproject Budgets and Durations')
@@ -2059,31 +2058,38 @@ def generate_funding():
         # Combine and sort by budget
         combined = pd.concat([top_neuro, top_other]).sort_values('Budget_M', ascending=True)
 
-        # Assign colors - GOLD for neuroscience, use categorical palette for other categories
-        other_categories = combined[combined['Category'] != 'Neuroscience']['Category'].unique()
-        other_color_map = {cat: EXTENDED_CATEGORICAL[i % len(EXTENDED_CATEGORICAL)]
-                          for i, cat in enumerate(other_categories)}
-
-        colors = []
-        for cat in combined['Category']:
-            if cat == 'Neuroscience':
-                colors.append(GOLD)
-            else:
-                colors.append(other_color_map.get(cat, COLORS['caption']))
+        # Simple two-color scheme: GOLD for neuroscience, gray for everything else
+        colors = [GOLD if cat == 'Neuroscience' else COLORS['caption'] for cat in combined['Category']]
 
         bars = ax.barh(combined['Name'], combined['Budget_M'], color=colors, alpha=0.85)
 
         ax.set_xscale('log')
-        ax.set_xlabel('Budget (Million $, 2024 dollars)')
+
+        # Human-readable x-axis labels (e.g., "$1B", "$10B", "$100B")
+        def format_dollars(x, pos):
+            if x >= 1e6:
+                return f'${x/1e6:.0f}T'
+            elif x >= 1e3:
+                return f'${x/1e3:.0f}B'
+            elif x >= 1:
+                return f'${x:.0f}M'
+            else:
+                return f'${x*1e3:.0f}K'
+
+        from matplotlib.ticker import FuncFormatter
+        ax.xaxis.set_major_formatter(FuncFormatter(format_dollars))
+
+        ax.set_xlabel('Budget (2024 dollars)')
         ax.set_title('Neuroscience vs Major Non-Brain Megaproject Funding')
 
-        # Add legend with all categories
+        # Simple two-category legend
         from matplotlib.patches import Patch
-        legend_elements = [Patch(facecolor=GOLD, label='Neuroscience')]
-        for cat in sorted(other_categories):
-            legend_elements.append(Patch(facecolor=other_color_map[cat], label=cat.title()))
+        legend_elements = [
+            Patch(facecolor=GOLD, label='Neuroscience', edgecolor=COLORS['border']),
+            Patch(facecolor=COLORS['caption'], label='Other Megaprojects', edgecolor=COLORS['border'])
+        ]
 
-        ax.legend(handles=legend_elements, loc='lower right', frameon=True, fontsize=9)
+        ax.legend(handles=legend_elements, loc='lower right', frameon=True, fontsize=10)
 
         plt.tight_layout()
         save_figure(fig, 'megaproject-funding-brain-vs-other-comparison')
