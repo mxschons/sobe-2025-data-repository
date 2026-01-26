@@ -35,8 +35,8 @@ Hoffman 2020	2020.0	FIB - SEM	4	4	4	4.00	6.40E-17	50	1.0	1.0	0.2	1.28E-11	3.91E+
 Hua 2021 cochlea	2021.0	SBF - SEM	11	11	40	16.92	4.84E-15	50	1.0	1.0	1.0	4.84E-09	1.03E+11	2.48E+14	3.3k years	7.9M years	3276.0	7861932.0	3.3K	7.9M			none	hua2021
 Hua 2021 cochlea	2021.0	SBF - SEM	12	12	50	19.31	7.20E-15	50	1.0	1.0	0.7	4.80E-09	1.04E+11	2.50E+14	3.3k years	7.9M years	3304.0	7927448.0	3.3K	7.9M			none	hua2021
 Hua 2021 cochlea	2021.0	SBF - SEM	12	12	50	19.31	7.20E-15	50	1.0	1.0	0.5	3.60E-09	1.39E+11	3.33E+14	4.4k years	10.6M years	4405.0	10569931.0	4.4K	10.6M			none	hua2021
-Schwartz 2018	2018.0	SBF - SEM	13	13	32	17.55	5.41E-15	50	1.0	1.0	0.3	1.80E-09	2.77E+11	6.66E+14	8.8k years	21.1M years	8796.0	21108590.0	8.8K	21.1M			none	schwartz2018
-Schwartz 2018	2018.0	SBF - SEM	13	13	32	17.55	5.41E-15	50	1.0	1.0	0.3	1.80E-09	2.77E+11	6.66E+14	8.8k years	21.1M years	8796.0	21108590.0	8.8K	21.1M			none	schwartz2018
+Schwartz 2018	2018.0	SBF - SEM	13	13	32	17.55	5.41E-15	50	1.0	1.0	0.3	1.80E-09	2.77E+11	6.66E+14	8.8k years	21.1M years	8796.0	21108590.0	8.8K	21.1M		DOI not found; SBF-SEM imaging parameters from internal reference	none	schwartz2018
+Schwartz 2018	2018.0	SBF - SEM	13	13	32	17.55	5.41E-15	50	1.0	1.0	0.3	1.80E-09	2.77E+11	6.66E+14	8.8k years	21.1M years	8796.0	21108590.0	8.8K	21.1M		DOI not found; SBF-SEM imaging parameters from internal reference	none	schwartz2018
 Kornfeld 2017	2017.0	SBF - SEM	11	11	29	15.20	3.51E-15	50	1.0	1.0	2.1	7.47E-09	6.70E+10	1.61E+14	2.1k years	5.1M years	2124.0	5096701.0	2.1K	5.1M			none	kornfeld2017
 Svara 2022	2022.0	SBF - SEM	14	14	25	16.98	4.90E-15	50	1.0	1.0	2.1	1.02E-08	4.92E+10	1.18E+14	1.6k years	3.7M years	1560.0	3743687.0	1.6K	3.7M			none	svara2022
 Svara 2018	2018.0	SBF - SEM	9	9	21	11.94	1.70E-15	50	1.0	1.0	5.0	8.51E-09	5.88E+10	1.41E+14	1.9k years	4.5M years	1865.0	4474045.0	1.9K	4.5M			none	svara2018
