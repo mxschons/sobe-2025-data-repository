@@ -1,5 +1,5 @@
 First Author	Year	Organism	Organism (cleaned)	Dataset name	Volume(as quoted)	Volume (μm³)	Volume (claude)	Resolution (nm)	Resolution (claude)	Dataset Size (TB)	Dataset Size (Claude)	Acquisition Time (days)	Scanning Costs ($)	Method	Method (claude)	Completion %	References	Notes
-Antonio Jimenez-Marin	2024	Human	Human	LEMON						n/a (given 40,000 healthy individuals)		not given	not given	fMRI, diffusion MRI	Tractography	not given	https://www.nature.com/articles/s41597-024-03060-2#Sec8	
+Antonio Jimenez-Marin	2024	Human	Human	LEMON						n/a (given 40,000 healthy individuals)		not given	not given	fMRI, diffusion MRI	Tractography	not given	https://www.nature.com/articles/s41597-024-03060-2#Sec8
 Zing	2024	Mouse	Mouse	ALCEM	1 mm³	1x10⁹	1000000000.0	4 x 4 x 40	8000.0	2,500	2.5	200	6,000,000	ATUM-SEM	Electron Microscopy	100%	https://pmc.ncbi.nlm.nih.gov/articles/PMC10054929/ 	"Using the MICrONS dataset, this study reveals a universal ""like-to-like"" connectivity rule in the mouse visual cortex, where neurons
 with similar features preferentially connect. These principles, mirrored in artificial networks, highlight their role in sensory processing and learning."
 Nanfang Pan	2024	Human (College students)	Human	"Behavioral and neuroimaging data collected pre-pandemic and
@@ -147,7 +147,7 @@ adult human brain volume 1.3×10^12μm³
 theoretical analysis of weighted and unweighted structural brain networks"	Tractography	95%	https://molecularautism.biomedcentral.com/articles/10.1186/s13229-015-0058-4 	"This study highlighted reduced global efficiency and increased normalized characteristic path length in subjects with autism spectrum
 disorder (ASD) compared to controls."
 Oh S.W.	2014	Mouse	Mouse		28 x 35 x 49 μm			"not specified
-(High Resolution)"						EGFP, Serial Two-Photon Tomography, Virtual Tractography	Neuronal Circuit Mapping		https://www.nature.com/articles/nature13186	
+(High Resolution)"						EGFP, Serial Two-Photon Tomography, Virtual Tractography	Neuronal Circuit Mapping		https://www.nature.com/articles/nature13186
 Plaza S.M.	2014	"Multiple (e.g., C. elegans, Drosophila
 melanogaster, Mouse, and Human)"	Multiple	FlyEM, C. elegans connectome and Drosophila medulla connectome	"- C. elegans: 0.0003 mm³
 - Drosophila medulla column: 0.0001 mm³
