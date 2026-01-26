@@ -2046,26 +2046,21 @@ def generate_all_sim_rec():
 # =============================================================================
 @figure("brain-research-initiative-funding", "Brain vs non-brain megaproject funding comparison")
 def generate_funding():
-    # Load funding data from new data structure
+    # Load brain initiatives from the same source as the timeline figure
     neuro_proj_df = pd.read_csv(
-        DATA_FILES["costs_neuro_megaprojects"], sep='\t'
+        DATA_FILES["initiatives_overview"], sep='\t'
     )
-    other_proj_df = pd.read_csv(
-        DATA_FILES["costs_non_neuro_megaprojects"], sep='\t'
-    )
-
-    # Clean neuroscience projects data
     neuro_proj_df = neuro_proj_df.rename(columns={
-        'project name': 'Name',
-        'Neuroscience funding ($M)': 'Budget_M',
-        'start year': 'StartYear',
-        'end year': 'EndYear',
+        'Project name': 'Name',
+        'Budget (in million $) (cleaned)': 'Budget_M',
     })
     neuro_proj_df['Category'] = 'Neuroscience'
     neuro_proj_df['Budget_M'] = pd.to_numeric(neuro_proj_df['Budget_M'], errors='coerce')
-    neuro_proj_df['StartYear'] = pd.to_numeric(neuro_proj_df['StartYear'], errors='coerce')
 
-    # Clean other projects data
+    # Load non-neuro megaprojects
+    other_proj_df = pd.read_csv(
+        DATA_FILES["costs_non_neuro_megaprojects"], sep='\t'
+    )
     other_proj_df = other_proj_df.rename(columns={
         'project': 'Name',
         'cost ($B, 2024 dollars)': 'Budget_B',
