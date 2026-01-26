@@ -990,9 +990,21 @@ def generate_initiatives():
             import math
             labeled_positions.append(math.log10(budget_y))
 
-    # Place legend at bottom right to avoid label conflicts
-    ax.legend(handles=legend_handles, title="Category", loc='lower right',
-              fontsize=8, title_fontsize=9, frameon=True, framealpha=0.9)
+    # Also label the earliest projects (like Manhattan Project in 1940s)
+    earliest_projects = all_proj_df.nsmallest(3, 'StartYear')
+    for idx in earliest_projects.index:
+        proj = all_proj_df.loc[idx]
+        end_date = proj['EndYear']
+        budget_y = 1e6 * proj['Budget_M']
+        if can_place_label(budget_y, 1.4):
+            name = shorten_name(proj['Name'])
+            ax.text(end_date + pd.Timedelta(days=200), budget_y, name,
+                    fontsize=7, color=COLORS['text'], ha='left', va='center')
+            import math
+            labeled_positions.append(math.log10(budget_y))
+
+    # Place legend outside the plot on the right
+    place_legend(ax, fig, position='outside_right', handles=legend_handles, title="Category")
     ax.set_title('Brain vs Non-Brain Megaproject Budgets and Durations')
     plt.tight_layout()
     save_figure(fig, 'megaproject-budgets-brain-vs-other-timeline')
