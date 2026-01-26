@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-01-26T01:54:33.388566",
+  "generated_at": "2026-01-26T02:14:42.662659",
   "summary": {
     "total_files": 46,
     "total_rows": 2612,
     "rows_with_refs": 1035,
     "rows_without_refs": 1577,
     "overall_coverage_pct": 39.6,
-    "canonical_dois": 506,
-    "non_canonical_dois": 1,
-    "bracketed_refs": 11,
+    "canonical_dois": 518,
+    "non_canonical_dois": 0,
+    "bracketed_refs": 0,
     "files_with_structured_cols": 12,
     "ref_id_filled": 8,
     "ref_id_empty": 158
@@ -151,24 +151,6 @@
       "file": "storage-presets.tsv",
       "category": "parameters",
       "issue": "3 rows with empty ref_id",
-      "priority": "high"
-    },
-    {
-      "file": "neural-dynamics-references.tsv",
-      "category": "recordings",
-      "issue": "10 bracketed references need resolution",
-      "priority": "high"
-    },
-    {
-      "file": "neural-information-rate.tsv",
-      "category": "recordings",
-      "issue": "1 DOIs in non-canonical format",
-      "priority": "medium"
-    },
-    {
-      "file": "neurodynamics-papers.tsv",
-      "category": "recordings",
-      "issue": "1 bracketed references need resolution",
       "priority": "high"
     }
   ],
@@ -1120,18 +1102,16 @@
       "rows_with_refs": 86,
       "rows_without_refs": 0,
       "coverage_pct": 100.0,
-      "canonical_dois": 54,
+      "canonical_dois": 64,
       "non_canonical_dois": 0,
-      "bracketed_refs": 10,
+      "bracketed_refs": 0,
       "urls_only": 22,
       "text_only": 0,
       "ref_id_filled": 0,
       "ref_id_empty": 0,
       "confidence_none": 0,
       "validated_none": 0,
-      "issues": [
-        "10 bracketed references need resolution"
-      ]
+      "issues": []
     },
     {
       "file_path": "recordings/neural-information-rate.tsv",
@@ -1146,8 +1126,8 @@
       "rows_with_refs": 151,
       "rows_without_refs": 0,
       "coverage_pct": 100.0,
-      "canonical_dois": 149,
-      "non_canonical_dois": 1,
+      "canonical_dois": 150,
+      "non_canonical_dois": 0,
       "bracketed_refs": 0,
       "urls_only": 1,
       "text_only": 151,
@@ -1155,9 +1135,7 @@
       "ref_id_empty": 0,
       "confidence_none": 0,
       "validated_none": 0,
-      "issues": [
-        "1 DOIs in non-canonical format"
-      ]
+      "issues": []
     },
     {
       "file_path": "recordings/neural-recording.tsv",
@@ -1241,18 +1219,16 @@
       "rows_with_refs": 32,
       "rows_without_refs": 0,
       "coverage_pct": 100.0,
-      "canonical_dois": 27,
+      "canonical_dois": 28,
       "non_canonical_dois": 0,
-      "bracketed_refs": 1,
+      "bracketed_refs": 0,
       "urls_only": 4,
       "text_only": 0,
       "ref_id_filled": 0,
       "ref_id_empty": 0,
       "confidence_none": 0,
       "validated_none": 0,
-      "issues": [
-        "1 bracketed references need resolution"
-      ]
+      "issues": []
     },
     {
       "file_path": "recordings/neuroscience-repositories.tsv",

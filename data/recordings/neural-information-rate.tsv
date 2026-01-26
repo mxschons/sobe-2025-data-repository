@@ -40,7 +40,7 @@ Year	Month	normalized_best_yield	Authors	Method	source	Publication	Method Note	d
 2007.0	7.0	140	Hamed et al.	Ephys	S&K	Journal of Neurophysiology		https://doi.org/10.1152/jn.00760.2006	2007-07-01	extracellular_electrophysiology																	2007.495636	8	200.0	28000.0
 1998.0	11.0	135	Nicolelis et al.	Ephys	Stevenson	Nature Neuroscience		https://doi.org/10.1038/2855	1998-11-01	extracellular_electrophysiology																	1998.832899	1	200.0	27000.0
 2020.0	7.0	16000	Ota et al.	Imaging	Urai	bioRxiv		https://doi.org/10.1101/2020.07.14.201699	2020-07-01	calcium_imaging																	2020.497957	5	1.56	24960.0
-1996.0	2.0	117	Skaggs et al.	Ephys	Stevenson	Hippocampus	Tetrodes	10.1002/(SICI)1098-1063(1996)6:2%3C149::AID-HIPO6%3E3.0.CO;2-K	1996-02-01	extracellular_electrophysiology																	1996.08404	1	200.0	23400.0
+1996.0	2.0	117	Skaggs et al.	Ephys	Stevenson	Hippocampus	Tetrodes	https://doi.org/10.1002/(SICI)1098-1063(1996)6:2<149::AID-HIPO6>3.0.CO;2-K	1996-02-01	extracellular_electrophysiology																	1996.08404	1	200.0	23400.0
 2005.0	5.0	100	Blanche et al.	Ephys	Stevenson	Journal of Neurophysiology		https://doi.org/10.1152/jn.01023.2004	2005-05-01	extracellular_electrophysiology																	2005.329952	8	200.0	20000.0
 2000.0	11.0	100	Wessberg et al.	Ephys	S&K	Nature		https://doi.org/10.1038/35042582	2000-11-01	extracellular_electrophysiology																	2000.834309	4	200.0	20000.0
 1997.0	4.0	100	Nicolelis et al.	Ephys	S&K	Neuron		https://doi.org/10.1016/S0896-6273(00)80295-0	1997-04-01	extracellular_electrophysiology																	1997.247651	2	200.0	20000.0
