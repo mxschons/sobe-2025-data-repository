@@ -888,19 +888,6 @@ def generate_initiatives():
                      'Start Year (cleaned)': 'StartYear', 'End Year (cleaned)': 'EndYear'}),
     ], ignore_index=True)
 
-    # Scatter plot
-    fig, ax = plt.subplots(figsize=(10, 6))
-    sns.scatterplot(all_proj_df, x='StartYear', y='Budget_M', hue='Category',
-                    palette=EXTENDED_CATEGORICAL, s=80, alpha=0.8, ax=ax)
-    place_legend(ax, fig, position='outside_right')
-    ax.set_yscale('log')
-    ax.set_ylabel('Budget (Million $)')
-    ax.set_xlabel(None)
-    ax.set_title('Megaproject Budgets by Start Year')
-    plt.tight_layout()
-    save_figure(fig, 'brain-initiatives-timeline-overview')
-    plt.close()
-
     # Compute project durations and midpoints for initiatives2, 4, 5
     proj_durations = all_proj_df['EndYear'] - all_proj_df['StartYear']
     proj_midpoints = all_proj_df['StartYear'] + proj_durations / 2

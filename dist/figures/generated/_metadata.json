@@ -311,20 +311,6 @@
       ]
     },
     {
-      "id": "initiatives1",
-      "title": "Brain Initiatives Timeline",
-      "description": "Timeline showing major brain research initiatives and their duration.",
-      "filename": "brain-initiatives-timeline-overview",
-      "path": "figures/generated",
-      "organism": [
-        "all"
-      ],
-      "type": [
-        "initiatives",
-        "funding"
-      ]
-    },
-    {
       "id": "initiatives2",
       "title": "Brain vs Non-Brain Megaproject Timeline",
       "description": "Timeline showing brain research initiatives alongside other major megaprojects, with budget and duration.",
