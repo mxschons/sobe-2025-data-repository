@@ -25,6 +25,11 @@ DATA_INITIATIVES = DATA_DIR / "initiatives"
 DATA_METADATA = DATA_DIR / "_metadata"
 DATA_REFERENCES = DATA_DIR / "references"
 
+# External data sources (third-party datasets)
+DATA_EXTERNAL = DATA_DIR / "external"
+DATA_EXTERNAL_EPOCH = DATA_EXTERNAL / "epoch-ai"
+DATA_EXTERNAL_BOSCH = DATA_EXTERNAL / "bosch-et-al"
+
 # Output directories (distribution-ready assets for website)
 OUTPUT_ROOT = REPO_ROOT / "dist"
 OUTPUT_FIGURES = OUTPUT_ROOT / "figures" / "generated"
@@ -71,12 +76,10 @@ DATA_FILES = {
     "tracing_trends": DATA_CONNECTOMICS / "tracing-trends-references.tsv",
 
     # Compute
-    "ai_compute": DATA_COMPUTE / "ai-training-computation.tsv",
     "computational_demands": DATA_COMPUTE / "computational-demands-organisms.tsv",
     "compute_hardware": DATA_COMPUTE / "hardware-characteristics.tsv",
 
     # Costs
-    "storage_costs": DATA_COSTS / "storage-historical.tsv",
     "cost_estimates": DATA_COSTS / "neuron-reconstruction-estimates.tsv",
     "costs_neuro_megaprojects": DATA_COSTS / "neuroscience-megaprojects.tsv",
     "costs_non_neuro_megaprojects": DATA_COSTS / "non-neuroscience-megaprojects.tsv",
@@ -90,7 +93,7 @@ DATA_FILES = {
     "initiatives_costs": DATA_INITIATIVES / "digital-human-intelligence-costs.tsv",
 
     # Imaging
-    "imaging_speed": DATA_IMAGING / "neuroimaging-speed.tsv",
+    "imaging_modalities": DATA_IMAGING / "imaging-modalities.tsv",
 
     # Formulas (TSV files for calculator)
     "formulas_connectomics": DATA_FORMULAS / "connectomics.tsv",
@@ -100,9 +103,6 @@ DATA_FILES = {
     # Shared parameters
     "formulas_shared": DATA_PARAMETERS / "shared.tsv",
 
-    # Imaging modalities
-    "imaging_modalities": DATA_IMAGING / "imaging-modalities.tsv",
-
     # Recording parameters
     "neural_recording_params": DATA_RECORDINGS / "neural-recording.tsv",
 
@@ -111,6 +111,10 @@ DATA_FILES = {
 
     # References/Bibliography
     "bibliography": DATA_REFERENCES / "bibliography.json",
+
+    # External data sources
+    "epoch_ai_models": DATA_EXTERNAL_EPOCH / "notable-ai-models.csv",
+    "imaging_speed": DATA_EXTERNAL_BOSCH / "neuroimaging-speed.tsv",
 }
 
 

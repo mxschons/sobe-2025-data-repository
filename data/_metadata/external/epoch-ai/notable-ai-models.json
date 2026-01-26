@@ -1,0 +1,10 @@
+{
+  "title": "Epoch AI Notable AI Models",
+  "source": "https://epochai.org/data/notable-ai-models",
+  "originalAuthor": "Epoch AI",
+  "contributors": [],
+  "license": "CC BY 4.0",
+  "url": "https://epochai.org/data",
+  "dateAccessed": "2026-01-26",
+  "description": "Dataset of notable AI models with parameters, training compute, and other characteristics. Used for AI inference compute comparisons."
+}

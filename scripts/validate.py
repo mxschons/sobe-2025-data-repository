@@ -725,8 +725,8 @@ def check_stale_figures(report: ValidationReport) -> CheckResult:
         paths.DATA_FILES.get("neuron_simulations"),
         paths.DATA_FILES.get("neural_recordings"),
         paths.DATA_FILES.get("brain_scans"),
-        paths.DATA_FILES.get("ai_compute"),
-        paths.DATA_FILES.get("storage_costs"),
+        paths.DATA_FILES.get("epoch_ai_models"),
+        paths.DATA_FILES.get("imaging_speed"),
     ]
 
     figures_dir = paths.OUTPUT_FIGURES

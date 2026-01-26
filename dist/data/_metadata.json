@@ -491,22 +491,6 @@
       "icon": "zap",
       "datasets": [
         {
-          "id": "ai-training-computation",
-          "title": "AI Training Computation",
-          "description": "Computation used to train notable artificial intelligence systems, measured in petaFLOP by domain.",
-          "filename": "ai-training-computation.tsv",
-          "path": "data/compute",
-          "rows": "100+",
-          "columns": [
-            "Entity",
-            "Code",
-            "Day",
-            "Training computation (petaFLOP)",
-            "Domain"
-          ],
-          "source": "https://ourworldindata.org/grapher/artificial-intelligence-training-computation"
-        },
-        {
           "id": "computational-demands-organisms",
           "title": "Computational Demands by Organism",
           "description": "Estimated computational requirements for simulating neural systems of different organisms.",
@@ -712,24 +696,6 @@
             "current",
             "improved_1000x"
           ]
-        },
-        {
-          "id": "storage-historical",
-          "title": "Historical Storage Costs",
-          "description": "Historical price of computer memory and storage in US dollars per terabyte, adjusted for inflation.",
-          "filename": "storage-historical.tsv",
-          "path": "data/costs",
-          "rows": "50+",
-          "columns": [
-            "Entity",
-            "Code",
-            "Year",
-            "Historical price of memory",
-            "Historical price of flash memory",
-            "Historical price of disk drives",
-            "Historical price of solid-state drives"
-          ],
-          "source": "https://ourworldindata.org/grapher/historical-cost-of-computer-memory-and-storage"
         }
       ]
     },
@@ -756,13 +722,39 @@
             "exm_molecular",
             "wellcome"
           ]
+        }
+      ]
+    },
+    {
+      "id": "external",
+      "title": "External Data Sources",
+      "description": "Third-party datasets from external sources used in the report.",
+      "icon": "external-link",
+      "datasets": [
+        {
+          "id": "epoch-ai-models",
+          "title": "Epoch AI Notable AI Models",
+          "description": "Dataset of notable AI models with parameters, training compute, and other characteristics.",
+          "filename": "notable-ai-models.csv",
+          "path": "data/external/epoch-ai",
+          "rows": "8000+",
+          "columns": [
+            "Model",
+            "Organization",
+            "Publication date",
+            "Parameters",
+            "Training compute (FLOP)",
+            "Domain"
+          ],
+          "source": "https://epochai.org/data/notable-ai-models",
+          "license": "CC BY 4.0"
         },
         {
           "id": "neuroimaging-speed",
           "title": "Neuroimaging Speed Comparison",
-          "description": "Imaging technology capabilities over time: imaging speed (MHz), field of view (mm\u00b3), and dataset sizes (TB). Data supporting 'The road to a whole mouse brain connectome'.",
+          "description": "Imaging technology capabilities over time: imaging speed (MHz), field of view (mm³), and dataset sizes (TB). Data supporting 'The road to a whole mouse brain connectome'.",
           "filename": "neuroimaging-speed.tsv",
-          "path": "data/imaging",
+          "path": "data/external/bosch-et-al",
           "rows": "50+",
           "columns": [
             "mapName",
