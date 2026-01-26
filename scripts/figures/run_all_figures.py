@@ -281,7 +281,9 @@ def generate_compute():
     def pflops_formatter(x, pos):
         # x is in petaFLOP (1e15 FLOP)
         flops = x * 1e15  # Convert to raw FLOP
-        if flops >= 1e18:
+        if flops >= 1e21:
+            return f'{flops/1e21:.0f} ZFLOP'
+        elif flops >= 1e18:
             return f'{flops/1e18:.0f} EFLOP'
         elif flops >= 1e15:
             return f'{flops/1e15:.0f} PFLOP'
